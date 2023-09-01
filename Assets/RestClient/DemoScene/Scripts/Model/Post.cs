@@ -3,7 +3,7 @@
 namespace Models
 {
 	[Serializable]
-	public class Post
+	public class ExamplePost
 	{
 		public int id;
 

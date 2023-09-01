@@ -64,7 +64,7 @@ public class MainScript : MonoBehaviour {
 				{ "param1", "value 1" },
 				{ "param2", "value 2" }
 			},
-			Body = new Post {
+			Body = new ExamplePost {
 				title = "foo",
 				body = "bar",
 				userId = 1
@@ -86,7 +86,7 @@ public class MainScript : MonoBehaviour {
 
 		currentRequest = new RequestHelper {
 			Uri = basePath + "/posts/1", 
-			Body = new Post {
+			Body = new ExamplePost {
 				title = "foo",
 				body = "bar",
 				userId = 1

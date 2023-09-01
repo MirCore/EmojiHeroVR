@@ -34,6 +34,11 @@ public class EmojiManager : MonoBehaviour
     {
         Texture texture = (from textureMapping in GameManager.Instance.TextureMappings where textureMapping.EEmote == Emote select textureMapping.Texture).FirstOrDefault();
         EmojiRenderer.material.mainTexture = texture;
-        EmojiRenderer.material.SetTexture(314, texture);
+        EmojiRenderer.material.SetTexture(290, texture);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        EventManager.InvokeEmoteEnteredArea(Emote);
     }
 }

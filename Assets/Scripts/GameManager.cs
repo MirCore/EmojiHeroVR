@@ -16,6 +16,18 @@ public class GameManager : MonoBehaviour
             Instance = this;
         else
             Destroy(this);
+
+        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
+    }
+
+    private void OnEmoteEnteredAreaCallback(EEmote emote)
+    {
+        gameObject.GetComponent<REST>().Post();
     }
 
     public Vector3 GetEndPosition()
