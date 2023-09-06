@@ -2,6 +2,7 @@ namespace Enums
 {
     public enum EEmote
     {
+        None,
         Neutral,
         Anger,
         Disgust,

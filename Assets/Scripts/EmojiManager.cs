@@ -1,44 +1,65 @@
-using System;
-using System.Linq;
 using Enums;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class EmojiManager : MonoBehaviour
 {
-    private Vector3 _endPosition;
-    [SerializeField] private EEmote Emote;
-    [SerializeField] private Renderer EmojiRenderer;
-
-
+    private EmojiState _emojiState;
+    internal readonly EmojiPreState PreState = new ();
+    internal readonly EmojiIntraState IntraState = new ();
+    internal readonly EmojiFulfilledState FulfilledState = new ();
+    internal readonly EmojiFailedState FailedState = new ();
+    
+    [SerializeField] internal EEmote Emote;
+    [SerializeField] internal Renderer EmojiRenderer;
+    [SerializeField] internal Animator EmojiAnimator;
+    
     private void OnEnable()
     {
-        Emote = (EEmote)Random.Range(0, Enum.GetValues(typeof(EEmote)).Length);
-        UpdateTextures();
-        _endPosition = GameManager.Instance.GetEndPosition();
-        _endPosition += new Vector3(transform.position.x, 0, 0);
+        // starting state for the state machine
+        _emojiState = PreState;
+        _emojiState.EnterState(this);
+        
+        EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.OnEmotionDetected -= OnEmotionDetectedCallback;
     }
 
     private void Update()
     {
-        float step = GameManager.Instance.Speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, _endPosition, step);
+        transform.position += new Vector3(0,0,GameManager.Instance.Speed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, _endPosition) < 0.001f)
+        if (transform.position.z > GameManager.Instance.EmojiEndPosition.position.z)
         {
-            gameObject.SetActive(false);
+            DeactivateEmoji();
         }
     }
 
-    private void UpdateTextures()
+    internal void SwitchState(EmojiState state)
     {
-        Texture texture = (from textureMapping in GameManager.Instance.TextureMappings where textureMapping.EEmote == Emote select textureMapping.Texture).FirstOrDefault();
-        EmojiRenderer.material.mainTexture = texture;
-        EmojiRenderer.material.SetTexture(290, texture);
+        _emojiState = state;
+        _emojiState.EnterState(this);
+    }
+
+    private void OnEmotionDetectedCallback(EEmote emote)
+    {
+        _emojiState.OnEmotionDetectedCallback(this, emote);
+    }
+
+    private void DeactivateEmoji()
+    {
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        EventManager.InvokeEmoteEnteredArea(Emote);
+        _emojiState.OnTriggerEnter(this);
+    }
+    
+    private void OnTriggerExit(Collider other)
+    {
+        _emojiState.OnTriggerExit(this);
     }
 }

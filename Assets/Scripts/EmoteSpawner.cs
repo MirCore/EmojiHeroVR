@@ -15,13 +15,14 @@ public class EmoteSpawner : MonoBehaviour
 
     private IEnumerator SpawnEmote()
     {
-        System.Random rnd = new();
         while (true)
         {
             GameObject emote = ObjectPool.Instance.GetPooledObject();
             if (emote != null)
             {
-                emote.transform.position = transform.position + new Vector3((rnd.Next(Lanes) - (float)(Lanes-1)/2)*XWidth,0,0);
+                int lane = Random.Range(0, Lanes);
+                float xPos = (lane - (float)(Lanes - 1) / 2)*XWidth;
+                emote.transform.position = transform.position + new Vector3(xPos,0,0);
                 emote.SetActive(true);
             }
             yield return new WaitForSeconds(Interval);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 
 public class ActionAreaManager : MonoBehaviour
@@ -24,14 +25,26 @@ public class ActionAreaManager : MonoBehaviour
         _material.SetFloat(_originShaderID, -0.3f);
         _material.SetColor(_bottomColorShaderID, ResetColor);
     }
+    
+    private void Awake()
+    {
+        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+        EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+    }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnDestroy()
+    {
+        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
+        EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+    }
+
+    private void OnEmoteEnteredAreaCallback(EEmote emote)
     {
         StartCoroutine(RampShader(HighGradientPosition));
         StartCoroutine(RampColor(LossColor, LossColorRampDuration));
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnEmoteExitedAreaCallback()
     {
         StopAllCoroutines();
         StartCoroutine(RampShader(LowGradientPosition));
