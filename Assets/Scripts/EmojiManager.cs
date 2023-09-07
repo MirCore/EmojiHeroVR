@@ -29,9 +29,9 @@ public class EmojiManager : MonoBehaviour
 
     private void Update()
     {
-        transform.position += new Vector3(0,0,GameManager.Instance.Speed * Time.deltaTime);
+        transform.position -= new Vector3(0,0,GameManager.Instance.Speed * Time.deltaTime);
 
-        if (transform.position.z > GameManager.Instance.EmojiEndPosition.position.z)
+        if (transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
         {
             DeactivateEmoji();
         }
