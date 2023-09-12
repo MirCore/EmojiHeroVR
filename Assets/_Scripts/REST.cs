@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Manager;
 using Proyecto26;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -30,7 +31,7 @@ public class REST
             .Catch(error => Debug.Log("Error: " + error.Message));
     }
 
-    public async Task FakePost(float delaySeconds)
+    public async void FakePost(float delaySeconds)
     {
         Post post = new Post()
         {

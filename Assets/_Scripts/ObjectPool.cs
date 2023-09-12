@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,6 @@ public class ObjectPool : MonoBehaviour
                 return PooledObjects[i];
             }
         }
-        return null;
+        throw new NullReferenceException("Pooled Object returned null");
     }
 }
