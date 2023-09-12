@@ -29,10 +29,9 @@ public class EmojiPreState : EmojiState
 
     private void SetEmojiTextures(EmojiManager emojiManager)
     {
-        emojiManager.EmojiRenderer.material.color = Color.white;
+        emojiManager.EmojiRenderer.material.color = Color.gray;
         Texture texture = (from textureMapping in GameManager.Instance.TextureMappings where textureMapping.EEmote == emojiManager.Emote select textureMapping.Texture).FirstOrDefault();
         emojiManager.EmojiRenderer.material.mainTexture = texture;
-        //Debug.Log(Shader.PropertyToID("_EmissionMap"));
-        emojiManager.EmojiRenderer.material.SetTexture(293, texture);
+        emojiManager.EmojiRenderer.material.SetTexture(emojiManager.EmissionMap, texture);
     }
 }

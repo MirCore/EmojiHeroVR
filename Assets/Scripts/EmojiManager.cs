@@ -1,3 +1,4 @@
+using System;
 using Enums;
 using UnityEngine;
 
@@ -12,7 +13,9 @@ public class EmojiManager : MonoBehaviour
     [SerializeField] internal EEmote Emote;
     [SerializeField] internal Renderer EmojiRenderer;
     [SerializeField] internal Animator EmojiAnimator;
-    
+
+    internal readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
+
     private void OnEnable()
     {
         // starting state for the state machine
