@@ -17,8 +17,8 @@ public class REST
             Uri = BasePath + "/post",
             Body = new Post
             {
-                image = "image",
-                result = (Random.Range(0, 2) == 0)
+                Image = "image",
+                Result = (Random.Range(0, 2) == 0)
             },
             EnableDebug = false
         };
@@ -33,27 +33,28 @@ public class REST
 
     public async void FakePost(float delaySeconds)
     {
-        Post post = new Post()
+        Post post = new ()
         {
-            result = (Random.Range(0, 2) == 0)
+            Result = (Random.Range(0, 2) == 0)
         };
 
         await Task.Delay((int)(delaySeconds * 1000));
         
-        GameManager.Instance.ProcessRestResponse(post);
+        if (GameManager.Instance != null)
+            GameManager.Instance.ProcessRestResponse(post);
     }
 }
 
 [Serializable]
 public class Post
 {
-    public int id;
+    public int ID;
 
-    public string image;
+    public string Image;
     
-    public bool result;
+    public bool Result;
 
     public override string ToString(){
-        return UnityEngine.JsonUtility.ToJson (this, true);
+        return JsonUtility.ToJson (this, true);
     }
 }

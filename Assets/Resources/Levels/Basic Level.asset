@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Basic Level
   m_EditorClassIdentifier: 
   LevelMode: 0
-  Count: 10
+  Count: 2
   Time: 0

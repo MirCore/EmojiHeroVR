@@ -1,23 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Utilities;
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPool : Singleton<ObjectPool>
 {
-    public static ObjectPool Instance;
     [SerializeField] private List<GameObject> PooledObjects;
     [SerializeField] private GameObject ObjectToPool;
     [SerializeField] private int AmountToPool;
-
-    private void Awake()
-    {
-        // Create Singleton of this Class
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(this);
-    }
     
     /// <summary>
     /// Instantiate Object Pool
@@ -35,13 +26,11 @@ public class ObjectPool : MonoBehaviour
 
     public GameObject GetPooledObject()
     {
-        for(int i = 0; i < AmountToPool; i++)
+        foreach (GameObject obj in PooledObjects.Where(obj => !obj.activeInHierarchy))
         {
-            if(!PooledObjects[i].activeInHierarchy)
-            {
-                return PooledObjects[i];
-            }
+            return obj;
         }
+
         throw new NullReferenceException("Pooled Object returned null");
     }
 }

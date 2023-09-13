@@ -13,14 +13,13 @@ namespace Manager
         private GameState _gameState;
         internal readonly GamePreparingState PreparingState = new();
         internal readonly GamePlayingLevelState PlayingLevelState = new();
+        internal readonly GameLevelFinishedState levelFinishedState = new();
         
-        public EGameState GameState { get; set; }
         [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
         [field: SerializeField] public Transform ActiveAreaStartPosition { get; private set; }
         [field: SerializeField] public Transform ActiveAreaEndPosition { get; private set; }
         [field: SerializeField] public float Speed { get; private set; }
         [field: SerializeField] public float SpawnInterval { get; private set; }
-        [field: SerializeField] public bool SpawnActive { get; private set; }
         
         [field: SerializeField] public ScriptableLevel Level { get; private set; }
         private int _emojiCount;
@@ -35,8 +34,7 @@ namespace Manager
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
 
             _rest = new REST();
-            _gameState = PreparingState;
-            _gameState.EnterState();
+            SwitchState(PreparingState);
         }
 
 
@@ -61,13 +59,18 @@ namespace Manager
         private void OnEmoteExitedAreaCallback()
         {
             _emojiInActionArea = EEmote.None;
+            
+            _emojiCount++;
+            if (_emojiCount >= Level.Count && Level.LevelMode == ELevelMode.Count)
+            {        
+                SwitchState(levelFinishedState);
+            }
         }
 
         public void ProcessRestResponse(Post response)
         {
-            if (response.result)
+            if (response.Result)
             {
-                Debug.Log(response.result.ToString());
                 EventManager.InvokeEmotionDetected(_emojiInActionArea);
             }
 
@@ -77,15 +80,15 @@ namespace Manager
             }
         }
 
-        public void OnStartButtonPressed()
-        {
-            _gameState.HandleUIInput(UIType.Start);
-        }
-
         public void SwitchState(GameState state)
         {
             _gameState = state;
             _gameState.EnterState();
+        }
+
+        public void OnButtonPressed(UIType uiType)
+        {
+            _gameState.HandleUIInput(uiType);
         }
     }
 }

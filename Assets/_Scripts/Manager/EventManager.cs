@@ -19,6 +19,13 @@ namespace Manager
             OnEmotionDetected?.Invoke(emote);
         }
     
+        public delegate void EmojiFulfilled(EEmote emote);
+        public static event EmojiFulfilled OnEmojiFulfilled;
+        public static void InvokeEmojiFulfilled(EEmote emote)
+        {
+            OnEmojiFulfilled?.Invoke(emote);
+        }
+    
         public delegate void EmoteExitedArea();
         public static event EmoteExitedArea OnEmoteExitedArea;
         public static void InvokeEmoteExitedArea()
@@ -31,6 +38,20 @@ namespace Manager
         public static void InvokeLevelStarted()
         {
             OnLevelStarted?.Invoke();
+        }
+    
+        public delegate void LevelStopped();
+        public static event LevelStopped OnLevelStopped;
+        public static void InvokeLevelStopped()
+        {
+            OnLevelStopped?.Invoke();
+        }
+    
+        public delegate void LevelFinished();
+        public static event LevelFinished OnLevelFinished;
+        public static void InvokeLevelFinished()
+        {
+            OnLevelFinished?.Invoke();
         }
     }
 }

@@ -1,13 +1,15 @@
 ﻿using System;
 using Manager;
+using UnityEngine;
 
 namespace States.Game
 {
-    public class GamePlayingLevelState : GameState
+    public class GameLevelFinishedState : GameState
     {
         public override void EnterState()
         {
-            EventManager.InvokeLevelStarted();
+            EventManager.InvokeLevelFinished();
+            Time.timeScale = 0; // TODO: Lerp
         }
 
         public override void HandleUIInput(UIType uiType)
@@ -17,7 +19,6 @@ namespace States.Game
                 case UIType.Start:
                     break;
                 case UIType.Stop:
-                    GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
                     break;
                 case UIType.Pause:
                     break;

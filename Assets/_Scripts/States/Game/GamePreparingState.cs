@@ -1,7 +1,5 @@
 ﻿using System;
-using Enums;
 using Manager;
-using UnityEngine;
 
 namespace States.Game
 {
@@ -9,7 +7,7 @@ namespace States.Game
     {
         public override void EnterState()
         {
-            
+            EventManager.InvokeLevelStopped();
         }
 
         public override void HandleUIInput(UIType uiType)
@@ -18,7 +16,6 @@ namespace States.Game
             {
                 case UIType.Start:
                     GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
-                    EventManager.InvokeLevelStarted();
                     break;
                 case UIType.Stop:
                     break;
