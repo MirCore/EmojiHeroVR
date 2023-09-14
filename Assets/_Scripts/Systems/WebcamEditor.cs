@@ -8,14 +8,14 @@ namespace Systems
     internal class WebcamEditor : Editor
     {
         public List<SerializedProperty> WebcamName = new();
-        private static readonly List<GUIContent> Select = new();
+        private static readonly List<GUIContent> DropDowns = new();
 
         private void OnEnable()
         {
             foreach (SerializedProperty webcamName in serializedObject.FindProperty("WebcamName"))
             {
                 WebcamName.Add(webcamName);
-                Select.Add(new GUIContent(webcamName.stringValue));
+                DropDowns.Add(new GUIContent(webcamName.stringValue));
             }
         }
     
@@ -24,11 +24,11 @@ namespace Systems
             serializedObject.Update();
             
             WebcamName.Clear();
-            Select.Clear();
+            DropDowns.Clear();
             foreach (SerializedProperty webcamName in serializedObject.FindProperty("WebcamName"))
             {
                 WebcamName.Add(webcamName);
-                Select.Add(new GUIContent(webcamName.stringValue));
+                DropDowns.Add(new GUIContent(webcamName.stringValue));
             }
 
             for (int i = 0; i < WebcamName.Count; i++)
@@ -36,7 +36,7 @@ namespace Systems
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(("Element " + i), "");
                 Rect rect = EditorGUILayout.GetControlRect();
-                if (EditorGUI.DropdownButton(rect, Select[i], FocusType.Keyboard))
+                if (EditorGUI.DropdownButton(rect, DropDowns[i], FocusType.Keyboard))
                     ShowDeviceSelector(rect, i);
                 EditorGUILayout.EndHorizontal();
             }
@@ -63,7 +63,7 @@ namespace Systems
         {
             serializedObject.Update();
             WebcamName[i].stringValue = deviceName;
-            Select[i].text = deviceName;
+            DropDowns[i].text = deviceName;
             serializedObject.ApplyModifiedProperties();
         }
     }

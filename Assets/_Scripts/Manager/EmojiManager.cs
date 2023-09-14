@@ -34,7 +34,7 @@ namespace Manager
 
         private void Update()
         {
-            transform.position -= new Vector3(0,0,GameManager.Instance.Speed * Time.deltaTime);
+            transform.position -= new Vector3(0,0,GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
 
             if (transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
             {

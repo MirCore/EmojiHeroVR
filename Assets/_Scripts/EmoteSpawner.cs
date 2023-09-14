@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Enums;
 using Manager;
+using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,6 +14,8 @@ public class EmoteSpawner : MonoBehaviour
     private bool _spawnActive = false;
     private int _count;
     private float _startTime;
+
+    private ScriptableLevel _level;
     
     void OnEnable()
     {
@@ -28,6 +31,7 @@ public class EmoteSpawner : MonoBehaviour
 
     private void OnLevelStartedCallback()
     {
+        _level = GameManager.Instance.Level;
         _spawnActive = true;
         _startTime = Time.time;
         SpawnEmote();
@@ -53,20 +57,20 @@ public class EmoteSpawner : MonoBehaviour
             if (CheckLevelEnded())
                 StopSpawning();
 
-            await Task.Delay((int)(GameManager.Instance.SpawnInterval * 1000));
+            await Task.Delay((int)(_level.EmojiSpawnInterval * 1000));
         }
     }
 
     private bool CheckLevelEnded()
     {
-        switch (GameManager.Instance.Level.LevelMode)
+        switch (_level.LevelMode)
         {
             case ELevelMode.Count:
-                if (_count >= GameManager.Instance.Level.Count)
+                if (_count >= _level.Count)
                     return true;
                 break;
             case ELevelMode.Time:
-                if (Time.time - _startTime >= GameManager.Instance.Level.Time)
+                if (Time.time - _startTime >= _level.Time)
                     return true;
                 break;
             default:

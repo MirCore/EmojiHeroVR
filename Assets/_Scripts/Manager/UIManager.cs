@@ -1,6 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Scriptables;
+using States.Game;
+using Systems;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Manager
 {
@@ -9,13 +15,18 @@ namespace Manager
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
         [SerializeField] private GameObject LevelFinishedUI;
+        [SerializeField] private GameObject LevelPrefab;
+        [SerializeField] private GameObject LevelUI;
         
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnLevelFinished += OnOnLevelFinishedCallback;
+
+            LoadLevelUI();
         }
+
 
         private void OnDisable()
         {
@@ -23,6 +34,33 @@ namespace Manager
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnLevelFinished -= OnOnLevelFinishedCallback;
         }
+        
+        private void LoadLevelUI()
+        {
+            Dictionary<ScriptableLevel, GameObject> uis = new ();
+            foreach (ScriptableLevel level in ResourceSystem.Instance.GetLevels)
+            {
+                GameObject ui = Instantiate(LevelPrefab, LevelUI.transform);
+                uis.Add(level, ui);
+            }
+
+            int id = 0;
+
+            foreach ((ScriptableLevel scriptableLevel, GameObject uiGameObject) in uis)
+            {
+                TMP_Text[] texts = uiGameObject.GetComponentsInChildren<TMP_Text>();
+                Button button = uiGameObject.GetComponent<Button>();
+                button.onClick.AddListener(() => OnLevelButtonClicked(scriptableLevel));
+                
+                texts[0].text = "#" + id;
+                texts[1].text = scriptableLevel.Name;
+                texts[2].text = scriptableLevel.Count + "<sprite index=0>";
+                texts[3].text = 60 / scriptableLevel.EmojiMovementSpeed + "<sprite index=0>/m";
+
+                id++;
+            }
+        }
+
 
         private void OnLevelStartedCallback()
         {
@@ -48,6 +86,10 @@ namespace Manager
         public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Start);
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Pause);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Stop);
+        private static void OnLevelButtonClicked(ScriptableLevel level)
+        {
+            GameManager.Instance.OnButtonPressed(level);
+        }
         
     }
 }

@@ -13,15 +13,11 @@ namespace Manager
         private GameState _gameState;
         internal readonly GamePreparingState PreparingState = new();
         internal readonly GamePlayingLevelState PlayingLevelState = new();
-        internal readonly GameLevelFinishedState levelFinishedState = new();
+        internal readonly GameLevelFinishedState LevelFinishedState = new();
         
         [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
-        [field: SerializeField] public Transform ActiveAreaStartPosition { get; private set; }
-        [field: SerializeField] public Transform ActiveAreaEndPosition { get; private set; }
-        [field: SerializeField] public float Speed { get; private set; }
-        [field: SerializeField] public float SpawnInterval { get; private set; }
         
-        [field: SerializeField] public ScriptableLevel Level { get; private set; }
+        [field: SerializeField] public ScriptableLevel Level { get; internal set; }
         private int _emojiCount;
 
         private REST _rest;
@@ -63,7 +59,7 @@ namespace Manager
             _emojiCount++;
             if (_emojiCount >= Level.Count && Level.LevelMode == ELevelMode.Count)
             {        
-                SwitchState(levelFinishedState);
+                SwitchState(LevelFinishedState);
             }
         }
 
@@ -89,6 +85,11 @@ namespace Manager
         public void OnButtonPressed(UIType uiType)
         {
             _gameState.HandleUIInput(uiType);
+        }
+        
+        public void OnButtonPressed(ScriptableLevel level)
+        {
+            _gameState.HandleUIInput(level);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Manager;
+using Scriptables;
 
 namespace States.Game
 {
@@ -25,6 +26,11 @@ namespace States.Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
             }
+        }
+
+        public override void HandleUIInput(ScriptableLevel level)
+        {
+            
         }
     }
 }

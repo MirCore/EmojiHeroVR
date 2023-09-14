@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796fa210a659415dbee9cccb0e9ca6fa, type: 3}
   m_Name: Basic Level
   m_EditorClassIdentifier: 
-  LevelMode: 0
-  Count: 2
-  Time: 0
+  <Name>k__BackingField: Basic Level
+  <LevelMode>k__BackingField: 0
+  <EmojiMovementSpeed>k__BackingField: 2
+  <EmojiSpawnInterval>k__BackingField: 2
+  <Count>k__BackingField: 2
+  <Time>k__BackingField: 0

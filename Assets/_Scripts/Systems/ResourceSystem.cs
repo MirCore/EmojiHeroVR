@@ -9,21 +9,40 @@ namespace Systems
 {
     public class ResourceSystem : Singleton<ResourceSystem>
     {
-        private List<ScriptableEmoji> Emojis { get; set; }
-        private Dictionary<EEmote, ScriptableEmoji> _emojiDict;
-    
         protected override void Awake()
         {
             base.Awake();
-            AssembleResources();
+            AssembleEmojiResources();
+            AssembleLevelResources();
         }
+        
+        #region Emoji ScriptableObjects
 
-        private void AssembleResources()
+        private List<ScriptableEmoji> _emojis;
+        private Dictionary<EEmote, ScriptableEmoji> _emojiDict;
+    
+        private void AssembleEmojiResources()
         {
-            Emojis = Resources.LoadAll<ScriptableEmoji>("Emojis").ToList();
-            _emojiDict = Emojis.ToDictionary(r => r.EEmote, r => r);
+            _emojis = Resources.LoadAll<ScriptableEmoji>("Emojis").ToList();
+            _emojiDict = _emojis.ToDictionary(r => r.EEmote, r => r);
         }
 
         public ScriptableEmoji GetEmoji(EEmote t) => _emojiDict[t];
+        
+        #endregion
+        
+        
+        #region Level ScriptableObjects
+
+        private List<ScriptableLevel> _levels;
+    
+        private void AssembleLevelResources()
+        {
+            _levels = Resources.LoadAll<ScriptableLevel>("Levels").ToList();
+        }
+
+        public List<ScriptableLevel> GetLevels => _levels;
+        
+        #endregion
     }
 }
