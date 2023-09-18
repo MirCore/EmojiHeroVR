@@ -19,11 +19,11 @@ namespace Manager
             OnEmotionDetected?.Invoke(emote);
         }
     
-        public delegate void EmojiFulfilled(EEmote emote);
+        public delegate void EmojiFulfilled(EEmote emote, float score);
         public static event EmojiFulfilled OnEmojiFulfilled;
-        public static void InvokeEmojiFulfilled(EEmote emote)
+        public static void InvokeEmojiFulfilled(EEmote emote, float score)
         {
-            OnEmojiFulfilled?.Invoke(emote);
+            OnEmojiFulfilled?.Invoke(emote, score);
         }
     
         public delegate void EmoteExitedArea();

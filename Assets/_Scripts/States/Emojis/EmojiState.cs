@@ -7,6 +7,8 @@ namespace States.Emojis
     {
         public abstract void EnterState(EmojiManager emojiManager);
 
+        public abstract void Update(EmojiManager emojiManager);
+
         public abstract void OnTriggerEnter(EmojiManager emojiManager);
     
         public abstract void OnTriggerExit(EmojiManager emojiManager);

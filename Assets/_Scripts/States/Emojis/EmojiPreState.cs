@@ -15,6 +15,11 @@ namespace States.Emojis
             SetEmojiTextures(emojiManager);
         }
 
+        public override void Update(EmojiManager emojiManager)
+        {
+            
+        }
+
         public override void OnTriggerEnter(EmojiManager emojiManager)
         {
             emojiManager.SwitchState(emojiManager.IntraState);

@@ -1,5 +1,7 @@
-﻿using Enums;
+﻿using System;
+using Enums;
 using Manager;
+using UnityEngine;
 
 namespace States.Emojis
 {
@@ -8,6 +10,12 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             EventManager.InvokeEmoteEnteredArea(emojiManager.Emote);
+            emojiManager.ActiveAreaLeft = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z/GameManager.Instance.Level.EmojiMovementSpeed;
+        }
+
+        public override void Update(EmojiManager emojiManager)
+        {
+            emojiManager.ActiveAreaLeft -= Time.deltaTime;
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)

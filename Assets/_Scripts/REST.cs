@@ -31,11 +31,12 @@ public class REST
             .Catch(error => Debug.Log("Error: " + error.Message));
     }
 
-    public async void FakePost(float delaySeconds)
+    public static async void FakePost(string image, float delaySeconds)
     {
         Post post = new ()
         {
             Result = (Random.Range(0, 2) == 0)
+            //Result = false
         };
 
         await Task.Delay((int)(delaySeconds * 1000));

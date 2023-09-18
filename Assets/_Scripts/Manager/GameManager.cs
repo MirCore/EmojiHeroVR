@@ -16,28 +16,34 @@ namespace Manager
         internal readonly GameLevelFinishedState LevelFinishedState = new();
         
         [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
+        [field: SerializeField] public GameObject ActionArea { get; private set; }
         
         [field: SerializeField] public ScriptableLevel Level { get; internal set; }
         private int _emojiCount;
+        public int LevelEmojiProgress { get; private set; }
+        public int LevelScore { get; private set; }
 
         private REST _rest;
 
         private EEmote _emojiInActionArea;
 
+        [SerializeField] private Webcam Webcam;
+
         private void Start()
         {
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+            EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
 
             _rest = new REST();
             SwitchState(PreparingState);
         }
 
-
         private void OnDestroy()
         {
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+            EventManager.OnEmojiFulfilled -= OnEmojiFulfilledCallback;
         }
 
         private void OnEmoteEnteredAreaCallback(EEmote emote)
@@ -49,7 +55,14 @@ namespace Manager
         private void SendRestImage()
         {
             //_rest.Post();
-            _rest.FakePost(Random.Range(0.1f,0.7f));
+            string image = Webcam.GetWebcamImage();
+            REST.FakePost(image, Random.Range(0.1f,0.7f));
+        }
+        
+        private void OnEmojiFulfilledCallback(EEmote emote, float score)
+        {
+            LevelEmojiProgress++;
+            LevelScore += (int)(score * 100);
         }
 
         private void OnEmoteExitedAreaCallback()

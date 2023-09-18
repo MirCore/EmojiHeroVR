@@ -10,7 +10,12 @@ namespace States.Emojis
         {
             emojiManager.EmojiRenderer.material.color = Color.green;
             emojiManager.EmojiAnimator.Play("EmojiSuccess");
-            EventManager.InvokeEmojiFulfilled(emojiManager.Emote);
+            EventManager.InvokeEmojiFulfilled(emojiManager.Emote, emojiManager.ActiveAreaLeft);
+        }
+
+        public override void Update(EmojiManager emojiManager)
+        {
+            
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)

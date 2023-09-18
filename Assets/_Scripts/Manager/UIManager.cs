@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Scriptables;
-using States.Game;
 using Systems;
 using TMPro;
 using UnityEngine;
@@ -14,9 +12,14 @@ namespace Manager
     {
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
-        [SerializeField] private GameObject LevelFinishedUI;
+        [SerializeField] private GameObject LevelEndScreenUI;
         [SerializeField] private GameObject LevelPrefab;
         [SerializeField] private GameObject LevelUI;
+
+        [Header("Endgame UI")]
+        [SerializeField] private TMP_Text LevelNameField;
+        [SerializeField] private TMP_Text ResultField;
+        [SerializeField] private TMP_Text ScoreField;
         
         private void Awake()
         {
@@ -61,26 +64,34 @@ namespace Manager
             }
         }
 
+        private void LoadEndScreenUI()
+        {
+            LevelNameField.text = GameManager.Instance.Level.Name;
+            ResultField.text = GameManager.Instance.LevelEmojiProgress + "/" + GameManager.Instance.Level.Count;
+            ScoreField.text = GameManager.Instance.LevelScore.ToString();
+        }
+
 
         private void OnLevelStartedCallback()
         {
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
-            LevelFinishedUI.SetActive(false);
+            LevelEndScreenUI.SetActive(false);
         }
         
         private void OnLevelStoppedCallback()
         {
             LevelPlayingUI.SetActive(false);
             PreparingUI.SetActive(true);
-            LevelFinishedUI.SetActive(false);
+            LevelEndScreenUI.SetActive(false);
         }
         
         private void OnOnLevelFinishedCallback()
         {
             LevelPlayingUI.SetActive(false);
             PreparingUI.SetActive(false);
-            LevelFinishedUI.SetActive(true);
+            LevelEndScreenUI.SetActive(true);
+            LoadEndScreenUI();
         }
 
         public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Start);

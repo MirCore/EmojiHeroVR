@@ -17,6 +17,7 @@ namespace Manager
         [SerializeField] internal Animator EmojiAnimator;
 
         internal readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
+        internal float ActiveAreaLeft;
 
         private void OnEnable()
         {
@@ -34,6 +35,7 @@ namespace Manager
 
         private void Update()
         {
+            _emojiState.Update(this);
             transform.position -= new Vector3(0,0,GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
 
             if (transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)

@@ -13,6 +13,11 @@ namespace States.Emojis
             emojiManager.EmojiAnimator.Play("EmojiFail");
         }
 
+        public override void Update(EmojiManager emojiManager)
+        {
+            
+        }
+
         public override void OnTriggerEnter(EmojiManager emojiManager)
         {
             throw new System.NotImplementedException();
