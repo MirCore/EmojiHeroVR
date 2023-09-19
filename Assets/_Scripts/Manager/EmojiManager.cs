@@ -1,6 +1,8 @@
+using System.Collections;
 using Enums;
 using States.Emojis;
 using UnityEngine;
+using Utilities;
 
 namespace Manager
 {
@@ -11,19 +13,25 @@ namespace Manager
         internal readonly EmojiIntraState IntraState = new ();
         internal readonly EmojiFulfilledState FulfilledState = new ();
         internal readonly EmojiFailedState FailedState = new ();
+        internal readonly EmojiLeavingState LeavingState = new();
     
         [SerializeField] internal EEmote Emote;
-        [SerializeField] internal Renderer EmojiRenderer;
+        [SerializeField] private Renderer EmojiRenderer;
         [SerializeField] internal Animator EmojiAnimator;
 
-        internal readonly int EmissionMap = Shader.PropertyToID("_EmissionMap");
+        internal Material EmojiMaterial;
+        internal readonly int Sprite = Shader.PropertyToID("_Sprite");
+        internal readonly int DissolveAmount = Shader.PropertyToID("_DissolveAmount");
+        internal readonly int FailedColorAmount = Shader.PropertyToID("_FailedColorAmount");
+        internal readonly int SuccessColorAmount = Shader.PropertyToID("_SuccessColorAmount");
         internal float ActiveAreaLeft;
 
         private void OnEnable()
         {
+            EmojiMaterial = EmojiRenderer.material;
+            
             // starting state for the state machine
-            _emojiState = PreState;
-            _emojiState.EnterState(this);
+            SwitchState(PreState);
         
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
         }
@@ -37,11 +45,6 @@ namespace Manager
         {
             _emojiState.Update(this);
             transform.position -= new Vector3(0,0,GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
-
-            if (transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
-            {
-                DeactivateEmoji();
-            }
         }
 
         internal void SwitchState(EmojiState state)
@@ -69,5 +72,11 @@ namespace Manager
         {
             _emojiState.OnTriggerExit(this);
         }
+
+        public void FadeOut()
+        {
+            StartCoroutine(MathHelper.SLerp(0, 1, 1, EmojiRenderer.material, DissolveAmount));
+        }
+
     }
 }

@@ -8,14 +8,17 @@ namespace States.Emojis
     {
         public override void EnterState(EmojiManager emojiManager)
         {
-            emojiManager.EmojiRenderer.material.color = Color.red;
+            emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
             EventManager.InvokeEmoteExitedArea();
             emojiManager.EmojiAnimator.Play("EmojiFail");
         }
 
         public override void Update(EmojiManager emojiManager)
         {
-            
+            if (emojiManager.transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
+            {
+                emojiManager.SwitchState(emojiManager.LeavingState);
+            }
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)

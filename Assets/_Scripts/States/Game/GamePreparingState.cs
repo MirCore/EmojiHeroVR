@@ -1,6 +1,7 @@
 ﻿using System;
 using Manager;
 using Scriptables;
+using UnityEngine;
 
 namespace States.Game
 {
@@ -8,6 +9,7 @@ namespace States.Game
     {
         public override void EnterState()
         {
+            Time.timeScale = 1;
             EventManager.InvokeLevelStopped();
         }
 
@@ -15,12 +17,12 @@ namespace States.Game
         {
             switch (uiType)
             {
-                case UIType.Start:
+                case UIType.StartLevel:
                     GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
                     break;
-                case UIType.Stop:
+                case UIType.StopLevel:
                     break;
-                case UIType.Pause:
+                case UIType.PauseLevel:
                     break;
                 case UIType.Default:
                 default:

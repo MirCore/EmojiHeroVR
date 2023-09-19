@@ -37,10 +37,11 @@ namespace States.Emojis
 
         private void SetEmojiTextures(EmojiManager emojiManager)
         {
-            emojiManager.EmojiRenderer.material.color = Color.gray;
             Texture texture = ResourceSystem.Instance.GetEmoji(emojiManager.Emote).Texture;
-            emojiManager.EmojiRenderer.material.mainTexture = texture;
-            emojiManager.EmojiRenderer.material.SetTexture(emojiManager.EmissionMap, texture);
+            emojiManager.EmojiMaterial.SetTexture(emojiManager.Sprite, texture);
+            emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0);
+            emojiManager.EmojiMaterial.SetFloat(emojiManager.SuccessColorAmount, 0);
+            emojiManager.EmojiMaterial.SetFloat(emojiManager.DissolveAmount, 0);
         }
     }
 }

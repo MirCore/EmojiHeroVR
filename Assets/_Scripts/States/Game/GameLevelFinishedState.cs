@@ -1,7 +1,6 @@
 ﻿using System;
 using Manager;
 using Scriptables;
-using UnityEngine;
 
 namespace States.Game
 {
@@ -10,18 +9,22 @@ namespace States.Game
         public override void EnterState()
         {
             EventManager.InvokeLevelFinished();
-            Time.timeScale = 0; // TODO: Lerp
+            GameManager.Instance.StopTimeScale();
+            GameManager.Instance.ResetLevelState();
         }
 
         public override void HandleUIInput(UIType uiType)
         {
             switch (uiType)
             {
-                case UIType.Start:
+                case UIType.StartLevel:
                     break;
-                case UIType.Stop:
+                case UIType.StopLevel:
                     break;
-                case UIType.Pause:
+                case UIType.PauseLevel:
+                    break;
+                case UIType.ContinueEndScreen:
+                    GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
                     break;
                 case UIType.Default:
                 default:

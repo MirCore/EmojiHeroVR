@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Manager;
 using UnityEngine;
-using UnityEngine.Profiling;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
@@ -22,6 +21,8 @@ public class Webcam : MonoBehaviour
 
     private void Start()
     {
+        if (GameManager.Instance.ActivateWebcams == false)
+            return;
         // Initialize webcams and set up RawImages to display their feed
         foreach (string webcamName in WebcamName)
         {

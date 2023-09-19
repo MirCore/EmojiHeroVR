@@ -94,9 +94,10 @@ namespace Manager
             LoadEndScreenUI();
         }
 
-        public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Start);
-        public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Pause);
-        public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.Stop);
+        public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
+        public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
+        public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
+        public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
         private static void OnLevelButtonClicked(ScriptableLevel level)
         {
             GameManager.Instance.OnButtonPressed(level);
@@ -109,7 +110,8 @@ namespace Manager
 public enum UIType
 {
     Default,
-    Start,
-    Stop,
-    Pause
+    StartLevel,
+    StopLevel,
+    PauseLevel,
+    ContinueEndScreen
 } 

@@ -1,4 +1,3 @@
-using System;
 using Enums;
 using Scriptables;
 using States.Game;
@@ -10,24 +9,28 @@ namespace Manager
 {
     public class GameManager : Singleton<GameManager>
     {
-        private GameState _gameState;
-        internal readonly GamePreparingState PreparingState = new();
-        internal readonly GamePlayingLevelState PlayingLevelState = new();
-        internal readonly GameLevelFinishedState LevelFinishedState = new();
+        [Header("States")]
+            private GameState _gameState;
+            internal readonly GamePreparingState PreparingState = new();
+            internal readonly GamePlayingLevelState PlayingLevelState = new();
+            internal readonly GameLevelFinishedState LevelFinishedState = new();
         
-        [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
-        [field: SerializeField] public GameObject ActionArea { get; private set; }
+        [field: Header("Level Setup GameObjects")]
+            [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
+            [field: SerializeField] public GameObject ActionArea { get; private set; }
         
-        [field: SerializeField] public ScriptableLevel Level { get; internal set; }
-        private int _emojiCount;
-        public int LevelEmojiProgress { get; private set; }
-        public int LevelScore { get; private set; }
+        [field: Header("Selected Level")]
+            [field: SerializeField] public ScriptableLevel Level { get; internal set; }
 
-        private REST _rest;
-
-        private EEmote _emojiInActionArea;
-
-        [SerializeField] private Webcam Webcam;
+        [Header("Level Progress")]
+            private int _emojiCount;
+            public int LevelEmojiProgress { get; private set; }
+            public int LevelScore { get; private set; }
+            private EEmote _emojiInActionArea;
+        
+        [Header("Webcams")]
+            [SerializeField] private Webcam Webcam;
+            [field: SerializeField] public bool ActivateWebcams { get; private set; }
 
         private void Start()
         {
@@ -35,7 +38,6 @@ namespace Manager
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
             EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
 
-            _rest = new REST();
             SwitchState(PreparingState);
         }
 
@@ -54,15 +56,17 @@ namespace Manager
 
         private void SendRestImage()
         {
-            //_rest.Post();
-            string image = Webcam.GetWebcamImage();
+            string image = "";
+            //Rest.Post();
+            if (ActivateWebcams)
+                image = Webcam.GetWebcamImage();
             REST.FakePost(image, Random.Range(0.1f,0.7f));
         }
         
         private void OnEmojiFulfilledCallback(EEmote emote, float score)
         {
             LevelEmojiProgress++;
-            LevelScore += (int)(score * 100);
+            LevelScore += 50 + (int)(score * 100);
         }
 
         private void OnEmoteExitedAreaCallback()
@@ -95,14 +99,17 @@ namespace Manager
             _gameState.EnterState();
         }
 
-        public void OnButtonPressed(UIType uiType)
-        {
-            _gameState.HandleUIInput(uiType);
-        }
+        public void OnButtonPressed(UIType uiType) => _gameState.HandleUIInput(uiType);
         
-        public void OnButtonPressed(ScriptableLevel level)
+        public void OnButtonPressed(ScriptableLevel level) => _gameState.HandleUIInput(level);
+        
+        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1,0,1f));
+
+        public void ResetLevelState()
         {
-            _gameState.HandleUIInput(level);
+            _emojiCount = 0;
+            LevelEmojiProgress = 0;
+            LevelScore = 0;
         }
     }
 }

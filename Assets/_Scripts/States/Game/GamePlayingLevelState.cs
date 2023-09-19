@@ -15,12 +15,12 @@ namespace States.Game
         {
             switch (uiType)
             {
-                case UIType.Start:
+                case UIType.StartLevel:
                     break;
-                case UIType.Stop:
+                case UIType.StopLevel:
                     GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
                     break;
-                case UIType.Pause:
+                case UIType.PauseLevel:
                     break;
                 case UIType.Default:
                 default:

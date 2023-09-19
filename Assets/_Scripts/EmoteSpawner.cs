@@ -33,6 +33,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         _level = GameManager.Instance.Level;
         _spawnActive = true;
+        _count = 0;
         _startTime = Time.time;
         SpawnEmote();
     }

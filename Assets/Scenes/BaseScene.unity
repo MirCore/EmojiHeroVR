@@ -1262,6 +1262,7 @@ MonoBehaviour:
   <ActionArea>k__BackingField: {fileID: 131909669}
   <Level>k__BackingField: {fileID: 11400000, guid: 958a575a1d4f5c14b9489c2eff54c18d, type: 2}
   Webcam: {fileID: 1522153667}
+  <ActivateWebcams>k__BackingField: 0
 --- !u!1 &250305629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1947,7 +1948,7 @@ PrefabInstance:
       objectReference: {fileID: 1167101763}
     - target: {fileID: 5989132216876484316, guid: 8c1cc75555b76494ebcd6945534a3b38, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnStopButtonPressed
+      value: OnEndScreenButtonPressed
       objectReference: {fileID: 0}
     - target: {fileID: 5989132216876484316, guid: 8c1cc75555b76494ebcd6945534a3b38, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -4839,7 +4840,7 @@ Transform:
   m_GameObject: {fileID: 1277865295}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.22, z: -5}
+  m_LocalPosition: {x: 0, y: 0.22, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
