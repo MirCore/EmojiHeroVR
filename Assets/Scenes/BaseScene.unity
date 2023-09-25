@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.2848648, g: 0.54283285, b: 0.71795, a: 1}
+  m_IndirectSpecularColor: {r: 0.284865, g: 0.5428333, b: 0.7179513, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1209,6 +1209,7 @@ GameObject:
   - component: {fileID: 235804609}
   - component: {fileID: 235804610}
   - component: {fileID: 235804608}
+  - component: {fileID: 235804611}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1263,6 +1264,18 @@ MonoBehaviour:
   <Level>k__BackingField: {fileID: 11400000, guid: 958a575a1d4f5c14b9489c2eff54c18d, type: 2}
   Webcam: {fileID: 1522153667}
   <ActivateWebcams>k__BackingField: 0
+--- !u!114 &235804611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235804607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23d4246d7dfcdcd4fbbe168f1aac7c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &250305629
 GameObject:
   m_ObjectHideFlags: 0

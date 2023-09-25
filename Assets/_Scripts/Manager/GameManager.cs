@@ -1,6 +1,7 @@
 using Enums;
 using Scriptables;
 using States.Game;
+using Systems;
 using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
@@ -26,7 +27,7 @@ namespace Manager
             private int _emojiCount;
             public int LevelEmojiProgress { get; private set; }
             public int LevelScore { get; private set; }
-            private EEmote _emojiInActionArea;
+            public EEmote EmojiInActionArea { get; private set; }
         
         [Header("Webcams")]
             [SerializeField] private Webcam Webcam;
@@ -50,7 +51,7 @@ namespace Manager
 
         private void OnEmoteEnteredAreaCallback(EEmote emote)
         {
-            _emojiInActionArea = emote;
+            EmojiInActionArea = emote;
             SendRestImage();
         }
 
@@ -71,7 +72,7 @@ namespace Manager
 
         private void OnEmoteExitedAreaCallback()
         {
-            _emojiInActionArea = EEmote.None;
+            EmojiInActionArea = EEmote.None;
             
             _emojiCount++;
             if (_emojiCount >= Level.Count && Level.LevelMode == ELevelMode.Count)
@@ -80,14 +81,16 @@ namespace Manager
             }
         }
 
-        public void ProcessRestResponse(Post response)
+        public void ProcessRestResponse(RestPost response)
         {
+            LoggingSystem.Instance.WriteLog(response);
+            
             if (response.Result)
             {
-                EventManager.InvokeEmotionDetected(_emojiInActionArea);
+                EventManager.InvokeEmotionDetected(EmojiInActionArea);
             }
 
-            if (_emojiInActionArea != EEmote.None)
+            if (EmojiInActionArea != EEmote.None)
             {
                 SendRestImage();
             }

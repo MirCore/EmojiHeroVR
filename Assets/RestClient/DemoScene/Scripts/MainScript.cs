@@ -25,8 +25,8 @@ public class MainScript : MonoBehaviour {
 
 		RequestHelper requestOptions = null;
 
-		RestClient.GetArray<Post>(basePath + "/posts").Then(res => {
-			this.LogMessage("Posts", JsonHelper.ArrayToJsonString<Post>(res, true));
+		RestClient.GetArray<RestPost>(basePath + "/posts").Then(res => {
+			this.LogMessage("Posts", JsonHelper.ArrayToJsonString<RestPost>(res, true));
 			return RestClient.GetArray<Todo>(basePath + "/todos");
 		}).Then(res => {
 			this.LogMessage("Todos", JsonHelper.ArrayToJsonString<Todo>(res, true));
@@ -71,7 +71,7 @@ public class MainScript : MonoBehaviour {
 			},
 			EnableDebug = true
 		};
-		RestClient.Post<Post>(currentRequest)
+		RestClient.Post<RestPost>(currentRequest)
 		.Then(res => {
 
 			// And later we can clear the default query string params for all requests
@@ -97,7 +97,7 @@ public class MainScript : MonoBehaviour {
 				Debug.Log (string.Format ("Retry #{0} Status {1}\nError: {2}", retries, err.StatusCode, err));
 			}
 		};
-		RestClient.Put<Post>(currentRequest, (err, res, body) => {
+		RestClient.Put<RestPost>(currentRequest, (err, res, body) => {
 			if (err != null){
 				this.LogMessage("Error", err.Message);
 			}

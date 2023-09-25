@@ -15,7 +15,7 @@ public class REST
         _currentRequest = new RequestHelper
         {
             Uri = BasePath + "/post",
-            Body = new Post
+            Body = new RestPost
             {
                 Image = "image",
                 Result = (Random.Range(0, 2) == 0)
@@ -23,7 +23,7 @@ public class REST
             EnableDebug = false
         };
         
-        RestClient.Post<Post>(_currentRequest)
+        RestClient.Post<RestPost>(_currentRequest)
             .Then(response =>
             {
                 GameManager.Instance.ProcessRestResponse(response);
@@ -33,7 +33,7 @@ public class REST
 
     public static async void FakePost(string image, float delaySeconds)
     {
-        Post post = new ()
+        RestPost restPost = new ()
         {
             Result = (Random.Range(0, 2) == 0)
             //Result = false
@@ -42,12 +42,12 @@ public class REST
         await Task.Delay((int)(delaySeconds * 1000));
         
         if (GameManager.Instance != null)
-            GameManager.Instance.ProcessRestResponse(post);
+            GameManager.Instance.ProcessRestResponse(restPost);
     }
 }
 
 [Serializable]
-public class Post
+public class RestPost
 {
     public int ID;
 
