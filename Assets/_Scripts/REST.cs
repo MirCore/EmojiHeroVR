@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Manager;
 using Proyecto26;
@@ -41,8 +42,19 @@ public class REST
 
         await Task.Delay((int)(delaySeconds * 1000));
         
-        if (GameManager.Instance != null)
-            GameManager.Instance.ProcessRestResponse(restPost);
+        GameManager.Instance.ProcessRestResponse(restPost);
+    }
+    
+    public static IEnumerator FakePostCoroutine(string image, float delaySeconds)
+    {
+        RestPost restPost = new RestPost()
+        {
+            Result = (Random.Range(0, 2) == 0)
+        };
+
+        yield return new WaitForSeconds(delaySeconds);
+
+        GameManager.Instance.ProcessRestResponse(restPost);
     }
 }
 

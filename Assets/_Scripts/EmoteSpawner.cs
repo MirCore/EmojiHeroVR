@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using Enums;
 using Manager;
@@ -35,7 +36,8 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = true;
         _count = 0;
         _startTime = Time.time;
-        SpawnEmote();
+        //SpawnEmote();
+        StartCoroutine(SpawnEmoteCoroutine());
     }
 
     private void OnLevelStoppedCallback()
@@ -54,11 +56,29 @@ public class EmoteSpawner : MonoBehaviour
             emote.transform.position = transform.position + new Vector3(xPos,0,0);
             emote.SetActive(true);
             _count++;
-            
             if (CheckLevelEnded())
                 StopSpawning();
 
             await Task.Delay((int)(_level.EmojiSpawnInterval * 1000));
+        }
+    }
+    
+    private IEnumerator SpawnEmoteCoroutine()
+    {
+        while (_spawnActive)
+        {
+            GameObject emote = ObjectPool.Instance.GetPooledObject();
+        
+            int lane = Random.Range(0, Lanes);
+            float xPos = (lane - (float)(Lanes - 1) / 2) * XWidth;
+            emote.transform.position = transform.position + new Vector3(xPos, 0, 0);
+            emote.SetActive(true);
+            _count++;
+
+            if (CheckLevelEnded())
+                StopSpawning();
+
+            yield return new WaitForSeconds(_level.EmojiSpawnInterval);
         }
     }
 

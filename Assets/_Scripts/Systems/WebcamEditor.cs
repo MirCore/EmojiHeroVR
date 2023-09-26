@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace Systems
 {
     [CustomEditor(typeof(Webcam))]
@@ -68,3 +69,4 @@ namespace Systems
         }
     }
 }
+#endif

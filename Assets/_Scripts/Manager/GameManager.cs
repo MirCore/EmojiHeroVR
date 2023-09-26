@@ -61,7 +61,8 @@ namespace Manager
             //Rest.Post();
             if (ActivateWebcams)
                 image = Webcam.GetWebcamImage();
-            REST.FakePost(image, Random.Range(0.1f,0.7f));
+            //REST.FakePost(image, Random.Range(0.1f,0.7f));
+            StartCoroutine(REST.FakePostCoroutine(image, Random.Range(0.1f,0.7f)));
         }
         
         private void OnEmojiFulfilledCallback(EEmote emote, float score)

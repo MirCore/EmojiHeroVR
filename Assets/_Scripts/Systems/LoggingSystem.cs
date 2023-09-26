@@ -23,10 +23,6 @@ namespace Systems
             
             // Combine the specified path with the application's data path
             _dirPath = Path.Combine(Application.dataPath + RelativePath);
-            
-            // Create the directory if it doesn't exist
-            if(!Directory.Exists(_dirPath)) 
-                Directory.CreateDirectory(_dirPath);
 
             CreateCsvHeaders();
         }

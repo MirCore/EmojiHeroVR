@@ -10,7 +10,7 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             EventManager.InvokeEmoteEnteredArea(emojiManager.Emote);
-            emojiManager.ActiveAreaLeft = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z/GameManager.Instance.Level.EmojiMovementSpeed;
+            emojiManager.ActiveAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.EmojiMovementSpeed;
         }
 
         public override void Update(EmojiManager emojiManager)

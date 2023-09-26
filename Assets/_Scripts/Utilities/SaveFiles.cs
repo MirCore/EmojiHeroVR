@@ -12,7 +12,9 @@ namespace Utilities
         /// </summary>
         public static void SaveFile(string path, string fileName, byte[] bytes)
         {
+#if UNITY_EDITOR
             SaveFileInternal(path, fileName, async filePath => await WriteFile(bytes, filePath));
+#endif
         }
 
         /// <summary>
@@ -20,7 +22,9 @@ namespace Utilities
         /// </summary>
         public static void SaveFile(string path, string fileName, string base64)
         {
+#if UNITY_EDITOR
             SaveFileInternal(path, fileName, async filePath => await WriteFile(base64, filePath));
+#endif
         }
 
         /// <summary>
@@ -71,8 +75,13 @@ namespace Utilities
         /// <param name="data">An array of data to append as a CSV line.</param>
         public static void AppendLineToCsv(string dirPath, string fileName, string[] data)
         {
+#if UNITY_EDITOR
             // Combine the directory path and file name to get the full file path
             string filePath = Path.Combine(dirPath, fileName);
+            
+            // Create the directory if it doesn't exist
+            if(!Directory.Exists(dirPath)) 
+                Directory.CreateDirectory(dirPath);
             
             try
             {
@@ -90,6 +99,7 @@ namespace Utilities
                 Console.WriteLine($"Failed to append data to CSV file {fileName}: {e}");
                 throw;
             }
+#endif
         }
         
     }

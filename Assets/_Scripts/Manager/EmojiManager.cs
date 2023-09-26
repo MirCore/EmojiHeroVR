@@ -25,10 +25,12 @@ namespace Manager
         internal readonly int FailedColorAmount = Shader.PropertyToID("_FailedColorAmount");
         internal readonly int SuccessColorAmount = Shader.PropertyToID("_SuccessColorAmount");
         internal float ActiveAreaLeft;
+        internal float ActionAreaSize;
 
         private void OnEnable()
         {
             EmojiMaterial = EmojiRenderer.material;
+            ActionAreaSize = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z;
             
             // starting state for the state machine
             SwitchState(PreState);

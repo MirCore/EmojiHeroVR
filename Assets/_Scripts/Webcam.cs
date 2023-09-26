@@ -60,14 +60,17 @@ public class Webcam : MonoBehaviour
         
 
         // Start a new thread for file saving to avoid blocking the main thread
-        var saveFile = new Thread(() =>
+        Thread saveFile = new (() =>
             {
                 // Generate a timestamp for the filename
                 string timestamp = DateTime.Now.ToString("MMddHHmmssfff");
                 
+                #if UNITY_EDITOR
                 // Save the captured image to a file
                 SaveFiles.SaveFile("/../SaveFiles/", "Image" + timestamp + ".jpg", bytes);
                 SaveFiles.SaveFile("/../SaveFiles/", "Base64" + timestamp + ".txt", base64);
+                #endif
+                
             });
         saveFile.Start();
 
