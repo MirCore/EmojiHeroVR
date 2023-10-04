@@ -40,6 +40,9 @@ namespace Manager
             EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
 
             SwitchState(PreparingState);
+            
+            REST.Ping();
+            REST.Post();
         }
 
         private void OnDestroy()
