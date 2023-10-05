@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using Scriptables;
 using States.Game;
@@ -32,6 +34,10 @@ namespace Manager
         [Header("Webcams")]
             [SerializeField] private Webcam Webcam;
             [field: SerializeField] public bool ActivateWebcams { get; private set; }
+        
+        [Header("Rest Base Path")]
+        [SerializeField]
+        internal string BasePath = "http://localhost:8765/";
 
         private void Start()
         {
@@ -40,9 +46,6 @@ namespace Manager
             EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
 
             SwitchState(PreparingState);
-            
-            REST.Ping();
-            REST.Post();
         }
 
         private void OnDestroy()
@@ -61,11 +64,9 @@ namespace Manager
         private void SendRestImage()
         {
             string image = "";
-            //Rest.Post();
             if (ActivateWebcams)
                 image = Webcam.GetWebcamImage();
-            //REST.FakePost(image, Random.Range(0.1f,0.7f));
-            StartCoroutine(REST.FakePostCoroutine(image, Random.Range(0.1f,0.7f)));
+            REST.PostBase64(image);
         }
         
         private void OnEmojiFulfilledCallback(EEmote emote, float score)
@@ -85,15 +86,13 @@ namespace Manager
             }
         }
 
-        public void ProcessRestResponse(RestPost response)
+        public void ProcessRestResponse(Dictionary<EEmote, float>  response)
         {
-            LoggingSystem.Instance.WriteLog(response);
+            //LoggingSystem.Instance.WriteLog(response);
+            EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+          
+            EventManager.InvokeEmotionDetected(maxEmote);
             
-            if (response.Result)
-            {
-                EventManager.InvokeEmotionDetected(EmojiInActionArea);
-            }
-
             if (EmojiInActionArea != EEmote.None)
             {
                 SendRestImage();

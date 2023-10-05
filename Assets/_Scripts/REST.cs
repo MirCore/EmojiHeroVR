@@ -1,72 +1,89 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Enums;
 using Manager;
 using Proyecto26;
+using System.Text.Json;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class REST
 {
-    private const string BasePath = "http://localhost:8765/";
     private RequestHelper _currentRequest;
 
-    public static async void FakePost(string image, float delaySeconds)
-    {
-        RestPost restPost = new ()
-        {
-            Result = (Random.Range(0, 2) == 0)
-            //Result = false
-        };
-
-        await Task.Delay((int)(delaySeconds * 1000));
-        
-        GameManager.Instance.ProcessRestResponse(restPost);
-    }
-    
-    public static IEnumerator FakePostCoroutine(string image, float delaySeconds)
-    {
-        RestPost restPost = new RestPost()
-        {
-            Result = (Random.Range(0, 2) == 0)
-        };
-
-        yield return new WaitForSeconds(delaySeconds);
-
-        GameManager.Instance.ProcessRestResponse(restPost);
-    }
-
-    public static void Ping()
+   public static void Ping()
     {
         var currentRequest = new RequestHelper
         {
-            Uri = BasePath + "ping",
+            Uri = GameManager.Instance.BasePath + "ping",
             EnableDebug = false
         };
         
         RestClient.Get(currentRequest)
             .Then(response =>
             {
-                Debug.Log("Response: " + response);
+                Debug.Log("Get Response: " + response);
                 //GameManager.Instance.ProcessRestResponse(response);
             })
-            .Catch(error => Debug.Log("GET Error: " + error.Message));
+            .Catch(error => Debug.Log("Get Error: " + error.Message));
     }
 
-    public static void Post()
+    public static async void NormalPostBase64()
     {
-        string image = System.IO.File.ReadAllText("TestFiles/test_image_base64.txt");
-        var currentRequest = new RequestHelper
+        HttpClient client = new HttpClient();
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://192.168.178.33:8765/recognize/base64");
+
+        request.Headers.Add("accept", "application/json");
+
+        request.Content = new StringContent(File.ReadAllText("TestFiles/test_image_base64.txt").Replace("\n", string.Empty).Replace("\r", string.Empty));
+        request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+        HttpResponseMessage response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        string responseBody = await response.Content.ReadAsStringAsync();
+        Debug.Log(responseBody);
+    }
+
+    public static async void NormalPostImage()
+    {
+        HttpClient client = new HttpClient();
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://192.168.178.33:8765/recognize/file");
+
+        request.Headers.Add("accept", "application/json");
+
+
+        MultipartFormDataContent content = new MultipartFormDataContent();
+
+        content.Add(new StringContent("TestFiles/test_image.png"), "file");        
+        request.Content = content;
+        request.Content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
+
+        HttpResponseMessage response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        string responseBody = await response.Content.ReadAsStringAsync();
+        Debug.Log(responseBody);
+    }
+
+    public static void PostImage()
+    {
+        MultipartFormDataContent content = new MultipartFormDataContent();
+        content.Add(new ByteArrayContent(File.ReadAllBytes("TestFiles/test_image.png")), "file", Path.GetFileName("TestFiles/test_image.png"));
+        RequestHelper currentRequest = new RequestHelper
         {
-            Uri = BasePath + "recognize/base64",
+            Uri = GameManager.Instance.BasePath + "recognize/file",
             Headers = new Dictionary<string, string>
             {
                 { "accept", "application/json" }
             },
-            ContentType ="text/Plain",
-            Body = image,
+            ContentType = "multipart/form-data",
+            Body = content,
             EnableDebug = true
         };
         
@@ -78,20 +95,58 @@ public class REST
             })
             .Catch(error => Debug.Log("Error: " + error.Message));
     }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public static void PostBase64(string image)
+    {
+        //string image = File.ReadAllText("TestFiles/test_image_base64.txt");
+        RequestHelper currentRequest = new RequestHelper
+        {
+            Uri = GameManager.Instance.BasePath + "recognize/base64",
+            Headers = new Dictionary<string, string>
+            {
+                { "accept", "application/json" }
+            },
+            ContentType ="text/plain",
+            BodyString = image,
+            EnableDebug = false
+        };
+        
+        RestClient.Post(currentRequest)
+            .Then(response =>
+            {
+                Dictionary<EEmote, float> result = ConvertRestResponseToDictionary(response.Text);
+                GameManager.Instance.ProcessRestResponse(result);
+            })
+            .Catch(error => Debug.Log("Error: " + error.Message));
+    }
+
+    private static Dictionary<EEmote, float> ConvertRestResponseToDictionary(string responseText)
+    {
+        EmoteResult emoteResult = JsonUtility.FromJson<EmoteResult>(responseText);
+        Dictionary<EEmote, float> result = new()
+        {
+            { EEmote.Anger, emoteResult.anger },
+            { EEmote.Disgust, emoteResult.disgust },
+            { EEmote.Fear, emoteResult.fear },
+            { EEmote.Happiness, emoteResult.happiness },
+            { EEmote.Neutral, emoteResult.neutral },
+            { EEmote.Sadness, emoteResult.sadness },
+            { EEmote.Surprise, emoteResult.surprise }
+        };
+
+        return result;
+    }
 }
 
 [Serializable]
-public class RestPost
+public class EmoteResult
 {
-    public int ID;
-
-    public string Text;
-
-    public string Image;
-    
-    public bool Result;
-
-    public override string ToString(){
-        return JsonUtility.ToJson (this, true);
-    }
+    public float anger;
+    public float disgust;
+    public float fear;
+    public float happiness;
+    public float neutral;
+    public float sadness;
+    public float surprise;
 }

@@ -49,7 +49,7 @@ namespace Systems
         /// <summary>
         /// Writes a log entry to the CSV file.
         /// </summary>
-        public void WriteLog(RestPost restResponse)
+        public void WriteLog()
         {
             // Prepare the data to be logged
             string[] data =
@@ -59,7 +59,7 @@ namespace Systems
                 GameManager.Instance.LevelEmojiProgress.ToString(), // Number of emoji
                 GameManager.Instance.EmojiInActionArea.ToString(), // Emote in ActionArea
                 "[Name of image files(s)]", // Name of image file(s) TODO ADD IMAGE NAME
-                restResponse.Result.ToString() // FER response
+                "[FER response]" // FER response
             };
             
             // Append the data as a line to the log CSV file

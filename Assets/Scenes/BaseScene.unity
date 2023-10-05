@@ -1263,7 +1263,8 @@ MonoBehaviour:
   <ActionArea>k__BackingField: {fileID: 131909669}
   <Level>k__BackingField: {fileID: 11400000, guid: 958a575a1d4f5c14b9489c2eff54c18d, type: 2}
   Webcam: {fileID: 1522153667}
-  <ActivateWebcams>k__BackingField: 0
+  <ActivateWebcams>k__BackingField: 1
+  BasePath: http://192.168.178.33:8765/
 --- !u!114 &235804611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5264,7 +5265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WebcamName:
-  - HP True Vision HD Camera
+  - SPEEDLINK SNAPPY Smart Webcam
   Image:
   - {fileID: 112583441}
   - {fileID: 324734124}

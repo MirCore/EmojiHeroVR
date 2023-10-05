@@ -13,8 +13,8 @@ public class Webcam : MonoBehaviour
     [SerializeField] private List<string> WebcamName;
     [SerializeField] private List<RawImage> Image;
 
-    [SerializeField] private int RequestedCameraWidth = 320;
-    [SerializeField] private int RequestedCameraHeight = 256;
+    [SerializeField] private int RequestedCameraWidth = 1080;
+    [SerializeField] private int RequestedCameraHeight = 720;
     
     private Texture2D _snapshot; // Texture to hold the captured webcam frame
     private const int MainWebcam = 0; // Index of the main webcam (you can change this)
