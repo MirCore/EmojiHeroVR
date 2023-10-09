@@ -38,7 +38,7 @@ namespace Manager
         [Header("Rest Base Path")]
         [SerializeField]
         internal string BasePath = "http://localhost:8765/";
-
+        
         private void Start()
         {
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
@@ -90,6 +90,8 @@ namespace Manager
         {
             //LoggingSystem.Instance.WriteLog(response);
             EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+
+            EditorUI.EditorUI.SetData(response);
           
             EventManager.InvokeEmotionDetected(maxEmote);
             

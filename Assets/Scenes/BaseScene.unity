@@ -5264,13 +5264,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eac8b1cd0c46cd489aabc4749f11039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WebcamName:
-  - SPEEDLINK SNAPPY Smart Webcam
   Image:
   - {fileID: 112583441}
   - {fileID: 324734124}
-  RequestedCameraWidth: 256
-  RequestedCameraHeight: 256
+  RequestedCameraWidth: 512
+  RequestedCameraHeight: 512
 --- !u!4 &1526306344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}

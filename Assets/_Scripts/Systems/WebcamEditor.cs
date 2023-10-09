@@ -5,7 +5,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 namespace Systems
 {
-    [CustomEditor(typeof(Webcam))]
+    /*[CustomEditor(typeof(Webcam))]
     internal class WebcamEditor : Editor
     {
         public List<SerializedProperty> WebcamName = new();
@@ -67,6 +67,6 @@ namespace Systems
             DropDowns[i].text = deviceName;
             serializedObject.ApplyModifiedProperties();
         }
-    }
+    }*/
 }
 #endif

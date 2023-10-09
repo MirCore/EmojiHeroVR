@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/EditorUI/EditorUI.uss?fileID=7433441132597879392&amp;guid=3c137b3a88b0e6a47ac3e24e36d730f0&amp;type=3#EditorUI" />
+    <ui:DropdownField label="Webcam" index="0" name="WebcamDropdown" />
+    <ui:ProgressBar value="0" title="Anger" name="Anger" high-value="1" />
+    <ui:ProgressBar value="0" title="Disgust" name="Disgust" high-value="1" />
+    <ui:ProgressBar value="0" title="Fear" name="Fear" high-value="1" />
+    <ui:ProgressBar value="0" title="Happiness" name="Happiness" high-value="1" />
+    <ui:ProgressBar value="0" title="Neutral" name="Neutral" high-value="1" />
+    <ui:ProgressBar value="0" title="Sadness" name="Sadness" high-value="1" />
+    <ui:ProgressBar value="0" title="Surprise" name="Surprise" high-value="1" />
+</ui:UXML>

@@ -10,7 +10,7 @@ public class Webcam : MonoBehaviour
 {
     private readonly List<WebCamTexture> _webcam = new();
     
-    [SerializeField] private List<string> WebcamName;
+    private readonly List<string> _webcamName = new();
     [SerializeField] private List<RawImage> Image;
 
     [SerializeField] private int RequestedCameraWidth = 1080;
@@ -19,12 +19,16 @@ public class Webcam : MonoBehaviour
     private Texture2D _snapshot; // Texture to hold the captured webcam frame
     private const int MainWebcam = 0; // Index of the main webcam (you can change this)
 
+
     private void Start()
     {
         if (GameManager.Instance.ActivateWebcams == false)
             return;
+        
+        _webcamName.Add(EditorUI.EditorUI.Instance.GetSelectedWebcam());
+        
         // Initialize webcams and set up RawImages to display their feed
-        foreach (string webcamName in WebcamName)
+        foreach (string webcamName in _webcamName)
         {
             _webcam.Add(new WebCamTexture(webcamName, RequestedCameraWidth, RequestedCameraHeight));
         }
