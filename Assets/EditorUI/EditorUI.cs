@@ -3,9 +3,9 @@ using System.Linq;
 using Enums;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
+#if UNITY_EDITOR
 namespace EditorUI
 {
     public class EditorUI : EditorWindow
@@ -64,3 +64,4 @@ namespace EditorUI
         }
     }
 }
+#endif

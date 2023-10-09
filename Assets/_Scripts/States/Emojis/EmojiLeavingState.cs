@@ -24,7 +24,6 @@ namespace States.Emojis
 
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
-            EditorApplication.isPaused = true;
             throw new System.NotImplementedException();
         }
 

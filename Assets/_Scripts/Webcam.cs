@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Manager;
@@ -25,21 +26,46 @@ public class Webcam : MonoBehaviour
         if (GameManager.Instance.ActivateWebcams == false)
             return;
         
+#if UNITY_EDITOR
         _webcamName.Add(EditorUI.EditorUI.Instance.GetSelectedWebcam());
-        
+        InitializeWebcam();
+#else
+        StartCoroutine(GetCamera());
+#endif
+    }
+
+    private void InitializeWebcam()
+    {
         // Initialize webcams and set up RawImages to display their feed
         foreach (string webcamName in _webcamName)
         {
             _webcam.Add(new WebCamTexture(webcamName, RequestedCameraWidth, RequestedCameraHeight));
         }
+
         for (int i = 0; i < Math.Min(Image.Count, _webcam.Count); i++)
         {
             Image[i].texture = _webcam[i];
             _webcam[i].Play();
         }
-        
+
         // Initialize the snapshot texture based on the main webcam
         _snapshot = new Texture2D(_webcam[MainWebcam].width, _webcam[MainWebcam].height);
+    }
+
+    private IEnumerator GetCamera()
+    {
+        yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
+ 
+        if (Application.HasUserAuthorization(UserAuthorization.WebCam))
+        {
+            //WebCamDevice device = WebCamTexture.devices[0];
+            _webcamName.Add(WebCamTexture.devices[0].name);
+            InitializeWebcam();
+        }
+        else
+        {
+            Debug.Log("Webcam not found");
+        }
     }
 
     private void OnDestroy()
@@ -62,22 +88,24 @@ public class Webcam : MonoBehaviour
         // Convert to frame to base64
         string base64 = Convert.ToBase64String(bytes);
         
-
+#if UNITY_EDITOR
         // Start a new thread for file saving to avoid blocking the main thread
         Thread saveFile = new (() =>
             {
                 // Generate a timestamp for the filename
                 string timestamp = DateTime.Now.ToString("MMddHHmmssfff");
                 
-                #if UNITY_EDITOR
+                
                 // Save the captured image to a file
                 SaveFiles.SaveFile("/../SaveFiles/", "Image" + timestamp + ".jpg", bytes);
                 SaveFiles.SaveFile("/../SaveFiles/", "Base64" + timestamp + ".txt", base64);
-                #endif
+                
                 
             });
         saveFile.Start();
-
+#endif
+        Debug.Log(base64);
+        
         // Return the base64-encoded image
         return base64;
     }

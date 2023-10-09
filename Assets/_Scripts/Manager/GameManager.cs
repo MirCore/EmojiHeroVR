@@ -3,10 +3,8 @@ using System.Linq;
 using Enums;
 using Scriptables;
 using States.Game;
-using Systems;
 using UnityEngine;
 using Utilities;
-using Random = UnityEngine.Random;
 
 namespace Manager
 {
@@ -91,7 +89,9 @@ namespace Manager
             //LoggingSystem.Instance.WriteLog(response);
             EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
+#if UNITY_EDITOR
             EditorUI.EditorUI.SetData(response);
+#endif
           
             EventManager.InvokeEmotionDetected(maxEmote);
             

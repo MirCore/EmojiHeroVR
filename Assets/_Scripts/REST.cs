@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Enums;
 using Manager;
 using Proyecto26;
-using System.Text.Json;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class REST
 {
@@ -99,7 +95,7 @@ public class REST
     // ReSharper disable Unity.PerformanceAnalysis
     public static void PostBase64(string image)
     {
-        //string image = File.ReadAllText("TestFiles/test_image_base64.txt");
+        //image = File.ReadAllText("Assets/TestFiles/test_image_base64.txt");
         RequestHelper currentRequest = new RequestHelper
         {
             Uri = GameManager.Instance.BasePath + "recognize/base64",
