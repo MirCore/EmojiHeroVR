@@ -18,10 +18,7 @@ namespace States.Emojis
 
         public override void Update(EmojiManager emojiManager)
         {
-            if (emojiManager.transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
-            {
-                emojiManager.SwitchState(emojiManager.LeavingState);
-            }
+            
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)
@@ -31,6 +28,7 @@ namespace States.Emojis
 
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
+            emojiManager.SwitchState(emojiManager.LeavingState);
             EventManager.InvokeEmoteExitedArea();
         }
 

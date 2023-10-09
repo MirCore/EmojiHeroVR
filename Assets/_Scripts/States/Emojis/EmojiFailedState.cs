@@ -11,14 +11,12 @@ namespace States.Emojis
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
             EventManager.InvokeEmoteExitedArea();
             emojiManager.EmojiAnimator.Play("EmojiFail");
+            emojiManager.SwitchState(emojiManager.LeavingState);
         }
 
         public override void Update(EmojiManager emojiManager)
         {
-            if (emojiManager.transform.position.z < GameManager.Instance.EmojiEndPosition.position.z)
-            {
-                emojiManager.SwitchState(emojiManager.LeavingState);
-            }
+            
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)
@@ -28,7 +26,7 @@ namespace States.Emojis
 
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
-        
+            
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

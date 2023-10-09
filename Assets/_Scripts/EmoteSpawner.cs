@@ -8,15 +8,15 @@ using Random = UnityEngine.Random;
 
 public class EmoteSpawner : MonoBehaviour
 {
-    public float XWidth = 2;
-    public int Lanes = 4;
+    [SerializeField] private float XWidth = 0.5f;
+    [SerializeField] private int Lanes = 4;
 
     private bool _spawnActive = false;
     private int _count;
     private float _startTime;
 
     private ScriptableLevel _level;
-    
+
     void OnEnable()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
@@ -56,7 +56,7 @@ public class EmoteSpawner : MonoBehaviour
     
     private IEnumerator SpawnEmoteCoroutine()
     {
-        Vector3 spawnDistance = transform.position;
+        Vector3 spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
         float lanes = (float)(Lanes - 1) / 2;
         while (_spawnActive)
         {

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Advanced Level
   <LevelMode>k__BackingField: 0
-  <EmojiMovementSpeed>k__BackingField: 2
+  <EmojiMovementSpeed>k__BackingField: 0.5
   <EmojiSpawnInterval>k__BackingField: 2
   <Count>k__BackingField: 4
   <Time>k__BackingField: 0

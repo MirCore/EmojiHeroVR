@@ -46,7 +46,7 @@ namespace Manager
         private void Update()
         {
             _emojiState.Update(this);
-            transform.position -= new Vector3(0,0,GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
+            transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
         }
 
         internal void SwitchState(EmojiState state)
@@ -60,8 +60,10 @@ namespace Manager
             _emojiState.OnEmotionDetectedCallback(this, emote);
         }
 
-        private void DeactivateEmoji()
+        private IEnumerator DeactivateEmoji(float waitTime)
         {
+            yield return new WaitForSeconds(waitTime);
+            
             gameObject.SetActive(false);
         }
 
@@ -78,6 +80,7 @@ namespace Manager
         public void FadeOut()
         {
             StartCoroutine(MathHelper.SLerp(0, 1, 1, EmojiRenderer.material, DissolveAmount));
+            StartCoroutine(DeactivateEmoji(1));
         }
 
     }

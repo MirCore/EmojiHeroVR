@@ -104,7 +104,6 @@ public class Webcam : MonoBehaviour
             });
         saveFile.Start();
 #endif
-        Debug.Log(base64);
         
         // Return the base64-encoded image
         return base64;

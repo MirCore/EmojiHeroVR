@@ -17,7 +17,7 @@ namespace Manager
             internal readonly GameLevelFinishedState LevelFinishedState = new();
         
         [field: Header("Level Setup GameObjects")]
-            [field: SerializeField] public Transform EmojiEndPosition { get; private set; }
+            [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
             [field: SerializeField] public GameObject ActionArea { get; private set; }
         
         [field: Header("Selected Level")]
@@ -36,6 +36,7 @@ namespace Manager
         [Header("Rest Base Path")]
         [SerializeField]
         internal string BasePath = "http://localhost:8765/";
+
         
         private void Start()
         {
