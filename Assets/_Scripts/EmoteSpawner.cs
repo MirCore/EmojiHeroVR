@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using Enums;
 using Manager;
 using Scriptables;
@@ -22,12 +21,14 @@ public class EmoteSpawner : MonoBehaviour
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
         EventManager.OnLevelStopped += OnLevelStoppedCallback;
+        EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
     }
 
     private void OnDisable()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
         EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+        EventManager.OnEmojiFulfilled -= OnEmojiFulfilledCallback;
     }
 
     private void OnLevelStartedCallback()
@@ -36,42 +37,34 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = true;
         _count = 0;
         _startTime = Time.time;
-        //SpawnEmote();
-        StartCoroutine(SpawnEmoteCoroutine());
+        if (_level.LevelMode == ELevelMode.Training)
+            StartCoroutine(SpawnEmote(0));
+        else
+            StartCoroutine(SpawnEmoteCoroutine());
     }
 
     private void OnLevelStoppedCallback()
     {
         _spawnActive = false;
     }
-
-    private async void SpawnEmote()
+    
+    private void OnEmojiFulfilledCallback(EEmote emote, float score)
     {
-        while (_spawnActive)
-        {
-            GameObject emote = ObjectPool.Instance.GetPooledObject();
-            
-            int lane = Random.Range(0, Lanes);
-            float xPos = (lane - (float)(Lanes - 1) / 2)*XWidth;
-            emote.transform.position = transform.position + new Vector3(xPos,0,0);
-            emote.SetActive(true);
-            _count++;
-            if (CheckLevelEnded())
-                StopSpawning();
-
-            await Task.Delay((int)(_level.EmojiSpawnInterval * 1000));
-        }
+        if (_level.LevelMode == ELevelMode.Training)
+            StartCoroutine(SpawnEmote(1));
     }
     
     private IEnumerator SpawnEmoteCoroutine()
     {
+        Vector3 spawnDistance = transform.position;
+        float lanes = (float)(Lanes - 1) / 2;
         while (_spawnActive)
         {
             GameObject emote = ObjectPool.Instance.GetPooledObject();
         
             int lane = Random.Range(0, Lanes);
-            float xPos = (lane - (float)(Lanes - 1) / 2) * XWidth;
-            emote.transform.position = transform.position + new Vector3(xPos, 0, 0);
+            float xPos = (lane - lanes) * XWidth;
+            emote.transform.position = spawnDistance + new Vector3(xPos, 0, 0);
             emote.SetActive(true);
             _count++;
 
@@ -80,6 +73,17 @@ public class EmoteSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(_level.EmojiSpawnInterval);
         }
+    }
+    
+    private IEnumerator SpawnEmote(float waitBeforeSpawn)
+    {
+        yield return new WaitForSeconds(waitBeforeSpawn);
+        
+        GameObject emote = ObjectPool.Instance.GetPooledObject();
+
+        emote.transform.position = GameManager.Instance.ActionArea.transform.position;
+        emote.SetActive(true);
+        _count++;
     }
 
     private bool CheckLevelEnded()
@@ -93,6 +97,8 @@ public class EmoteSpawner : MonoBehaviour
             case ELevelMode.Time:
                 if (Time.time - _startTime >= _level.Time)
                     return true;
+                break;
+            case ELevelMode.Training:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

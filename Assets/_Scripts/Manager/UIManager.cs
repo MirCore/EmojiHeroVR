@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Enums;
 using Scriptables;
 using Systems;
 using TMPro;
@@ -57,8 +58,17 @@ namespace Manager
                 
                 texts[0].text = "#" + id;
                 texts[1].text = scriptableLevel.Name;
-                texts[2].text = scriptableLevel.Count + "<sprite index=0>";
-                texts[3].text = 60 / scriptableLevel.EmojiMovementSpeed + "<sprite index=0>/m";
+
+
+                if (scriptableLevel.LevelMode == ELevelMode.Training)
+                    texts[2].text = "<sprite index=1>";
+                else
+                    texts[2].text = scriptableLevel.Count + "<sprite index=0>";
+
+                if (scriptableLevel.LevelMode == ELevelMode.Training)
+                    texts[3].text = "<sprite index=2>";
+                else
+                    texts[3].text = 60 / scriptableLevel.EmojiMovementSpeed + "<sprite index=0>/m";
 
                 id++;
             }

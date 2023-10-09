@@ -11,6 +11,9 @@ namespace States.Emojis
             emojiManager.EmojiMaterial.SetFloat(emojiManager.SuccessColorAmount, 0.5f);
             emojiManager.EmojiAnimator.Play("EmojiSuccess");
             EventManager.InvokeEmojiFulfilled(emojiManager.Emote, emojiManager.ActiveAreaLeft);
+            
+            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
+                emojiManager.SwitchState(emojiManager.LeavingState);
         }
 
         public override void Update(EmojiManager emojiManager)

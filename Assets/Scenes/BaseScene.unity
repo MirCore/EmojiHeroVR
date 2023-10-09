@@ -682,7 +682,7 @@ GameObject:
   - component: {fileID: 131909672}
   - component: {fileID: 131909671}
   - component: {fileID: 131909674}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ActionArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1264,7 +1264,7 @@ MonoBehaviour:
   <Level>k__BackingField: {fileID: 11400000, guid: 958a575a1d4f5c14b9489c2eff54c18d, type: 2}
   Webcam: {fileID: 1522153667}
   <ActivateWebcams>k__BackingField: 1
-  BasePath: http://192.168.178.33:8765/
+  BasePath: http://localhost:8765/
 --- !u!114 &235804611
 MonoBehaviour:
   m_ObjectHideFlags: 0

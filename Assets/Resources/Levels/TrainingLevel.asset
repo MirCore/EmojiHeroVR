@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TrainingLevel
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Training Level
-  <LevelMode>k__BackingField: 0
+  <LevelMode>k__BackingField: 2
   <EmojiMovementSpeed>k__BackingField: 0
   <EmojiSpawnInterval>k__BackingField: 0
   <Count>k__BackingField: 0
