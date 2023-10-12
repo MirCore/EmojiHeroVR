@@ -18,6 +18,7 @@ namespace States.Game
             switch (uiType)
             {
                 case UIType.StartLevel:
+                case UIType.StartStopLevel:
                     GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
                     break;
                 case UIType.StopLevel:

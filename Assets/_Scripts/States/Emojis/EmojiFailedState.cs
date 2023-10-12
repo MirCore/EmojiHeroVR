@@ -9,7 +9,7 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
-            EventManager.InvokeEmoteExitedArea();
+            EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
             emojiManager.EmojiAnimator.Play("EmojiFail");
             emojiManager.SwitchState(emojiManager.LeavingState);
         }

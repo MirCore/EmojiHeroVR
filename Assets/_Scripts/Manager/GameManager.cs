@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
@@ -25,11 +26,10 @@ namespace Manager
             private int _emojiCount;
             public int LevelEmojiProgress { get; private set; }
             public int LevelScore { get; private set; }
-            public EEmote EmojiInActionArea { get; private set; }
+            public List<EEmote> EmojiInActionArea = new();
         
         [Header("Webcams")]
             [SerializeField] private Webcam Webcam;
-            [field: SerializeField] public bool ActivateWebcams { get; private set; }
 
             public ScriptableLevel Level { get; private set; }
         
@@ -58,17 +58,23 @@ namespace Manager
             EditorUI.EditorUI.Instance.ResetUserID();
         }
 
+        private void Update()
+        {
+            if (Input.GetButtonDown("Jump"))
+            {
+                OnButtonPressed(UIType.StartStopLevel);
+            }
+        }
+
         private void OnEmoteEnteredAreaCallback(EEmote emote)
         {
-            EmojiInActionArea = emote;
+            EmojiInActionArea.Add(emote);
             SendRestImage();
         }
 
         private void SendRestImage()
         {
-            string image = "";
-            if (ActivateWebcams)
-                image = Webcam.GetWebcamImage();
+            string image = Webcam.GetWebcamImage();
             REST.PostBase64(image);
         }
         
@@ -78,9 +84,9 @@ namespace Manager
             LevelScore += 50 + (int)(score * 100);
         }
 
-        private void OnEmoteExitedAreaCallback()
+        private void OnEmoteExitedAreaCallback(EEmote emote)
         {
-            EmojiInActionArea = EEmote.None;
+            EmojiInActionArea.Remove(emote);
             
             _emojiCount++;
             if (_emojiCount >= Level.Count && Level.LevelMode == ELevelMode.Count)
@@ -100,7 +106,15 @@ namespace Manager
           
             EventManager.InvokeEmotionDetected(maxEmote);
             
-            if (EmojiInActionArea != EEmote.None)
+            if (EmojiInActionArea.Count > 0)
+            {
+                SendRestImage();
+            }
+        }
+        
+        public void ProcessRestError(Exception error)
+        {
+            if (EmojiInActionArea.Count > 0)
             {
                 SendRestImage();
             }
@@ -130,5 +144,6 @@ namespace Manager
             Level = level;
             EditorUI.EditorUI.Instance.SetNewLevel(level);
         }
+
     }
 }

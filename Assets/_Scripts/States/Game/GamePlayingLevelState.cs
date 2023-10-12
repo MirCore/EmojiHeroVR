@@ -18,11 +18,13 @@ namespace States.Game
                 case UIType.StartLevel:
                     break;
                 case UIType.StopLevel:
+                case UIType.StartStopLevel:
                     GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
                     break;
                 case UIType.PauseLevel:
                     break;
                 case UIType.Default:
+                case UIType.ContinueEndScreen:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
             }

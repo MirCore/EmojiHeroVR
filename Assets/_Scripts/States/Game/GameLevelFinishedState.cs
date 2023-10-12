@@ -24,6 +24,7 @@ namespace States.Game
                 case UIType.PauseLevel:
                     break;
                 case UIType.ContinueEndScreen:
+                case UIType.StartStopLevel:
                     GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
                     break;
                 case UIType.Default:

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -7,6 +8,7 @@ using Enums;
 using Manager;
 using Proyecto26;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class REST
 {
@@ -102,7 +104,12 @@ public class REST
                 Dictionary<EEmote, float> result = ConvertRestResponseToDictionary(response.Text);
                 GameManager.Instance.ProcessRestResponse(result);
             })
-            .Catch(error => Debug.Log("Error: " + error.Message));
+            .Catch(error =>
+            {
+                if (error.Message == "HTTP/1.1 422 Unprocessable Entity")
+                    GameManager.Instance.ProcessRestError(error);
+                Debug.Log("Error: " + error.Message);
+            });
     }
 
     private static RequestHelper GetBase64RequestHelper(string image)

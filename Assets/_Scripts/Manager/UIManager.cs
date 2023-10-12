@@ -123,5 +123,6 @@ public enum UIType
     StartLevel,
     StopLevel,
     PauseLevel,
-    ContinueEndScreen
+    ContinueEndScreen,
+    StartStopLevel
 } 

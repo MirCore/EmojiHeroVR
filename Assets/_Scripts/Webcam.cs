@@ -23,9 +23,6 @@ public class Webcam : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance.ActivateWebcams == false)
-            return;
-        
 #if UNITY_EDITOR
         _webcamName.Add(EditorUI.EditorUI.Instance.GetSelectedWebcam());
         InitializeWebcam();

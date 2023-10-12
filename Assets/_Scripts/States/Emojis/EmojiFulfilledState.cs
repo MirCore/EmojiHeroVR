@@ -29,7 +29,7 @@ namespace States.Emojis
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
             emojiManager.SwitchState(emojiManager.LeavingState);
-            EventManager.InvokeEmoteExitedArea();
+            EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

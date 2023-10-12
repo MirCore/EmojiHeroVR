@@ -19,12 +19,12 @@ namespace States.Emojis
 
         public override void OnTriggerEnter(EmojiManager emojiManager)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

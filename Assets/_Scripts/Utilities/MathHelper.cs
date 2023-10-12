@@ -10,7 +10,7 @@ namespace Utilities
             float t = 0;
             while (t < duration)
             {
-                float result = Mathf.SmoothStep(from, to, t);
+                float result = Mathf.SmoothStep(from, to, t / duration);
                 t += Time.deltaTime;
                 material.SetFloat(nameID, result);
 
@@ -25,7 +25,7 @@ namespace Utilities
             float t = 0;
             while (t < duration)
             {
-                float result = Mathf.SmoothStep(from, to, t);
+                float result = Mathf.SmoothStep(from, to, t / duration);
                 t += Time.unscaledDeltaTime;
                 Time.timeScale = result;
                 yield return new WaitForEndOfFrame();

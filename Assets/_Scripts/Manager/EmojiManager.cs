@@ -29,6 +29,8 @@ namespace Manager
 
         private void OnEnable()
         {
+            GetComponent<Rigidbody>().isKinematic = true;
+            transform.rotation = new Quaternion();
             EmojiMaterial = EmojiRenderer.material;
             ActionAreaSize = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z;
             
@@ -46,7 +48,8 @@ namespace Manager
         private void Update()
         {
             _emojiState.Update(this);
-            transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
+            if (_emojiState != LeavingState)
+                transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
         }
 
         internal void SwitchState(EmojiState state)
@@ -79,8 +82,10 @@ namespace Manager
 
         public void FadeOut()
         {
-            StartCoroutine(MathHelper.SLerp(0, 1, 1, EmojiRenderer.material, DissolveAmount));
-            StartCoroutine(DeactivateEmoji(1));
+            GetComponent<Rigidbody>().isKinematic = false;
+            GetComponent<Rigidbody>().velocity = - (GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.EmojiMovementSpeed) + GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
+            StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
+            StartCoroutine(DeactivateEmoji(6));
         }
 
     }

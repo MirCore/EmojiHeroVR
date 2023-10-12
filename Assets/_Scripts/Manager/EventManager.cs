@@ -26,11 +26,11 @@ namespace Manager
             OnEmojiFulfilled?.Invoke(emote, score);
         }
     
-        public delegate void EmoteExitedArea();
+        public delegate void EmoteExitedArea(EEmote emote);
         public static event EmoteExitedArea OnEmoteExitedArea;
-        public static void InvokeEmoteExitedArea()
+        public static void InvokeEmoteExitedArea(EEmote emote)
         {
-            OnEmoteExitedArea?.Invoke();
+            OnEmoteExitedArea?.Invoke(emote);
         }
     
         public delegate void LevelStarted();

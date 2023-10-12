@@ -44,7 +44,7 @@ namespace Manager
             StartCoroutine(RampColor(LossColor, LossColorRampDuration));
         }
 
-        private void OnEmoteExitedAreaCallback()
+        private void OnEmoteExitedAreaCallback(EEmote emote)
         {
             StopAllCoroutines();
             StartCoroutine(RampShader(LowGradientPosition));

@@ -42,9 +42,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3649072739652385480}
   - component: {fileID: -4414658537018392637}
-  - component: {fileID: 373602807232368526}
   - component: {fileID: 7332248507154697826}
   - component: {fileID: 4179499655590491511}
+  - component: {fileID: 8337366869091236555}
+  - component: {fileID: 3226508465074026669}
   m_Layer: 6
   m_Name: EmojiSphere
   m_TagString: Untagged
@@ -62,7 +63,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.08, y: 0.08, z: 0.08}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8458487264956178373}
@@ -81,29 +82,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Emote: 0
-  EmojiRenderer: {fileID: 3832618899152066732}
+  EmojiRenderer: {fileID: 8456963759763972434}
   EmojiAnimator: {fileID: 4179499655590491511}
---- !u!65 &373602807232368526
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8516293493071587995}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 0.4}
-  m_Center: {x: 0, y: 0, z: 0.2}
 --- !u!54 &7332248507154697826
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -112,7 +92,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8516293493071587995}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.5
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -126,7 +106,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
@@ -152,6 +132,49 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!64 &8337366869091236555
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8516293493071587995}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3298800115395149385, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+--- !u!65 &3226508465074026669
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8516293493071587995}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 1, z: 0.38}
+  m_Center: {x: 0, y: -0.5, z: 0}
 --- !u!1001 &2517977512647771176
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -204,6 +227,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 98a88ea32533250479832dfa3c9f3b3c, type: 2}
+    - target: {fileID: -1018664272722485354, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
       propertyPath: m_Name
       value: EmojiSphere
@@ -212,11 +239,33 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4860884733252827142, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4860884733252827142, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6317578925029434746, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a7c05b26a3ea2b049ab2e772bc307733, type: 2}
-    m_RemovedComponents: []
+      objectReference: {fileID: 2100000, guid: 98a88ea32533250479832dfa3c9f3b3c, type: 2}
+    - target: {fileID: 8632055958874330854, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632055958874330854, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632055958874330854, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3451118302482216456, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+    - {fileID: 6742017470442587127, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -226,8 +275,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
   m_PrefabInstance: {fileID: 2517977512647771176}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &3832618899152066732 stripped
+--- !u!23 &8456963759763972434 stripped
 MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6317578925029434746, guid: c9acc124630abd346a3cb0f88a48388c, type: 3}
   m_PrefabInstance: {fileID: 2517977512647771176}
   m_PrefabAsset: {fileID: 0}
