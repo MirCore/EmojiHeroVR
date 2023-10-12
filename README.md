@@ -9,7 +9,11 @@ Follow the steps below to get started with EmojiHeroVR:
 
 2. Open the *EmojiHero Editor Window* by selecting `Window > EmojiHero Editor Window` in Unity.
   - **Select the primary webcam**: Make sure you select the primary webcam device you want to use for emotion recognition. This webcam will be used to capture the user's facial expressions.
-  - **Set the REST API basepath**: Configure the REST API basepath where the EmojiHeroVR application communicates with the emotion recognition server. For example, if you are running the server locally, set the basepath to `http://localhost:8000/`.
+  - **Set the REST API basepath**: Configure the REST API basepath where the EmojiHeroVR application communicates with the [FER-Microservice](#Dependencies). For example, if you are running the server locally, set the basepath to `http://localhost:8000/`.
+
+## Dependencies
+
+- [FER-Microservice](https://github.com/affective-reality-group/facial-expression-recognition-microservice): A microservice providing an HTTP API for Facial Expression Recognition (FER).
 
 ## Credits
 
