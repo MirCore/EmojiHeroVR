@@ -20,8 +20,6 @@ namespace Manager
             [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
             [field: SerializeField] public GameObject ActionArea { get; private set; }
         
-        [field: Header("Selected Level")]
-            [field: SerializeField] public ScriptableLevel Level { get; internal set; }
 
         [Header("Level Progress")]
             private int _emojiCount;
@@ -33,14 +31,21 @@ namespace Manager
             [SerializeField] private Webcam Webcam;
             [field: SerializeField] public bool ActivateWebcams { get; private set; }
 
+            public ScriptableLevel Level { get; private set; }
         
         private void Start()
         {
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
             EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
+            
+            if (EditorUI.EditorUI.Instance.UserID == "")
+                Debug.LogWarning("No UserID Set");
+
+            Level = EditorUI.EditorUI.Instance.GetSelectedLevel();
 
             SwitchState(PreparingState);
+            
         }
 
         private void OnDestroy()
@@ -48,6 +53,9 @@ namespace Manager
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
             EventManager.OnEmojiFulfilled -= OnEmojiFulfilledCallback;
+
+            // Delete UserID after Game Ended
+            EditorUI.EditorUI.Instance.ResetUserID();
         }
 
         private void OnEmoteEnteredAreaCallback(EEmote emote)
@@ -115,6 +123,12 @@ namespace Manager
             _emojiCount = 0;
             LevelEmojiProgress = 0;
             LevelScore = 0;
+        }
+
+        public void SetNewLevel(ScriptableLevel level)
+        {
+            Level = level;
+            EditorUI.EditorUI.Instance.SetNewLevel(level);
         }
     }
 }

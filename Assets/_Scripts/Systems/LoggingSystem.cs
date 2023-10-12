@@ -9,7 +9,7 @@ namespace Systems
     public class LoggingSystem : Singleton<LoggingSystem>
     {
         // Log Setup:
-        // timestamp    level    # of emoji    emote in ActionArea    name of image file(s)    FER response?  
+        // userID   timestamp    level    # of emoji    emote in ActionArea    name of image file(s)    FER response?  
 
         private const string RelativePath = "/../SaveFiles/"; // Relative path for the log file
         private string _fileName; // The name of the log file
@@ -34,6 +34,7 @@ namespace Systems
         {
             string[] data =
             {
+                "User ID",
                 "Timestamp (Unix)",
                 "Level Name",
                 "Number of Emoji",
@@ -54,6 +55,7 @@ namespace Systems
             // Prepare the data to be logged
             string[] data =
             {
+                EditorUI.EditorUI.Instance.UserID,
                 ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds().ToString(), // Timestamp
                 GameManager.Instance.Level.name, // Level name
                 GameManager.Instance.LevelEmojiProgress.ToString(), // Number of emoji

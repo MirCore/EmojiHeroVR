@@ -32,7 +32,7 @@ namespace States.Game
 
         public override void HandleUIInput(ScriptableLevel level)
         {
-            GameManager.Instance.Level = level;
+            GameManager.Instance.SetNewLevel(level);
         }
     }
 }
