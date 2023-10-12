@@ -16,7 +16,7 @@ namespace EditorUI
         [SerializeField] public string SelectedWebcam;
         [SerializeField] public string RestBasePath;
 
-        [MenuItem("Window/EmojiHero")]
+        [MenuItem("Window/EmojiHero Editor Window")]
         public static void ShowExample()
         {
             EditorUI wnd = GetWindow<EditorUI>();
