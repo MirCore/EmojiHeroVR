@@ -8,4 +8,5 @@
     <ui:ProgressBar value="0" title="Neutral" name="Neutral" high-value="1" />
     <ui:ProgressBar value="0" title="Sadness" name="Sadness" high-value="1" />
     <ui:ProgressBar value="0" title="Surprise" name="Surprise" high-value="1" />
+    <ui:TextField picking-mode="Ignore" label="REST basepath" value="http://localhost:8765/" name="RestBasePath" />
 </ui:UXML>

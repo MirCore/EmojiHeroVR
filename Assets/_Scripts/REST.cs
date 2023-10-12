@@ -12,11 +12,11 @@ public class REST
 {
     private RequestHelper _currentRequest;
 
-   public static void Ping()
+    public static void Ping()
     {
-        var currentRequest = new RequestHelper
+        RequestHelper currentRequest = new RequestHelper
         {
-            Uri = GameManager.Instance.BasePath + "ping",
+            Uri = EditorUI.EditorUI.Instance.RestBasePath + "ping",
             EnableDebug = false
         };
         
@@ -24,7 +24,6 @@ public class REST
             .Then(response =>
             {
                 Debug.Log("Get Response: " + response);
-                //GameManager.Instance.ProcessRestResponse(response);
             })
             .Catch(error => Debug.Log("Get Error: " + error.Message));
     }
@@ -73,7 +72,7 @@ public class REST
         content.Add(new ByteArrayContent(File.ReadAllBytes("TestFiles/test_image.png")), "file", Path.GetFileName("TestFiles/test_image.png"));
         RequestHelper currentRequest = new RequestHelper
         {
-            Uri = GameManager.Instance.BasePath + "recognize/file",
+            Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/file",
             Headers = new Dictionary<string, string>
             {
                 { "accept", "application/json" }
@@ -95,19 +94,8 @@ public class REST
     // ReSharper disable Unity.PerformanceAnalysis
     public static void PostBase64(string image)
     {
-        //image = File.ReadAllText("Assets/TestFiles/test_image_base64.txt");
-        RequestHelper currentRequest = new RequestHelper
-        {
-            Uri = GameManager.Instance.BasePath + "recognize/base64",
-            Headers = new Dictionary<string, string>
-            {
-                { "accept", "application/json" }
-            },
-            ContentType ="text/plain",
-            BodyString = image,
-            EnableDebug = false
-        };
-        
+        RequestHelper currentRequest = GetBase64RequestHelper(image);
+
         RestClient.Post(currentRequest)
             .Then(response =>
             {
@@ -115,6 +103,23 @@ public class REST
                 GameManager.Instance.ProcessRestResponse(result);
             })
             .Catch(error => Debug.Log("Error: " + error.Message));
+    }
+
+    private static RequestHelper GetBase64RequestHelper(string image)
+    {
+        //image = File.ReadAllText("Assets/TestFiles/test_image_base64.txt");
+        RequestHelper currentRequest = new RequestHelper
+        {
+            Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/base64",
+            Headers = new Dictionary<string, string>
+            {
+                { "accept", "application/json" }
+            },
+            ContentType = "text/plain",
+            BodyString = image,
+            EnableDebug = false
+        };
+        return currentRequest;
     }
 
     private static Dictionary<EEmote, float> ConvertRestResponseToDictionary(string responseText)

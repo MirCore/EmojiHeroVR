@@ -14,6 +14,7 @@ namespace EditorUI
         private static VisualElement _root;
 
         [SerializeField] public string SelectedWebcam;
+        [SerializeField] public string RestBasePath;
 
         [MenuItem("Window/EmojiHero")]
         public static void ShowExample()
@@ -37,7 +38,15 @@ namespace EditorUI
             // Instantiate UXML
             VisualElement labelFromUxml = VisualTreeAsset.Instantiate();
             _root.Add(labelFromUxml);
+
+            _root.Q<TextField>("RestBasePath").value = RestBasePath;
+            _root.Q<TextField>("RestBasePath").RegisterValueChangedCallback(evt => RestBasePath = evt.newValue);
             
+            CreateWebcamDropdown();
+        }
+
+        private void CreateWebcamDropdown()
+        {
             List<string> webCamDevices = WebCamTexture.devices.Select(device => device.name).ToList();
 
             DropdownField dropdown = _root.Q<DropdownField>("WebcamDropdown");
@@ -46,11 +55,10 @@ namespace EditorUI
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 SelectedWebcam = evt.newValue;
-                Debug.Log(SelectedWebcam);
             });
         }
 
-        public static void SetData(Dictionary<EEmote, float>  response)
+        public static void SetRestResponseData(Dictionary<EEmote, float>  response)
         {
             foreach (KeyValuePair<EEmote,float> pair in response)
             {

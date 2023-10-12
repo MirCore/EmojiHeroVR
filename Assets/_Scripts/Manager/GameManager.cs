@@ -32,10 +32,6 @@ namespace Manager
         [Header("Webcams")]
             [SerializeField] private Webcam Webcam;
             [field: SerializeField] public bool ActivateWebcams { get; private set; }
-        
-        [Header("Rest Base Path")]
-        [SerializeField]
-        internal string BasePath = "http://localhost:8765/";
 
         
         private void Start()
@@ -91,7 +87,7 @@ namespace Manager
             EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
 #if UNITY_EDITOR
-            EditorUI.EditorUI.SetData(response);
+            EditorUI.EditorUI.SetRestResponseData(response);
 #endif
           
             EventManager.InvokeEmotionDetected(maxEmote);
