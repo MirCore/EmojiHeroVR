@@ -1,6 +1,7 @@
 using System.Collections;
 using Enums;
 using States.Emojis;
+using TMPro;
 using UnityEngine;
 using Utilities;
 
@@ -18,7 +19,8 @@ namespace Manager
         [SerializeField] internal EEmote Emote;
         [SerializeField] private Renderer EmojiRenderer;
         [SerializeField] internal Animator EmojiAnimator;
-
+        [SerializeField] internal TMP_Text EmoteTitle;
+            
         internal Material EmojiMaterial;
         internal readonly int Sprite = Shader.PropertyToID("_Sprite");
         internal readonly int DissolveAmount = Shader.PropertyToID("_DissolveAmount");
@@ -26,6 +28,12 @@ namespace Manager
         internal readonly int SuccessColorAmount = Shader.PropertyToID("_SuccessColorAmount");
         internal float ActiveAreaLeft;
         internal float ActionAreaSize;
+        private Rigidbody _rigidbody;
+
+        private void Start()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
 
         private void OnEnable()
         {
@@ -38,12 +46,15 @@ namespace Manager
             SwitchState(PreState);
         
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
         }
 
         private void OnDisable()
         {
             EventManager.OnEmotionDetected -= OnEmotionDetectedCallback;
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         }
+
 
         private void Update()
         {
@@ -61,6 +72,11 @@ namespace Manager
         private void OnEmotionDetectedCallback(EEmote emote)
         {
             _emojiState.OnEmotionDetectedCallback(this, emote);
+        }
+        
+        private void OnLevelStoppedCallback()
+        {
+            FadeOut();
         }
 
         private IEnumerator DeactivateEmoji(float waitTime)
@@ -82,8 +98,17 @@ namespace Manager
 
         public void FadeOut()
         {
-            GetComponent<Rigidbody>().isKinematic = false;
-            GetComponent<Rigidbody>().velocity = - (GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.EmojiMovementSpeed) + GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
+            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
+            {
+                StartCoroutine(MathHelper.SLerp(0, 1, 1f, EmojiRenderer.material, DissolveAmount));
+                StartCoroutine(DeactivateEmoji(1));
+                return;
+            }
+                
+            _rigidbody.isKinematic = false;
+            _rigidbody.velocity =
+                -(GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.EmojiMovementSpeed) +
+                GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
             StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             StartCoroutine(DeactivateEmoji(6));
         }

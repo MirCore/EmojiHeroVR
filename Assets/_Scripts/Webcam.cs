@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Manager;
+using Systems;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -86,20 +88,23 @@ public class Webcam : MonoBehaviour
         string base64 = Convert.ToBase64String(bytes);
         
 #if UNITY_EDITOR
-        // Start a new thread for file saving to avoid blocking the main thread
-        Thread saveFile = new (() =>
+        if (GameManager.Instance.GetEmojiInActionArea().Any())
+        {
+            // Start a new thread for file saving to avoid blocking the main thread
+            Thread saveFile = new(() =>
             {
                 // Generate a timestamp for the filename
                 string timestamp = DateTime.Now.ToString("MMddHHmmssfff");
-                
-                
+
+                string filename = "Image" + timestamp + ".jpg";
                 // Save the captured image to a file
-                SaveFiles.SaveFile("/../SaveFiles/", "Image" + timestamp + ".jpg", bytes);
-                SaveFiles.SaveFile("/../SaveFiles/", "Base64" + timestamp + ".txt", base64);
-                
-                
+                SaveFiles.SaveFile("/../SaveFiles/", filename, bytes);
+                // SaveFiles.SaveFile("/../SaveFiles/", "Base64" + timestamp + ".txt", base64);
+
+                LoggingSystem.Instance.CurrentImageFileName = filename;
             });
-        saveFile.Start();
+            saveFile.Start();
+        }
 #endif
         
         // Return the base64-encoded image

@@ -17,16 +17,17 @@ namespace Manager
         [SerializeField] private GameObject LevelPrefab;
         [SerializeField] private GameObject LevelUI;
 
-        [Header("Endgame UI")]
+        [Header("Score UI")]
         [SerializeField] private TMP_Text LevelNameField;
-        [SerializeField] private TMP_Text ResultField;
-        [SerializeField] private TMP_Text ScoreField;
+        [SerializeField] private List<TMP_Text> ResultField = new();
+        [SerializeField] private List<TMP_Text> ScoreField = new();
         
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnLevelFinished += OnOnLevelFinishedCallback;
+            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
 
             LoadLevelUI();
         }
@@ -37,8 +38,14 @@ namespace Manager
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnLevelFinished -= OnOnLevelFinishedCallback;
+            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
         }
-        
+
+        private void OnEmoteExitedAreaCallback(EEmote emote)
+        {
+            LoadScoreUI();
+        }
+
         private void LoadLevelUI()
         {
             Dictionary<ScriptableLevel, GameObject> uis = new ();
@@ -77,8 +84,17 @@ namespace Manager
         private void LoadEndScreenUI()
         {
             LevelNameField.text = GameManager.Instance.Level.Name;
-            ResultField.text = GameManager.Instance.LevelEmojiProgress + "/" + GameManager.Instance.Level.Count;
-            ScoreField.text = GameManager.Instance.LevelScore.ToString();
+            LoadScoreUI();
+        }
+
+        private void LoadScoreUI()
+        {
+            for (int i = 0; i <= 1; i++)
+            {
+                ResultField[i].text = GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.Count;
+                ScoreField[i].text = GameManager.Instance.GetLevelScore().ToString();
+            }
+            
         }
 
 
@@ -87,6 +103,7 @@ namespace Manager
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
+            LoadScoreUI();
         }
         
         private void OnLevelStoppedCallback()

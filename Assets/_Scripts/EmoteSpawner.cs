@@ -21,14 +21,14 @@ public class EmoteSpawner : MonoBehaviour
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
         EventManager.OnLevelStopped += OnLevelStoppedCallback;
-        EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
+        EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
     }
 
     private void OnDisable()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
         EventManager.OnLevelStopped -= OnLevelStoppedCallback;
-        EventManager.OnEmojiFulfilled -= OnEmojiFulfilledCallback;
+        EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
     }
 
     private void OnLevelStartedCallback()
@@ -38,7 +38,7 @@ public class EmoteSpawner : MonoBehaviour
         _count = 0;
         _startTime = Time.time;
         if (_level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmote(0));
+            StartCoroutine(SpawnEmoteInActionArea(0));
         else
             StartCoroutine(SpawnEmoteCoroutine());
     }
@@ -48,10 +48,10 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = false;
     }
     
-    private void OnEmojiFulfilledCallback(EEmote emote, float score)
+    private void OnEmoteFulfilledCallback(EEmote emote, float score)
     {
         if (_level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmote(1));
+            StartCoroutine(SpawnEmoteInActionArea(1));
     }
     
     private IEnumerator SpawnEmoteCoroutine()
@@ -75,13 +75,13 @@ public class EmoteSpawner : MonoBehaviour
         }
     }
     
-    private IEnumerator SpawnEmote(float waitBeforeSpawn)
+    private IEnumerator SpawnEmoteInActionArea(float waitBeforeSpawn)
     {
         yield return new WaitForSeconds(waitBeforeSpawn);
         
         GameObject emote = ObjectPool.Instance.GetPooledObject();
 
-        emote.transform.position = GameManager.Instance.ActionArea.transform.position;
+        emote.transform.position = GameManager.Instance.ActionArea.transform.position + GameManager.Instance.ActionArea.transform.up * 0.15f;
         emote.SetActive(true);
         _count++;
     }

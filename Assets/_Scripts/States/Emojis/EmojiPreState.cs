@@ -12,6 +12,7 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length-1);
+            emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
             SetEmojiTextures(emojiManager);
         }
 

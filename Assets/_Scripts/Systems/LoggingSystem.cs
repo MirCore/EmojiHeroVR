@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Enums;
 using Manager;
 using UnityEngine;
 using Utilities;
@@ -14,6 +17,7 @@ namespace Systems
         private const string RelativePath = "/../SaveFiles/"; // Relative path for the log file
         private string _fileName; // The name of the log file
         private string _dirPath; // The full directory path where the log file will be stored
+        public string CurrentImageFileName { get; set; }
 
 
         private void Start()
@@ -40,7 +44,9 @@ namespace Systems
                 "Number of Emoji",
                 "Emote in ActionArea",
                 "Name of image file",
-                "FER response"
+                "Emote with highest probability",
+                "Highest probability",
+                "Full FER response"
             };
             
             // Append the header row to the log CSV file
@@ -50,7 +56,7 @@ namespace Systems
         /// <summary>
         /// Writes a log entry to the CSV file.
         /// </summary>
-        public void WriteLog()
+        public void WriteLog(EEmote maxEmote, Dictionary<EEmote, float>  response)
         {
             // Prepare the data to be logged
             string[] data =
@@ -58,10 +64,12 @@ namespace Systems
                 EditorUI.EditorUI.Instance.UserID,
                 ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds().ToString(), // Timestamp
                 GameManager.Instance.Level.name, // Level name
-                GameManager.Instance.LevelEmojiProgress.ToString(), // Number of emoji
-                GameManager.Instance.EmojiInActionArea.ToString(), // Emote in ActionArea
-                "[Name of image files(s)]", // Name of image file(s) TODO ADD IMAGE NAME
-                "[FER response]" // FER response
+                GameManager.Instance.GetLevelEmojiProgress().ToString(), // Number of emoji
+                string.Join(", ", GameManager.Instance.GetEmojiInActionArea()), // Emote in ActionArea
+                CurrentImageFileName, // Name of image file(s) TODO ADD IMAGE NAME
+                maxEmote.ToString(),
+                response[maxEmote].ToString("F2"),
+                string.Join(", ", response.Select(kv => $"{kv.Key}: {kv.Value:F2}")) // FER response
             };
             
             // Append the data as a line to the log CSV file

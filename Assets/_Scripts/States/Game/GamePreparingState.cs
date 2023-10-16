@@ -13,6 +13,11 @@ namespace States.Game
             EventManager.InvokeLevelStopped();
         }
 
+        public override void LeaveState()
+        {
+            
+        }
+
         public override void HandleUIInput(UIType uiType)
         {
             switch (uiType)
@@ -22,9 +27,8 @@ namespace States.Game
                     GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
                     break;
                 case UIType.StopLevel:
-                    break;
                 case UIType.PauseLevel:
-                    break;
+                case UIType.ContinueEndScreen:
                 case UIType.Default:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);

@@ -10,6 +10,7 @@ namespace States.Emojis
         {
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
             EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
+            EventManager.InvokeEmoteFailed(emojiManager.Emote);
             emojiManager.EmojiAnimator.Play("EmojiFail");
             emojiManager.SwitchState(emojiManager.LeavingState);
         }

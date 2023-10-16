@@ -10,7 +10,11 @@ namespace States.Game
         {
             EventManager.InvokeLevelFinished();
             GameManager.Instance.StopTimeScale();
-            GameManager.Instance.ResetLevelState();
+        }
+
+        public override void LeaveState()
+        {
+            
         }
 
         public override void HandleUIInput(UIType uiType)

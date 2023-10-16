@@ -1,7 +1,5 @@
 ﻿using Enums;
 using Manager;
-using UnityEditor;
-using UnityEngine;
 
 namespace States.Emojis
 {

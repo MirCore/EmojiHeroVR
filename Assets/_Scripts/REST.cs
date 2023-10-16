@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,11 +7,10 @@ using Enums;
 using Manager;
 using Proyecto26;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
-public class REST
+public static class Rest
 {
-    private RequestHelper _currentRequest;
+    private static RequestHelper _currentRequest;
 
     public static void Ping()
     {
@@ -102,12 +100,12 @@ public class REST
             .Then(response =>
             {
                 Dictionary<EEmote, float> result = ConvertRestResponseToDictionary(response.Text);
-                GameManager.Instance.ProcessRestResponse(result);
+                FerHandler.Instance.ProcessRestResponse(result);
             })
             .Catch(error =>
             {
                 if (error.Message == "HTTP/1.1 422 Unprocessable Entity")
-                    GameManager.Instance.ProcessRestError(error);
+                    FerHandler.Instance.ProcessRestError(error);
                 Debug.Log("Error: " + error.Message);
             });
     }

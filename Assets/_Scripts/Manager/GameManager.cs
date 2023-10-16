@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Enums;
 using Scriptables;
 using States.Game;
@@ -21,39 +19,26 @@ namespace Manager
             [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
             [field: SerializeField] public GameObject ActionArea { get; private set; }
         
-
-        [Header("Level Progress")]
-            private int _emojiCount;
-            public int LevelEmojiProgress { get; private set; }
-            public int LevelScore { get; private set; }
-            public List<EEmote> EmojiInActionArea = new();
         
-        [Header("Webcams")]
-            [SerializeField] private Webcam Webcam;
+        [field: Header("Webcams")]
+            [field: SerializeField] public Webcam Webcam { get; private set; }
 
             public ScriptableLevel Level { get; private set; }
-        
+
+
         private void Start()
         {
-            EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
-            EventManager.OnEmojiFulfilled += OnEmojiFulfilledCallback;
-            
             if (EditorUI.EditorUI.Instance.UserID == "")
                 Debug.LogWarning("No UserID Set");
 
             Level = EditorUI.EditorUI.Instance.GetSelectedLevel();
 
+            _gameState = PreparingState;
             SwitchState(PreparingState);
-            
         }
 
         private void OnDestroy()
         {
-            EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
-            EventManager.OnEmojiFulfilled -= OnEmojiFulfilledCallback;
-
             // Delete UserID after Game Ended
             EditorUI.EditorUI.Instance.ResetUserID();
         }
@@ -61,67 +46,12 @@ namespace Manager
         private void Update()
         {
             if (Input.GetButtonDown("Jump"))
-            {
                 OnButtonPressed(UIType.StartStopLevel);
-            }
-        }
-
-        private void OnEmoteEnteredAreaCallback(EEmote emote)
-        {
-            EmojiInActionArea.Add(emote);
-            SendRestImage();
-        }
-
-        private void SendRestImage()
-        {
-            string image = Webcam.GetWebcamImage();
-            REST.PostBase64(image);
-        }
-        
-        private void OnEmojiFulfilledCallback(EEmote emote, float score)
-        {
-            LevelEmojiProgress++;
-            LevelScore += 50 + (int)(score * 100);
-        }
-
-        private void OnEmoteExitedAreaCallback(EEmote emote)
-        {
-            EmojiInActionArea.Remove(emote);
-            
-            _emojiCount++;
-            if (_emojiCount >= Level.Count && Level.LevelMode == ELevelMode.Count)
-            {        
-                SwitchState(LevelFinishedState);
-            }
-        }
-
-        public void ProcessRestResponse(Dictionary<EEmote, float>  response)
-        {
-            //LoggingSystem.Instance.WriteLog(response);
-            EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-
-#if UNITY_EDITOR
-            EditorUI.EditorUI.SetRestResponseData(response);
-#endif
-          
-            EventManager.InvokeEmotionDetected(maxEmote);
-            
-            if (EmojiInActionArea.Count > 0)
-            {
-                SendRestImage();
-            }
-        }
-        
-        public void ProcessRestError(Exception error)
-        {
-            if (EmojiInActionArea.Count > 0)
-            {
-                SendRestImage();
-            }
         }
 
         public void SwitchState(GameState state)
         {
+            _gameState.LeaveState();
             _gameState = state;
             _gameState.EnterState();
         }
@@ -132,12 +62,6 @@ namespace Manager
         
         public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1,0,1f));
 
-        public void ResetLevelState()
-        {
-            _emojiCount = 0;
-            LevelEmojiProgress = 0;
-            LevelScore = 0;
-        }
 
         public void SetNewLevel(ScriptableLevel level)
         {
@@ -145,5 +69,10 @@ namespace Manager
             EditorUI.EditorUI.Instance.SetNewLevel(level);
         }
 
+        public int GetLevelEmojiProgress() => PlayingLevelState.LevelEmojiProgress;
+
+        public IEnumerable<EEmote> GetEmojiInActionArea() => PlayingLevelState.EmojiInActionArea;
+
+        public int GetLevelScore() => PlayingLevelState.LevelScore;
     }
 }
