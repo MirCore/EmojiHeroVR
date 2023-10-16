@@ -92,7 +92,7 @@ public static class Rest
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    public static void PostBase64(string image)
+    public static void PostBase64(string image, string timestamp, EEmote logFer)
     {
         RequestHelper currentRequest = GetBase64RequestHelper(image);
 
@@ -100,13 +100,13 @@ public static class Rest
             .Then(response =>
             {
                 Dictionary<EEmote, float> result = ConvertRestResponseToDictionary(response.Text);
-                FerHandler.Instance.ProcessRestResponse(result);
+                FerHandler.Instance.ProcessRestResponse(result, timestamp, logFer);
             })
             .Catch(error =>
             {
                 if (error.Message == "HTTP/1.1 422 Unprocessable Entity")
-                    FerHandler.Instance.ProcessRestError(error);
-                Debug.Log("Error: " + error.Message);
+                    FerHandler.Instance.ProcessRestError(error, timestamp);
+                Debug.Log("REST Error: " + error.Message);
             });
     }
 

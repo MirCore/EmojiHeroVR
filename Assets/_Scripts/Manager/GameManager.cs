@@ -3,12 +3,16 @@ using Enums;
 using Scriptables;
 using States.Game;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities;
 
 namespace Manager
 {
     public class GameManager : Singleton<GameManager>
     {
+        [Header("Prevent Game From Starting When UserID Is Missing")]
+        [SerializeField] private bool PreventGameStartWithoutUserID;
+        
         [Header("States")]
             private GameState _gameState;
             internal readonly GamePreparingState PreparingState = new();
@@ -24,12 +28,19 @@ namespace Manager
             [field: SerializeField] public Webcam Webcam { get; private set; }
 
             public ScriptableLevel Level { get; private set; }
+        
 
 
         private void Start()
         {
             if (EditorUI.EditorUI.Instance.UserID == "")
+            {
                 Debug.LogWarning("No UserID Set");
+#if UNITY_EDITOR
+                if (PreventGameStartWithoutUserID)
+                    UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            }
 
             Level = EditorUI.EditorUI.Instance.GetSelectedLevel();
 

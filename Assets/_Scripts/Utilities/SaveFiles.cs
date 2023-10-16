@@ -1,16 +1,47 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Manager;
+using Systems;
 using UnityEngine;
 
 namespace Utilities
 {
     public abstract class SaveFiles
     {
+        public static string GetUnixTimestamp()
+        {
+            return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
+        }
+        public static string GetDateTimeTimestamp()
+        {
+            return DateTime.Now.ToString("HHmmssfff");
+        }
+
+        public static string SaveImageFile(string dirPath, string timestamp, byte[] bytes)
+        {
+            string filename =
+                $"{timestamp}-" +
+                $"{EditorUI.EditorUI.Instance.UserID}-" +
+                $"{GameManager.Instance.GetEmojiInActionArea().FirstOrDefault()}-" +
+                $"{FerHandler.Instance.LastDetectedEmote}.jpg";
+            
+            // Start a new thread for file saving to avoid blocking the main thread
+            Thread saveFile = new(() =>
+            {
+                // Save the captured image to a file
+                SaveFile(dirPath, filename, bytes);
+            });
+            saveFile.Start();
+            return filename;
+        }
+        
         /// <summary>
         /// Save binary data (byte array) to a file asynchronously
         /// </summary>
-        public static void SaveFile(string path, string fileName, byte[] bytes)
+        private static void SaveFile(string path, string fileName, byte[] bytes)
         {
 #if UNITY_EDITOR
             SaveFileInternal(path, fileName, async filePath => await WriteFile(bytes, filePath));
@@ -18,30 +49,17 @@ namespace Utilities
         }
 
         /// <summary>
-        /// Save text data (base64-encoded string) to a file asynchronously
-        /// </summary>
-        public static void SaveFile(string path, string fileName, string base64)
-        {
-#if UNITY_EDITOR
-            SaveFileInternal(path, fileName, async filePath => await WriteFile(base64, filePath));
-#endif
-        }
-
-        /// <summary>
         /// Internal method to handle logic for saving files
         /// </summary>
         private static async void SaveFileInternal(string path, string fileName, Func<string, Task> writeFileAction)
-        {
-            // Combine the specified path with the application's data path
-            string dirPath = Path.Combine(Application.dataPath + path);
-            
+        { 
             // Create the directory if it doesn't exist
-            if(!Directory.Exists(dirPath)) 
-                Directory.CreateDirectory(dirPath);
+            if(!Directory.Exists(path)) 
+                Directory.CreateDirectory(path);
 
             try
             {
-                string filePath = Path.Combine(dirPath, fileName);
+                string filePath = Path.Combine(path, fileName);
                 await writeFileAction(filePath);
             }
             catch (Exception e)
@@ -49,14 +67,6 @@ namespace Utilities
                 Console.WriteLine($"Error saving file {fileName}: {e}");
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Asynchronously write text to a file
-        /// </summary>
-        private static async Task WriteFile(string content, string filePath)
-        {
-            await File.WriteAllTextAsync(filePath, content);
         }
 
         /// <summary>

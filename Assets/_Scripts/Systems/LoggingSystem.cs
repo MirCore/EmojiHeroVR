@@ -17,7 +17,8 @@ namespace Systems
         private const string RelativePath = "/../SaveFiles/"; // Relative path for the log file
         private string _fileName; // The name of the log file
         private string _dirPath; // The full directory path where the log file will be stored
-        public string CurrentImageFileName { get; set; }
+
+        private readonly Dictionary<string, byte[]> _currentImages = new();
 
 
         private void Start()
@@ -25,9 +26,12 @@ namespace Systems
             // Create a unique log file name based on the current date and time
             _fileName = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + "_EmojiHero-Log.csv";
             
+            string userID = EditorUI.EditorUI.Instance.UserID;
+            
             // Combine the specified path with the application's data path
-            _dirPath = Path.Combine(Application.dataPath + RelativePath);
-
+            _dirPath = Path.Combine(Path.Combine(Application.dataPath + RelativePath), userID);
+            Debug.Log(_dirPath);
+            
             CreateCsvHeaders();
         }
         
@@ -56,24 +60,32 @@ namespace Systems
         /// <summary>
         /// Writes a log entry to the CSV file.
         /// </summary>
-        public void WriteLog(EEmote maxEmote, Dictionary<EEmote, float>  response)
+        public void WriteLog(EEmote maxEmote, Dictionary<EEmote, float>  response, string timestamp, EEmote emote)
         {
+            string imageFilename = SaveFiles.SaveImageFile(_dirPath, timestamp, _currentImages[timestamp]);
+            _currentImages.Remove(timestamp);
+            
             // Prepare the data to be logged
             string[] data =
             {
                 EditorUI.EditorUI.Instance.UserID,
-                ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds().ToString(), // Timestamp
+                timestamp, // Timestamp
                 GameManager.Instance.Level.name, // Level name
                 GameManager.Instance.GetLevelEmojiProgress().ToString(), // Number of emoji
-                string.Join(", ", GameManager.Instance.GetEmojiInActionArea()), // Emote in ActionArea
-                CurrentImageFileName, // Name of image file(s) TODO ADD IMAGE NAME
+                emote.ToString(), // Emote in ActionArea
+                imageFilename, // Name of image file(s)
                 maxEmote.ToString(),
                 response[maxEmote].ToString("F2"),
-                string.Join(", ", response.Select(kv => $"{kv.Key}: {kv.Value:F2}")) // FER response
+                string.Join(";", response.Select(kv => $"{kv.Key}: {kv.Value:F2}")) // FER response
             };
             
             // Append the data as a line to the log CSV file
             SaveFiles.AppendLineToCsv(_dirPath, _fileName, data);
+        }
+
+        public void SetImageData(byte[] bytes, string timestamp)
+        {
+            _currentImages.Add(timestamp, bytes);
         }
     }
 }

@@ -1009,6 +1009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c6b0e41b38df6041b9ecaaab5642eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PreventGameStartWithoutUserID: 0
   <EmojiSpawnPosition>k__BackingField: {fileID: 268804710}
   <ActionArea>k__BackingField: {fileID: 131909669}
   <Webcam>k__BackingField: {fileID: 1522153667}
@@ -5257,8 +5258,8 @@ MonoBehaviour:
   Image:
   - {fileID: 112583441}
   - {fileID: 324734124}
-  RequestedCameraWidth: 512
-  RequestedCameraHeight: 512
+  RequestedCameraWidth: 1024
+  RequestedCameraHeight: 1024
 --- !u!4 &1526306344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}

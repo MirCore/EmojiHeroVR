@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
@@ -76,7 +77,7 @@ public class Webcam : MonoBehaviour
         }
     }
 
-    public string GetWebcamImage()
+    public string GetWebcamImage(string timestamp, EEmote logImage)
     {
         // Capture a single frame
         _snapshot.SetPixels(_webcam[MainWebcam].GetPixels());
@@ -86,29 +87,13 @@ public class Webcam : MonoBehaviour
         byte[] bytes = _snapshot.EncodeToJPG();
         // Convert to frame to base64
         string base64 = Convert.ToBase64String(bytes);
-        
+
 #if UNITY_EDITOR
-        if (GameManager.Instance.GetEmojiInActionArea().Any())
-        {
-            // Start a new thread for file saving to avoid blocking the main thread
-            Thread saveFile = new(() =>
-            {
-                // Generate a timestamp for the filename
-                string timestamp = DateTime.Now.ToString("MMddHHmmssfff");
-
-                string filename = "Image" + timestamp + ".jpg";
-                // Save the captured image to a file
-                SaveFiles.SaveFile("/../SaveFiles/", filename, bytes);
-                // SaveFiles.SaveFile("/../SaveFiles/", "Base64" + timestamp + ".txt", base64);
-
-                LoggingSystem.Instance.CurrentImageFileName = filename;
-            });
-            saveFile.Start();
-        }
+        if (logImage != EEmote.None)
+            LoggingSystem.Instance.SetImageData(bytes, timestamp);
 #endif
         
         // Return the base64-encoded image
         return base64;
     }
-    
 }
