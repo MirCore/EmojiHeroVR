@@ -20,7 +20,8 @@ namespace EditorUI
         [SerializeField] public string SelectedLevel;
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
-        private List<ScriptableLevel> Levels;
+        private List<ScriptableLevel> _levels;
+
 
         [MenuItem("Window/EmojiHero Editor Window")]
         public static void ShowExample()
@@ -50,25 +51,32 @@ namespace EditorUI
             
             _root.Q<TextField>("UserID").value = UserID;
             _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
+
+            _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
             
             CreateWebcamDropdown();
             CreateLevelDropdown();
         }
 
+        private void OnStartStopButtonClicked(ClickEvent evt)
+        {
+            GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+        }
+
         private void CreateLevelDropdown()
         {
-            Levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
+            _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
 
             DropdownField dropdown = _root.Q<DropdownField>("LevelSelect");
-            foreach (ScriptableLevel level in Levels)
+            foreach (ScriptableLevel level in _levels)
             {
                 dropdown.choices.Add(level.name);
             }
-            dropdown.index = Levels.IndexOf(Levels.FirstOrDefault(l => l.name == SelectedLevel));
+            dropdown.index = _levels.IndexOf(_levels.FirstOrDefault(l => l.name == SelectedLevel));
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 SelectedLevel = evt.newValue;
-                GameManager.Instance.SetNewLevel(Levels.FirstOrDefault(l => l.name == SelectedLevel));
+                GameManager.Instance.SetNewLevel(_levels.FirstOrDefault(l => l.name == SelectedLevel));
             });
         }
 
@@ -106,7 +114,7 @@ namespace EditorUI
 
         public ScriptableLevel GetSelectedLevel()
         {
-            return Levels.FirstOrDefault(l => l.name == SelectedLevel);
+            return _levels.FirstOrDefault(l => l.name == SelectedLevel);
         }
 
         public void SetNewLevel(ScriptableLevel level)
