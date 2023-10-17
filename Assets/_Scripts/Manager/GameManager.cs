@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Enums;
 using Scriptables;
 using States.Game;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 
 namespace Manager
@@ -30,8 +30,9 @@ namespace Manager
             public ScriptableLevel Level { get; private set; }
         
 
+        public int SpawnedEmotesCount { get; private set; }
 
-        private void Start()
+        private void OnEnable()
         {
             if (EditorUI.EditorUI.Instance.UserID == "")
             {
@@ -67,6 +68,27 @@ namespace Manager
             _gameState.EnterState();
         }
 
+        public bool CheckLevelEndConditions(int count)
+        {
+            switch (Level.LevelStruct.LevelMode)
+            {
+                case ELevelMode.Count:
+                    if (count >= Level.LevelStruct.Count)
+                        return true;
+                    break;
+                case ELevelMode.Predefined:
+                    if (count >= Level.LevelStruct.EmoteArray.Length)
+                        return true;
+                    break;
+                case ELevelMode.Training: // TODO: implement training end conditions
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
+        }
+
         public void OnButtonPressed(UIType uiType) => _gameState.HandleUIInput(uiType);
         
         public void OnButtonPressed(ScriptableLevel level) => _gameState.HandleUIInput(level);
@@ -85,5 +107,9 @@ namespace Manager
         public IEnumerable<EEmote> GetEmojiInActionArea() => PlayingLevelState.EmojiInActionArea;
 
         public int GetLevelScore() => PlayingLevelState.LevelScore;
+
+        public void SetSpawnedEmotesCount(int spawnedEmotesCount) => SpawnedEmotesCount = spawnedEmotesCount;
+
+        public void IncreaseSpawnedEmotesCount() => SpawnedEmotesCount++;
     }
 }

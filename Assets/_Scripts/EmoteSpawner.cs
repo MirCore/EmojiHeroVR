@@ -12,12 +12,14 @@ public class EmoteSpawner : MonoBehaviour
     [SerializeField] private int Lanes = 4;
 
     private bool _spawnActive = false;
-    private int _count;
-    private float _startTime;
 
     private ScriptableLevel _level;
 
-    void OnEnable()
+    private Vector3 _spawnDistance;
+    private float _lanes;
+    private Vector3 _actionAreaSpawnLocation;
+
+    private void OnEnable()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
         EventManager.OnLevelStopped += OnLevelStoppedCallback;
@@ -31,89 +33,71 @@ public class EmoteSpawner : MonoBehaviour
         EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
     }
 
+    private void Start()
+    {
+        _spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
+        _lanes = (float)(Lanes - 1) / 2;
+        _actionAreaSpawnLocation = GameManager.Instance.ActionArea.transform.position + GameManager.Instance.ActionArea.transform.up * 0.15f;
+    }
+
     private void OnLevelStartedCallback()
     {
         _level = GameManager.Instance.Level;
         _spawnActive = true;
-        _count = 0;
-        _startTime = Time.time;
-        if (_level.LevelMode == ELevelMode.Training)
+        GameManager.Instance.SetSpawnedEmotesCount(0);
+        
+        if (_level.LevelStruct.LevelMode == ELevelMode.Training)
             StartCoroutine(SpawnEmoteInActionArea(0));
         else
             StartCoroutine(SpawnEmoteCoroutine());
     }
 
-    private void OnLevelStoppedCallback()
-    {
-        _spawnActive = false;
-    }
+    private void OnLevelStoppedCallback() => StopSpawning();
     
+    private void OnDestroy() => StopSpawning();
+
     private void OnEmoteFulfilledCallback(EEmote emote, float score)
     {
-        if (_level.LevelMode == ELevelMode.Training)
+        if (_level.LevelStruct.LevelMode == ELevelMode.Training)
             StartCoroutine(SpawnEmoteInActionArea(1));
     }
     
     private IEnumerator SpawnEmoteCoroutine()
     {
-        Vector3 spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
-        float lanes = (float)(Lanes - 1) / 2;
         while (_spawnActive)
         {
-            GameObject emote = ObjectPool.Instance.GetPooledObject();
-        
             int lane = Random.Range(0, Lanes);
-            float xPos = (lane - lanes) * XWidth;
-            emote.transform.position = spawnDistance + new Vector3(xPos, 0, 0);
-            emote.SetActive(true);
-            _count++;
+            Vector3 position = _spawnDistance + new Vector3((lane - _lanes) * XWidth, 0, 0);
+            
+            ActivatePooledEmote(position);
+            CheckLevelEndConditions();
 
-            if (CheckLevelEnded())
-                StopSpawning();
-
-            yield return new WaitForSeconds(_level.EmojiSpawnInterval);
+            yield return new WaitForSeconds(_level.LevelStruct.SpawnInterval);
         }
     }
-    
+
     private IEnumerator SpawnEmoteInActionArea(float waitBeforeSpawn)
     {
         yield return new WaitForSeconds(waitBeforeSpawn);
         
+        ActivatePooledEmote(_actionAreaSpawnLocation);
+        CheckLevelEndConditions();
+    }
+    
+    private static void ActivatePooledEmote(Vector3 position)
+    {
         GameObject emote = ObjectPool.Instance.GetPooledObject();
-
-        emote.transform.position = GameManager.Instance.ActionArea.transform.position + GameManager.Instance.ActionArea.transform.up * 0.15f;
+        emote.transform.position = position;
         emote.SetActive(true);
-        _count++;
+        GameManager.Instance.IncreaseSpawnedEmotesCount();
     }
 
-    private bool CheckLevelEnded()
+    private void CheckLevelEndConditions()
     {
-        switch (_level.LevelMode)
-        {
-            case ELevelMode.Count:
-                if (_count >= _level.Count)
-                    return true;
-                break;
-            case ELevelMode.Time:
-                if (Time.time - _startTime >= _level.Time)
-                    return true;
-                break;
-            case ELevelMode.Training:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        return false;
+        if (GameManager.Instance.CheckLevelEndConditions(GameManager.Instance.SpawnedEmotesCount))
+            StopSpawning();
     }
 
-    private void StopSpawning()
-    {
-        _spawnActive = false;
-    }
+    private void StopSpawning() => _spawnActive = false;
 
-    private void OnDestroy()
-    {
-        StopSpawning();
-    }
 }

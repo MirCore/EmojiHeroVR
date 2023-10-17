@@ -3,7 +3,7 @@
     public enum ELevelMode
     {
         Count,
-        Time,
-        Training
+        Training,
+        Predefined
     }
 }

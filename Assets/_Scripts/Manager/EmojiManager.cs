@@ -60,7 +60,7 @@ namespace Manager
         {
             _emojiState.Update(this);
             if (_emojiState != LeavingState)
-                transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.EmojiMovementSpeed * Time.deltaTime);
+                transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.LevelStruct.MovementSpeed * Time.deltaTime);
         }
 
         internal void SwitchState(EmojiState state)
@@ -98,7 +98,7 @@ namespace Manager
 
         public void FadeOut()
         {
-            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
+            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
             {
                 StartCoroutine(MathHelper.SLerp(0, 1, 1f, EmojiRenderer.material, DissolveAmount));
                 StartCoroutine(DeactivateEmoji(1));
@@ -107,7 +107,7 @@ namespace Manager
                 
             _rigidbody.isKinematic = false;
             _rigidbody.velocity =
-                -(GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.EmojiMovementSpeed) +
+                -(GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.LevelStruct.MovementSpeed) +
                 GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
             StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             StartCoroutine(DeactivateEmoji(6));

@@ -12,7 +12,7 @@ namespace States.Emojis
             emojiManager.EmojiAnimator.Play("EmojiSuccess");
             EventManager.InvokeEmojiFulfilled(emojiManager.Emote, emojiManager.ActiveAreaLeft);
             
-            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
+            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
                 emojiManager.SwitchState(emojiManager.LeavingState);
         }
 

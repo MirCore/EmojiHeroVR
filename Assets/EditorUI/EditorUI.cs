@@ -3,7 +3,6 @@ using System.Linq;
 using Enums;
 using Manager;
 using Scriptables;
-using Systems;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -76,7 +75,7 @@ namespace EditorUI
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 SelectedLevel = evt.newValue;
-                GameManager.Instance.SetNewLevel(_levels.FirstOrDefault(l => l.name == SelectedLevel));
+                if (GameManager.Instance != null) GameManager.Instance.SetNewLevel(_levels.FirstOrDefault(l => l.name == SelectedLevel));
             });
         }
 

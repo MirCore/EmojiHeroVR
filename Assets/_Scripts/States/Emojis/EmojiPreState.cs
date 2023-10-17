@@ -11,7 +11,11 @@ namespace States.Emojis
     {
         public override void EnterState(EmojiManager emojiManager)
         {
-            emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length-1);
+            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Predefined)
+                emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount] - 1];
+            else
+                emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length-1);
+            
             emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
             SetEmojiTextures(emojiManager);
         }

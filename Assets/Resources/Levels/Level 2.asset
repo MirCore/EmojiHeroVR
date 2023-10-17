@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 975c049d1a0a4e079c02d4aa84e48308, type: 3}
-  m_Name: SingleEmote
+  m_Name: Level 2
   m_EditorClassIdentifier: 
   LevelStruct:
-    LevelName: Single Emote
-    LevelMode: 0
-    MovementSpeed: 0.5
+    LevelName: Level 2
+    LevelMode: 2
+    MovementSpeed: 0
     SpawnInterval: 0
-    Count: 1
-    Time: 0
-    EmoteIndices: 
-    EmoteRepeatAmount: 0
-    LevelArray: 
+    Count: 0
+    Emotes: 01000000030000000400000007000000
+    EmoteRepeatAmount: 3
+    EmoteArray: 000000000000000002000000010000000200000001000000020000000100000000000000
   GenerateNewLevelFile: 0

@@ -29,8 +29,7 @@ namespace Systems
             string userID = EditorUI.EditorUI.Instance.UserID;
             
             // Combine the specified path with the application's data path
-            _dirPath = Path.Combine(Path.Combine(Application.dataPath + RelativePath), userID);
-            Debug.Log(_dirPath);
+            _dirPath = Path.Combine(Application.dataPath + RelativePath, userID);
             
             CreateCsvHeaders();
         }

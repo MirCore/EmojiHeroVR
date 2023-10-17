@@ -30,6 +30,7 @@ namespace Manager
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
 
             LoadLevelUI();
+            OnLevelStoppedCallback();
         }
 
 
@@ -64,18 +65,18 @@ namespace Manager
                 button.onClick.AddListener(() => OnLevelButtonClicked(scriptableLevel));
                 
                 texts[0].text = "#" + id;
-                texts[1].text = scriptableLevel.Name;
+                texts[1].text = scriptableLevel.LevelStruct.LevelName;
 
 
-                if (scriptableLevel.LevelMode == ELevelMode.Training)
+                if (scriptableLevel.LevelStruct.LevelMode == ELevelMode.Training)
                     texts[2].text = "<sprite index=1>";
                 else
-                    texts[2].text = scriptableLevel.Count + "<sprite index=0>";
+                    texts[2].text = scriptableLevel.LevelStruct.Count + "<sprite index=0>";
 
-                if (scriptableLevel.LevelMode == ELevelMode.Training)
+                if (scriptableLevel.LevelStruct.LevelMode == ELevelMode.Training)
                     texts[3].text = "<sprite index=2>";
                 else
-                    texts[3].text = 60 / scriptableLevel.EmojiMovementSpeed + "<sprite index=0>/m";
+                    texts[3].text = 60 * scriptableLevel.LevelStruct.MovementSpeed + "<sprite index=0>/m";
 
                 id++;
             }
@@ -83,7 +84,7 @@ namespace Manager
 
         private void LoadEndScreenUI()
         {
-            LevelNameField.text = GameManager.Instance.Level.Name;
+            LevelNameField.text = GameManager.Instance.Level.LevelStruct.LevelName;
             LoadScoreUI();
         }
 
@@ -91,12 +92,10 @@ namespace Manager
         {
             for (int i = 0; i <= 1; i++)
             {
-                ResultField[i].text = GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.Count;
+                ResultField[i].text = GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.Count;
                 ScoreField[i].text = GameManager.Instance.GetLevelScore().ToString();
             }
-            
         }
-
 
         private void OnLevelStartedCallback()
         {
