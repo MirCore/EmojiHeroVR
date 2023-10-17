@@ -67,11 +67,12 @@ namespace Manager
                 texts[0].text = "#" + id;
                 texts[1].text = scriptableLevel.LevelStruct.LevelName;
 
-
-                if (scriptableLevel.LevelStruct.LevelMode == ELevelMode.Training)
-                    texts[2].text = "<sprite index=1>";
-                else
-                    texts[2].text = scriptableLevel.LevelStruct.Count + "<sprite index=0>";
+                texts[2].text = scriptableLevel.LevelStruct.LevelMode switch
+                {
+                    ELevelMode.Training => "<sprite index=1>",
+                    ELevelMode.Predefined => scriptableLevel.LevelStruct.EmoteArray.Length + "<sprite index=0>",
+                    _ => scriptableLevel.LevelStruct.Count + "<sprite index=0>"
+                };
 
                 if (scriptableLevel.LevelStruct.LevelMode == ELevelMode.Training)
                     texts[3].text = "<sprite index=2>";
@@ -92,7 +93,12 @@ namespace Manager
         {
             for (int i = 0; i <= 1; i++)
             {
-                ResultField[i].text = GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.Count;
+                ResultField[i].text = GameManager.Instance.Level.LevelStruct.LevelMode switch
+                {
+                    ELevelMode.Training => $"{GameManager.Instance.GetLevelEmojiProgress()}",
+                    ELevelMode.Predefined => GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.EmoteArray.Length,
+                    _ => GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.Count
+                };
                 ScoreField[i].text = GameManager.Instance.GetLevelScore().ToString();
             }
         }

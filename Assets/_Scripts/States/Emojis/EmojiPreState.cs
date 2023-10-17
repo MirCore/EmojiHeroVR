@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Enums;
 using Manager;
 using Systems;
@@ -12,7 +13,13 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Predefined)
-                emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount] - 1];
+            {
+                int i = GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount];
+                if (GameManager.Instance.Level.LevelStruct.Emotes.Any())
+                    emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[i];
+                else
+                    emojiManager.Emote = (EEmote)(i + 1);
+            }
             else
                 emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length-1);
             

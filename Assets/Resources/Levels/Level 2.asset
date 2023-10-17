@@ -15,10 +15,10 @@ MonoBehaviour:
   LevelStruct:
     LevelName: Level 2
     LevelMode: 2
-    MovementSpeed: 0
-    SpawnInterval: 0
+    MovementSpeed: 0.3
+    SpawnInterval: 2
     Count: 0
     Emotes: 01000000030000000400000007000000
     EmoteRepeatAmount: 3
-    EmoteArray: 000000000000000002000000010000000200000001000000020000000100000000000000
+    EmoteArray: 000000000100000002000000000000000100000003000000000000000300000001000000030000000200000002000000
   GenerateNewLevelFile: 0

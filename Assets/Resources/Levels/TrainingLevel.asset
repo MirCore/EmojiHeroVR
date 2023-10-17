@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelStruct:
     LevelName: Training Level
-    LevelMode: 2
+    LevelMode: 1
     MovementSpeed: 0
     SpawnInterval: 0
     Count: 0
-    Time: 0
-    EmoteIndices: 
+    Emotes: 
     EmoteRepeatAmount: 0
-    LevelArray: 
+    EmoteArray: 
   GenerateNewLevelFile: 0

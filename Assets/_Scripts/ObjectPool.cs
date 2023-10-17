@@ -15,6 +15,7 @@ public class ObjectPool : Singleton<ObjectPool>
     /// </summary>
     private void Start()
     {
+        ObjectToPool.SetActive(false);
         PooledObjects = new List<GameObject>();
         for (int i = 0; i < AmountToPool; i++)
         {
