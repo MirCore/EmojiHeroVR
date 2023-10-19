@@ -15,8 +15,8 @@ MonoBehaviour:
   LevelStruct:
     LevelName: Level 4
     LevelMode: 2
-    MovementSpeed: 0.3
-    SpawnInterval: 2
+    MovementSpeed: 0.4
+    SpawnInterval: 2.5
     Count: 0
     Emotes: 
     EmoteRepeatAmount: 4

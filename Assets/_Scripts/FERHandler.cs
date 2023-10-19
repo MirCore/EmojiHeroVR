@@ -6,43 +6,42 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities;
 
 public class FerHandler : Singleton<FerHandler>
 {
         private DateTime _sendRestImageTimestamp;
-        [SerializeField] private bool ContinuousFerMode = true;
+        [SerializeField] private bool PeriodicalFerMode = true;
         public EEmote LastDetectedEmote { get; private set; }
+
+        [SerializeField] private int CurrentActiveRestPosts;
+
+        private Coroutine _coroutine = null;
 
         private void Start()
         {
-            EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
-
         }
 
 
         private void OnDestroy()
         {
-            EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
-        }
-
-        private void OnLevelStartedCallback()
-        {
-            if (ContinuousFerMode)
-                StartCoroutine(SendRestImageContinuous());
         }
 
         private IEnumerator SendRestImageContinuous()
         {
-            while (ContinuousFerMode)
+            yield return new WaitForEndOfFrame();
+            
+            while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
             {
                 PostRestImage();
-                yield return new WaitForSecondsRealtime(.1f);
+                CurrentActiveRestPosts++;
+                yield return new WaitForSecondsRealtime(.15f);
             }
+            
+            _coroutine = null;
         }
 
         private static void PostRestImage()
@@ -67,17 +66,15 @@ public class FerHandler : Singleton<FerHandler>
         {
             SendRestImage();
         }
-        
-        private static void OnEmoteExitedAreaCallback(EEmote emote)
-        {
-            
-        }
 
         private void SendRestImage()
         {
-            if (ContinuousFerMode)
-                return;
-            PostRestImage();
+            if (!PeriodicalFerMode)
+                PostRestImage();
+            else if (_coroutine == null)
+            {
+                _coroutine = StartCoroutine(SendRestImageContinuous());
+            }
         }
 
         public void ProcessRestResponse(Dictionary<EEmote, float>  response, string timestamp, EEmote logFer)
@@ -88,20 +85,22 @@ public class FerHandler : Singleton<FerHandler>
             if (logFer != EEmote.None)
                 LoggingSystem.Instance.WriteLog(maxEmote, response, timestamp, logFer);
             
+            CurrentActiveRestPosts--;
+            
             EventManager.InvokeEmotionDetected(maxEmote);
             
 #if UNITY_EDITOR
             EditorUI.EditorUI.SetRestResponseData(response);
 #endif
             
-            if (ContinuousFerMode || !GameManager.Instance.GetEmojiInActionArea().Any())
+            if (PeriodicalFerMode || !GameManager.Instance.EmojisAreInActionArea())
                 return;
             SendRestImage();
         }
         
-        public void ProcessRestError(Exception error, string timestamp)
+        public void ProcessRestError(string timestamp)
         {
-            if (ContinuousFerMode)
+            if (PeriodicalFerMode)
                 return;
             SendRestImage();
         }

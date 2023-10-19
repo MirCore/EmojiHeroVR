@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using Scriptables;
 using States.Game;
@@ -111,5 +112,7 @@ namespace Manager
         public void SetSpawnedEmotesCount(int spawnedEmotesCount) => SpawnedEmotesCount = spawnedEmotesCount;
 
         public void IncreaseSpawnedEmotesCount() => SpawnedEmotesCount++;
+
+        public bool EmojisAreInActionArea() => PlayingLevelState.EmojiInActionArea.Any();
     }
 }

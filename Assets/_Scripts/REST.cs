@@ -105,7 +105,7 @@ public static class Rest
             .Catch(error =>
             {
                 if (error.Message == "HTTP/1.1 422 Unprocessable Entity")
-                    FerHandler.Instance.ProcessRestError(error, timestamp);
+                    FerHandler.Instance.ProcessRestError(timestamp);
                 Debug.Log("REST Error: " + error.Message);
             });
     }
