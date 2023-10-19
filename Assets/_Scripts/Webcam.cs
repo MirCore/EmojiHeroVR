@@ -7,6 +7,7 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.UI;
 using Utilities;
 
@@ -77,16 +78,27 @@ public class Webcam : MonoBehaviour
         }
     }
 
-    public string GetWebcamImage(string timestamp, EEmote logImage)
+    public void GetSnapshot()
     {
+        Profiler.BeginSample("GetPixels");
         // Capture a single frame
         _snapshot.SetPixels(_webcam[MainWebcam].GetPixels());
         _snapshot.Apply();
+        Profiler.EndSample();
+    }
+
+    public string GetBase64(string timestamp, EEmote logImage)
+    {
         
+        Profiler.BeginSample("EncodeToJPG");
         // Encode frame as JPG (you can change the format)
         byte[] bytes = _snapshot.EncodeToJPG();
+        Profiler.EndSample();
+        
+        Profiler.BeginSample("ToBase64String");
         // Convert to frame to base64
         string base64 = Convert.ToBase64String(bytes);
+        Profiler.EndSample();
 
 #if UNITY_EDITOR
         if (logImage != EEmote.None)

@@ -15,10 +15,6 @@ namespace Utilities
         {
             return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
         }
-        public static string GetDateTimeTimestamp()
-        {
-            return DateTime.Now.ToString("HHmmssfff");
-        }
 
         public static string SaveImageFile(string dirPath, string timestamp, byte[] bytes)
         {

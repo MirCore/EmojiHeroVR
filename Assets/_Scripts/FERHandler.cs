@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 
 public class FerHandler : Singleton<FerHandler>
@@ -14,16 +14,19 @@ public class FerHandler : Singleton<FerHandler>
         private DateTime _sendRestImageTimestamp;
         [SerializeField] private bool PeriodicalFerMode = true;
         public EEmote LastDetectedEmote { get; private set; }
-
-        [SerializeField] private int CurrentActiveRestPosts;
+        
 
         private Coroutine _coroutine = null;
+
+        private void OnEnable()
+        {
+            gameObject.AddComponent<FerStats>();
+        }
 
         private void Start()
         {
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
         }
-
 
         private void OnDestroy()
         {
@@ -36,30 +39,38 @@ public class FerHandler : Singleton<FerHandler>
             
             while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
             {
+                FerStats.Instance.NewPost();
                 PostRestImage();
-                CurrentActiveRestPosts++;
                 yield return new WaitForSecondsRealtime(.15f);
             }
             
             _coroutine = null;
         }
 
-        private static void PostRestImage()
+        private void PostRestImage()
         {
             // Get emote in ActionArea. This is passed to the LoggingSystem to ensure that only new log entries are created when an emote is present.
             // It also prevents missing EmoteInActionArea log entries
             EEmote logFer = GameManager.Instance.GetEmojiInActionArea().FirstOrDefault();
             // Timestamp for logging
             string timestamp = SaveFiles.GetUnixTimestamp();
-            
+
+            StartCoroutine(GetFrameAndGenerateRestCall(timestamp, logFer));
+        }
+
+        private static IEnumerator GetFrameAndGenerateRestCall(string timestamp, EEmote logFer)
+        {
             // get a webcam frame
-            string image = GameManager.Instance.Webcam.GetWebcamImage(timestamp, logFer);
+            GameManager.Instance.Webcam.GetSnapshot();
+            yield return null;
             
-            //Debug.Log("Time since last RestImage: " + (DateTime.Now - _sendRestImageTimestamp));
-            //_sendRestImageTimestamp = DateTime.Now;
-            
+            string image = GameManager.Instance.Webcam.GetBase64(timestamp, logFer);
+            yield return null;
+
             // send image to FER-MS API
             Rest.PostBase64(image, timestamp, logFer);
+            
+            yield return null;
         }
 
         private void OnEmoteEnteredAreaCallback(EEmote emote)
@@ -84,8 +95,8 @@ public class FerHandler : Singleton<FerHandler>
             
             if (logFer != EEmote.None)
                 LoggingSystem.Instance.WriteLog(maxEmote, response, timestamp, logFer);
-            
-            CurrentActiveRestPosts--;
+
+            FerStats.Instance.RestResponse();
             
             EventManager.InvokeEmotionDetected(maxEmote);
             
@@ -93,15 +104,60 @@ public class FerHandler : Singleton<FerHandler>
             EditorUI.EditorUI.SetRestResponseData(response);
 #endif
             
-            if (PeriodicalFerMode || !GameManager.Instance.EmojisAreInActionArea())
-                return;
-            SendRestImage();
+            if (GameManager.Instance.EmojisAreInActionArea())
+                SendRestImage();
         }
         
-        public void ProcessRestError(string timestamp)
+        public void ProcessRestError(Exception error, string timestamp)
         {
-            if (PeriodicalFerMode)
-                return;
-            SendRestImage();
+            FerStats.Instance.RestResponse();
+
+            if (error.Message != "HTTP/1.1 422 Unprocessable Entity") return;
+            
+            if (GameManager.Instance.EmojisAreInActionArea())
+                SendRestImage();
         }
+}
+
+[SuppressMessage("ReSharper", "NotAccessedField.Global")]
+public class FerStats : Singleton<FerStats>
+{
+    private DateTime _postTime;
+    [SerializeField, HideInInspector] public int CurrentActiveRestPosts;
+    [SerializeField, HideInInspector] public int TotalPosts;
+    [SerializeField, HideInInspector] public double CurrentTimeBetweenPosts;
+    [SerializeField, HideInInspector] public double CurrentPostsFPS;
+    
+    internal void NewPost()
+    {
+        TimeSpan postTime = DateTime.Now - _postTime;
+        if (postTime.TotalSeconds < 1)
+        {
+            CurrentTimeBetweenPosts = Math.Round(postTime.TotalMilliseconds);
+            CurrentPostsFPS = Math.Round(1 / postTime.TotalSeconds, 1);
+        }
+        _postTime = DateTime.Now;
+        CurrentActiveRestPosts++;
+        TotalPosts++;
+    }
+
+    internal void RestResponse()
+    {
+        CurrentActiveRestPosts--;
+    }
+
+    private void NewLevel()
+    {
+        TotalPosts = 0;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.OnLevelStarted += NewLevel;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.OnLevelStarted -= NewLevel;
+    }
 }

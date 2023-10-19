@@ -4,6 +4,7 @@ using Enums;
 using Manager;
 using Scriptables;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -20,6 +21,7 @@ namespace EditorUI
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
         private List<ScriptableLevel> _levels;
+        private IBinding _binding;
 
 
         [MenuItem("Window/EmojiHero Editor Window")]
@@ -45,6 +47,8 @@ namespace EditorUI
             VisualElement labelFromUxml = VisualTreeAsset.Instantiate();
             _root.Add(labelFromUxml);
 
+            if (RestBasePath == "")
+                RestBasePath = _root.Q<TextField>("RestBasePath").value;
             _root.Q<TextField>("RestBasePath").value = RestBasePath;
             _root.Q<TextField>("RestBasePath").RegisterValueChangedCallback(evt => RestBasePath = evt.newValue);
             
@@ -52,12 +56,21 @@ namespace EditorUI
             _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
 
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
+
+            if (FerStats.Instance != null)
+            {
+                SerializedObject ferStats = new(FerStats.Instance);
+                _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
+                _root.Q<Label>("TimeBetweenPosts").BindProperty(ferStats.FindProperty("CurrentTimeBetweenPosts"));
+                _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
+                _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
+            }
             
             CreateWebcamDropdown();
             CreateLevelDropdown();
         }
 
-        private void OnStartStopButtonClicked(ClickEvent evt)
+        private static void OnStartStopButtonClicked(ClickEvent evt)
         {
             GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
         }
