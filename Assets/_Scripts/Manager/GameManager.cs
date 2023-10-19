@@ -23,10 +23,6 @@ namespace Manager
         [field: Header("Level Setup GameObjects")]
             [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
             [field: SerializeField] public GameObject ActionArea { get; private set; }
-        
-        
-        [field: Header("Webcams")]
-            [field: SerializeField] public Webcam Webcam { get; private set; }
 
             public ScriptableLevel Level { get; private set; }
         

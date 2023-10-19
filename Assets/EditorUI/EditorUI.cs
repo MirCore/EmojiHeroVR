@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
@@ -105,12 +106,17 @@ namespace EditorUI
             });
         }
 
-        public static void SetRestResponseData(Dictionary<EEmote, float>  response)
+        public static void SetRestResponseData(LogData logData)
         {
-            foreach (KeyValuePair<EEmote,float> pair in response)
-            {
-                _root.Q<ProgressBar>(pair.Key.ToString()).value = (_root.Q<ProgressBar>(pair.Key.ToString()).value + pair.Value) / 2;
-            }
+            Probabilities probabilities = logData.FerProbabilities;
+
+            _root.Q<ProgressBar>("Anger").value = (_root.Q<ProgressBar>("Anger").value + probabilities.anger) / 2;
+            _root.Q<ProgressBar>("Disgust").value = (_root.Q<ProgressBar>("Disgust").value + probabilities.disgust) / 2;
+            _root.Q<ProgressBar>("Fear").value = (_root.Q<ProgressBar>("Fear").value + probabilities.fear) / 2;
+            _root.Q<ProgressBar>("Happiness").value = (_root.Q<ProgressBar>("Happiness").value + probabilities.happiness) / 2;
+            _root.Q<ProgressBar>("Neutral").value = (_root.Q<ProgressBar>("Neutral").value + probabilities.neutral) / 2;
+            _root.Q<ProgressBar>("Sadness").value = (_root.Q<ProgressBar>("Sadness").value + probabilities.sadness) / 2;
+            _root.Q<ProgressBar>("Surprise").value = (_root.Q<ProgressBar>("Surprise").value + probabilities.surprise) / 2;
         }
 
         public string GetSelectedWebcam()

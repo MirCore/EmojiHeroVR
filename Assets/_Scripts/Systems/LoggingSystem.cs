@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,8 +19,16 @@ namespace Systems
         private string _fileName; // The name of the log file
         private string _dirPath; // The full directory path where the log file will be stored
 
-        private readonly Dictionary<string, byte[]> _currentImages = new();
+        private List<LogData> _logDataList = new();
 
+        private void OnEnable()
+        {
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
+        }
+        private void OnDisable()
+        {
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
+        }
 
         private void Start()
         {
@@ -33,7 +42,25 @@ namespace Systems
             
             CreateCsvHeaders();
         }
-        
+
+        private void OnLevelFinishedCallback()
+        {
+            StartCoroutine(WriteImages());
+        }
+
+        private IEnumerator WriteImages()
+        {
+            while (_logDataList.Any())
+            {
+                LogData logData = _logDataList.FirstOrDefault();
+                byte[] bytes = logData.ImageTexture.EncodeToPNG();
+                yield return null;
+                SaveFiles.SaveImageFile(_dirPath, logData, bytes);
+                _logDataList.Remove(logData);
+                yield return null;
+            }
+        }
+
         /// <summary>
         /// Creates the header row for the CSV file.
         /// </summary>
@@ -61,9 +88,6 @@ namespace Systems
         /// </summary>
         public void WriteLog(EEmote maxEmote, Dictionary<EEmote, float>  response, string timestamp, EEmote emote)
         {
-            string imageFilename = SaveFiles.SaveImageFile(_dirPath, timestamp, _currentImages[timestamp]);
-            _currentImages.Remove(timestamp);
-            
             // Prepare the data to be logged
             string[] data =
             {
@@ -72,7 +96,7 @@ namespace Systems
                 GameManager.Instance.Level.name, // Level name
                 GameManager.Instance.GetLevelEmojiProgress().ToString(), // Number of emoji
                 emote.ToString(), // Emote in ActionArea
-                imageFilename, // Name of image file(s)
+                "imageFilename", // Name of image file(s)
                 maxEmote.ToString(),
                 response[maxEmote].ToString("F2"),
                 string.Join(";", response.Select(kv => $"{kv.Key}: {kv.Value:F2}")) // FER response
@@ -82,9 +106,22 @@ namespace Systems
             SaveFiles.AppendLineToCsv(_dirPath, _fileName, data);
         }
 
-        public void SetImageData(byte[] bytes, string timestamp)
+        public void AddToLogDataList(LogData logData)
         {
-            _currentImages.Add(timestamp, bytes);
+            _logDataList.Add(logData);
         }
     }
+}
+
+public struct LogData
+{
+    public string Timestamp;                // Timestamp (same as timestamp.jpg)
+    public string LevelID;                  // Level ID
+    public int EmoteID;                     // ID of Emote in Level sequence
+    public EEmote EmoteEmoji;               // Emote to imitate
+    public EEmote EmoteFer;                 // Emote with highest probability
+    public Probabilities FerProbabilities;  // Class containing all probabilities (seperated into columns when logging)
+    public string UserID;                   // User ID
+
+    public Texture2D ImageTexture;          // Webcam Image
 }

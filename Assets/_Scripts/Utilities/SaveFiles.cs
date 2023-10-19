@@ -11,33 +11,28 @@ namespace Utilities
 {
     public abstract class SaveFiles
     {
+        private Texture2D _snapshot;
+        
         public static string GetUnixTimestamp()
         {
             return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
         }
 
-        public static string SaveImageFile(string dirPath, string timestamp, byte[] bytes)
+        public static void SaveImageFile(string dirPath, LogData logData, byte[] bytes)
         {
-            string filename =
-                $"{timestamp}-" +
-                $"{EditorUI.EditorUI.Instance.UserID}-" +
-                $"{GameManager.Instance.GetEmojiInActionArea().FirstOrDefault()}-" +
-                $"{FerHandler.Instance.LastDetectedEmote}.jpg";
-            
             // Start a new thread for file saving to avoid blocking the main thread
             Thread saveFile = new(() =>
             {
                 // Save the captured image to a file
-                SaveFile(dirPath, filename, bytes);
+                SavePngFile(dirPath, $"{logData.Timestamp}.png", bytes);
             });
             saveFile.Start();
-            return filename;
         }
-        
+
         /// <summary>
         /// Save binary data (byte array) to a file asynchronously
         /// </summary>
-        private static void SaveFile(string path, string fileName, byte[] bytes)
+        private static void SavePngFile(string path, string fileName, byte[] bytes)
         {
 #if UNITY_EDITOR
             SaveFileInternal(path, fileName, async filePath => await WriteFile(bytes, filePath));

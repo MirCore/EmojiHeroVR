@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Enums;
 using Proyecto26;
 using UnityEngine;
@@ -11,7 +12,7 @@ public static class Rest
     private static RequestHelper _currentRequest;
 
     // ReSharper disable Unity.PerformanceAnalysis
-    public static void PostBase64(string image, string timestamp, EEmote logFer)
+    public static void PostBase64(string image, LogData logData)
     {
         Profiler.BeginSample("Rest");
         RequestHelper currentRequest = GetBase64RequestHelper(image);
@@ -19,12 +20,13 @@ public static class Rest
         RestClient.Post(currentRequest)
             .Then(response =>
             {
-                Dictionary<EEmote, float> result = ConvertRestResponseToDictionary(response.Text);
-                FerHandler.Instance.ProcessRestResponse(result, timestamp, logFer);
+                EEmote maxEmote = ConvertRestResponseToDictionary(response.Text);
+                logData.FerProbabilities = JsonUtility.FromJson<Probabilities>(response.Text);
+                FerHandler.Instance.ProcessRestResponse(maxEmote, logData);
             })
             .Catch(error =>
             { 
-                FerHandler.Instance.ProcessRestError(error, timestamp);
+                FerHandler.Instance.ProcessRestError(error, logData);
                 Debug.Log("REST Error: " + error.Message);
             });
         Profiler.EndSample();
@@ -32,7 +34,6 @@ public static class Rest
 
     private static RequestHelper GetBase64RequestHelper(string image)
     {
-        //image = File.ReadAllText("Assets/TestFiles/test_image_base64.txt");
         RequestHelper currentRequest = new()
         {
             Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/base64",
@@ -47,27 +48,28 @@ public static class Rest
         return currentRequest;
     }
 
-    private static Dictionary<EEmote, float> ConvertRestResponseToDictionary(string responseText)
+    private static EEmote ConvertRestResponseToDictionary(string responseText)
     {
-        EmoteResult emoteResult = JsonUtility.FromJson<EmoteResult>(responseText);
+        Probabilities probabilities = JsonUtility.FromJson<Probabilities>(responseText);
+        
         Dictionary<EEmote, float> result = new()
         {
-            { EEmote.Anger, emoteResult.anger },
-            { EEmote.Disgust, emoteResult.disgust },
-            { EEmote.Fear, emoteResult.fear },
-            { EEmote.Happiness, emoteResult.happiness },
-            { EEmote.Neutral, emoteResult.neutral },
-            { EEmote.Sadness, emoteResult.sadness },
-            { EEmote.Surprise, emoteResult.surprise }
+            { EEmote.Anger, probabilities.anger },
+            { EEmote.Disgust, probabilities.disgust },
+            { EEmote.Fear, probabilities.fear },
+            { EEmote.Happiness, probabilities.happiness },
+            { EEmote.Neutral, probabilities.neutral },
+            { EEmote.Sadness, probabilities.sadness },
+            { EEmote.Surprise, probabilities.surprise }
         };
-
-        return result;
+        
+        return result.OrderByDescending(kv => kv.Value).First().Key;
     }
 }
 
 [Serializable]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-public class EmoteResult
+public class Probabilities
 {
     public float anger;
     public float disgust;

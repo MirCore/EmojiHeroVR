@@ -11,112 +11,111 @@ using Utilities;
 
 public class FerHandler : Singleton<FerHandler>
 {
-        private DateTime _sendRestImageTimestamp;
-        [SerializeField] private bool PeriodicalFerMode = true;
-        public EEmote LastDetectedEmote { get; private set; }
+    [SerializeField] private Webcam Webcam;
+    
+    [SerializeField] private bool PeriodicalFerMode = true;
+
+    private Coroutine _coroutine = null;
+
+    private void OnEnable()
+    {
+        gameObject.AddComponent<FerStats>();
+    }
+
+    private void Start()
+    {
+        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
+    }
+
+    private IEnumerator SendRestImageContinuous()
+    {
+        yield return new WaitForEndOfFrame();
         
-
-        private Coroutine _coroutine = null;
-
-        private void OnEnable()
+        while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
         {
-            gameObject.AddComponent<FerStats>();
+            FerStats.Instance.NewPost();
+            PostRestImage();
+            yield return new WaitForSecondsRealtime(.15f);
         }
+        
+        _coroutine = null;
+    }
 
-        private void Start()
+    private void PostRestImage()
+    {
+        LogData logData = new()
         {
-            EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+            Timestamp = SaveFiles.GetUnixTimestamp(),
+            LevelID = GameManager.Instance.Level.name,
+            EmoteID = GameManager.Instance.GetLevelEmojiProgress(),
+            EmoteEmoji = GameManager.Instance.GetEmojiInActionArea().FirstOrDefault(),
+            UserID = EditorUI.EditorUI.Instance.UserID,
+            ImageTexture = new Texture2D(Webcam.Width, Webcam.Height)
+        };
+
+        StartCoroutine(GetFrameAndGenerateRestCall(logData));
+    }
+
+    private IEnumerator GetFrameAndGenerateRestCall(LogData logData)
+    {
+        // get a webcam frame
+        Webcam.GetSnapshot(logData);
+        yield return null;
+        
+        string image = Webcam.GetBase64(logData);
+        yield return null;
+
+        // send image to FER-MS API
+        Rest.PostBase64(image, logData);
+        
+        yield return null;
+    }
+
+    private void OnEmoteEnteredAreaCallback(EEmote emote)
+    {
+        SendRestImage();
+    }
+
+    private void SendRestImage()
+    {
+        if (!PeriodicalFerMode)
+            PostRestImage();
+        else if (_coroutine == null)
+        {
+            _coroutine = StartCoroutine(SendRestImageContinuous());
         }
+    }
 
-        private void OnDestroy()
-        {
-            EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-        }
+    public void ProcessRestResponse(EEmote maxEmote, LogData logData)
+    {
+        LoggingSystem.Instance.AddToLogDataList(logData);
 
-        private IEnumerator SendRestImageContinuous()
-        {
-            yield return new WaitForEndOfFrame();
-            
-            while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
-            {
-                FerStats.Instance.NewPost();
-                PostRestImage();
-                yield return new WaitForSecondsRealtime(.15f);
-            }
-            
-            _coroutine = null;
-        }
-
-        private void PostRestImage()
-        {
-            // Get emote in ActionArea. This is passed to the LoggingSystem to ensure that only new log entries are created when an emote is present.
-            // It also prevents missing EmoteInActionArea log entries
-            EEmote logFer = GameManager.Instance.GetEmojiInActionArea().FirstOrDefault();
-            // Timestamp for logging
-            string timestamp = SaveFiles.GetUnixTimestamp();
-
-            StartCoroutine(GetFrameAndGenerateRestCall(timestamp, logFer));
-        }
-
-        private static IEnumerator GetFrameAndGenerateRestCall(string timestamp, EEmote logFer)
-        {
-            // get a webcam frame
-            GameManager.Instance.Webcam.GetSnapshot();
-            yield return null;
-            
-            string image = GameManager.Instance.Webcam.GetBase64(timestamp, logFer);
-            yield return null;
-
-            // send image to FER-MS API
-            Rest.PostBase64(image, timestamp, logFer);
-            
-            yield return null;
-        }
-
-        private void OnEmoteEnteredAreaCallback(EEmote emote)
-        {
-            SendRestImage();
-        }
-
-        private void SendRestImage()
-        {
-            if (!PeriodicalFerMode)
-                PostRestImage();
-            else if (_coroutine == null)
-            {
-                _coroutine = StartCoroutine(SendRestImageContinuous());
-            }
-        }
-
-        public void ProcessRestResponse(Dictionary<EEmote, float>  response, string timestamp, EEmote logFer)
-        {
-            EEmote maxEmote = response.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-            LastDetectedEmote = maxEmote;
-            
-            if (logFer != EEmote.None)
-                LoggingSystem.Instance.WriteLog(maxEmote, response, timestamp, logFer);
-
-            FerStats.Instance.RestResponse();
-            
-            EventManager.InvokeEmotionDetected(maxEmote);
-            
+        FerStats.Instance.RestResponse();
+        
+        EventManager.InvokeEmotionDetected(maxEmote);
+        
 #if UNITY_EDITOR
-            EditorUI.EditorUI.SetRestResponseData(response);
+        EditorUI.EditorUI.SetRestResponseData(logData);
 #endif
-            
-            if (GameManager.Instance.EmojisAreInActionArea())
-                SendRestImage();
-        }
         
-        public void ProcessRestError(Exception error, string timestamp)
-        {
-            FerStats.Instance.RestResponse();
-
-            if (error.Message != "HTTP/1.1 422 Unprocessable Entity") return;
-            
-            if (GameManager.Instance.EmojisAreInActionArea())
-                SendRestImage();
-        }
+        if (GameManager.Instance.EmojisAreInActionArea())
+            SendRestImage();
+    }
+    
+    public void ProcessRestError(Exception error, LogData logData)
+    {
+        LoggingSystem.Instance.AddToLogDataList(logData);
+        
+        FerStats.Instance.RestResponse();
+        
+        if (GameManager.Instance.EmojisAreInActionArea())
+            SendRestImage();
+    }
 }
 
 [SuppressMessage("ReSharper", "NotAccessedField.Global")]

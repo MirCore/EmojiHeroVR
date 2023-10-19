@@ -1,15 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Enums;
-using Manager;
-using Systems;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
-using Utilities;
 
 public class Webcam : MonoBehaviour
 {
@@ -23,6 +17,8 @@ public class Webcam : MonoBehaviour
     
     private Texture2D _snapshot; // Texture to hold the captured webcam frame
     private const int MainWebcam = 0; // Index of the main webcam (you can change this)
+    public int Width { get; private set; }
+    public int Height { get; private set; }
 
 
     private void Start()
@@ -50,7 +46,9 @@ public class Webcam : MonoBehaviour
         }
 
         // Initialize the snapshot texture based on the main webcam
-        _snapshot = new Texture2D(_webcam[MainWebcam].width, _webcam[MainWebcam].height);
+        Width = _webcam[MainWebcam].width;
+        Height = _webcam[MainWebcam].height;
+        _snapshot = new Texture2D(Width, Height);
     }
 
     private IEnumerator GetCamera()
@@ -78,32 +76,28 @@ public class Webcam : MonoBehaviour
         }
     }
 
-    public void GetSnapshot()
+    public void GetSnapshot(LogData logData)
     {
         Profiler.BeginSample("GetPixels");
         // Capture a single frame
-        _snapshot.SetPixels(_webcam[MainWebcam].GetPixels());
-        _snapshot.Apply();
+        logData.ImageTexture.SetPixels(_webcam[MainWebcam].GetPixels());
+        logData.ImageTexture.Apply();
+        
         Profiler.EndSample();
     }
 
-    public string GetBase64(string timestamp, EEmote logImage)
+    public string GetBase64(LogData logData)
     {
         
         Profiler.BeginSample("EncodeToJPG");
         // Encode frame as JPG (you can change the format)
-        byte[] bytes = _snapshot.EncodeToJPG();
+        byte[] image = logData.ImageTexture.EncodeToJPG();
         Profiler.EndSample();
         
         Profiler.BeginSample("ToBase64String");
         // Convert to frame to base64
-        string base64 = Convert.ToBase64String(bytes);
+        string base64 = Convert.ToBase64String(image);
         Profiler.EndSample();
-
-#if UNITY_EDITOR
-        if (logImage != EEmote.None)
-            LoggingSystem.Instance.SetImageData(bytes, timestamp);
-#endif
         
         // Return the base64-encoded image
         return base64;
