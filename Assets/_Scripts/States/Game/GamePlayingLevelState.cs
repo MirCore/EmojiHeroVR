@@ -50,6 +50,7 @@ namespace States.Game
         
         private void OnEmoteExitedAreaCallback(EEmote emote)
         {
+            EmojiInActionArea.Remove(emote);
             FinishedEmoteCount++;
             if (GameManager.Instance.CheckLevelEndConditions(FinishedEmoteCount))
                 GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
@@ -57,12 +58,10 @@ namespace States.Game
         
         private void OnEmoteFailedCallback(EEmote emote)
         {
-            EmojiInActionArea.Remove(emote);
         }
         
         private void OnEmoteFulfilledCallback(EEmote emote, float score)
         {
-            EmojiInActionArea.Remove(emote);
             FulfilledEmoteCount++;
             LevelScore += 50 + (int)(score * 10) * 10;
         }
