@@ -9,9 +9,9 @@ namespace States.Game
 {
     public class GamePlayingLevelState : GameState
     {
-        [Header("Level Progress")]
-        private int _finishedEmoteCount;
-        public int LevelEmojiProgress { get; private set; }
+        [field: Header("Level Progress")]
+        public int FinishedEmoteCount { get; private set; }
+        public int FulfilledEmoteCount { get; private set; }
         public int LevelScore { get; private set; }
         public readonly List<EEmote> EmojiInActionArea = new();
         
@@ -38,8 +38,8 @@ namespace States.Game
 
         private void ResetLevelState()
         {
-            _finishedEmoteCount = 0;
-            LevelEmojiProgress = 0;
+            FinishedEmoteCount = 0;
+            FulfilledEmoteCount = 0;
             LevelScore = 0;
         }
         
@@ -50,8 +50,8 @@ namespace States.Game
         
         private void OnEmoteExitedAreaCallback(EEmote emote)
         {
-            _finishedEmoteCount++;
-            if (GameManager.Instance.CheckLevelEndConditions(_finishedEmoteCount))
+            FinishedEmoteCount++;
+            if (GameManager.Instance.CheckLevelEndConditions(FinishedEmoteCount))
                 GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
         }
         
@@ -63,7 +63,7 @@ namespace States.Game
         private void OnEmoteFulfilledCallback(EEmote emote, float score)
         {
             EmojiInActionArea.Remove(emote);
-            LevelEmojiProgress++;
+            FulfilledEmoteCount++;
             LevelScore += 50 + (int)(score * 10) * 10;
         }
 

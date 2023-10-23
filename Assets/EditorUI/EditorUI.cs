@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Utilities;
 
 #if UNITY_EDITOR
 namespace EditorUI
@@ -58,9 +59,9 @@ namespace EditorUI
 
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
 
-            if (FerStats.Instance != null)
+            if (EditorUIFerStats.Instance != null)
             {
-                SerializedObject ferStats = new(FerStats.Instance);
+                SerializedObject ferStats = new(EditorUIFerStats.Instance);
                 _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
                 _root.Q<Label>("TimeBetweenPosts").BindProperty(ferStats.FindProperty("CurrentTimeBetweenPosts"));
                 _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));

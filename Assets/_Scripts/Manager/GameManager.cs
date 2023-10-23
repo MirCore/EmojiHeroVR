@@ -37,6 +37,8 @@ namespace Manager
 #if UNITY_EDITOR
                 if (PreventGameStartWithoutUserID)
                     UnityEditor.EditorApplication.isPlaying = false;
+                else
+                    EditorUI.EditorUI.Instance.UserID = SaveFiles.GetUnixTimestamp();
 #endif
             }
 
@@ -99,7 +101,7 @@ namespace Manager
             EditorUI.EditorUI.Instance.SetNewLevel(level);
         }
 
-        public int GetLevelEmojiProgress() => PlayingLevelState.LevelEmojiProgress;
+        public int GetLevelEmojiProgress() => PlayingLevelState.FinishedEmoteCount;
 
         public IEnumerable<EEmote> GetEmojiInActionArea() => PlayingLevelState.EmojiInActionArea;
 

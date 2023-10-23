@@ -19,7 +19,7 @@ public class FerHandler : Singleton<FerHandler>
 
     private void OnEnable()
     {
-        gameObject.AddComponent<FerStats>();
+        gameObject.AddComponent<EditorUIFerStats>();
     }
 
     private void Start()
@@ -38,7 +38,7 @@ public class FerHandler : Singleton<FerHandler>
         
         while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
         {
-            FerStats.Instance.NewPost();
+            EditorUIFerStats.Instance.NewPost();
             PostRestImage();
             yield return new WaitForSecondsRealtime(.15f);
         }
@@ -91,11 +91,15 @@ public class FerHandler : Singleton<FerHandler>
         }
     }
 
-    public void ProcessRestResponse(EEmote maxEmote, LogData logData)
+    public void ProcessRestResponse(string response, LogData logData)
     {
+        EEmote maxEmote = ConvertRestResponseToDictionary(response);
+        logData.FerProbabilities = JsonUtility.FromJson<Probabilities>(response);
+        logData.EmoteFer = maxEmote;
+        
         LoggingSystem.Instance.AddToLogDataList(logData);
 
-        FerStats.Instance.RestResponse();
+        EditorUIFerStats.Instance.RestResponse();
         
         EventManager.InvokeEmotionDetected(maxEmote);
         
@@ -109,17 +113,37 @@ public class FerHandler : Singleton<FerHandler>
     
     public void ProcessRestError(Exception error, LogData logData)
     {
+        logData.FerProbabilities = new Probabilities();
+        Debug.Log("REST Error: " + error.Message);
         LoggingSystem.Instance.AddToLogDataList(logData);
         
-        FerStats.Instance.RestResponse();
+        EditorUIFerStats.Instance.RestResponse();
         
         if (GameManager.Instance.EmojisAreInActionArea())
             SendRestImage();
     }
+
+    private static EEmote ConvertRestResponseToDictionary(string responseText)
+    {
+        Probabilities probabilities = JsonUtility.FromJson<Probabilities>(responseText);
+
+        Dictionary<EEmote, float> result = new()
+        {
+            { EEmote.Anger, probabilities.anger },
+            { EEmote.Disgust, probabilities.disgust },
+            { EEmote.Fear, probabilities.fear },
+            { EEmote.Happiness, probabilities.happiness },
+            { EEmote.Neutral, probabilities.neutral },
+            { EEmote.Sadness, probabilities.sadness },
+            { EEmote.Surprise, probabilities.surprise }
+        };
+
+        return result.OrderByDescending(kv => kv.Value).First().Key;
+    }
 }
 
 [SuppressMessage("ReSharper", "NotAccessedField.Global")]
-public class FerStats : Singleton<FerStats>
+public class EditorUIFerStats : Singleton<EditorUIFerStats>
 {
     private DateTime _postTime;
     [SerializeField, HideInInspector] public int CurrentActiveRestPosts;
@@ -160,3 +184,5 @@ public class FerStats : Singleton<FerStats>
         EventManager.OnLevelStarted -= NewLevel;
     }
 }
+
+

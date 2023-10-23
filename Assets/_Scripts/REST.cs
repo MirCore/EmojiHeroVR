@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Enums;
 using Proyecto26;
-using UnityEngine;
 using UnityEngine.Profiling;
+using Utilities;
 
+/// <summary>
+/// Provides static methods for sending REST requests.
+/// </summary>
 public static class Rest
 {
     private static RequestHelper _currentRequest;
@@ -14,26 +13,29 @@ public static class Rest
     // ReSharper disable Unity.PerformanceAnalysis
     public static void PostBase64(string image, LogData logData)
     {
-        Profiler.BeginSample("Rest");
+        Profiler.BeginSample("Rest");   // Start a profiling sample named 'Rest' to measure performance
+        
+        
+        // Create a new HTTP request for sending a base64 image
         RequestHelper currentRequest = GetBase64RequestHelper(image);
-
+        
+        // Make a POST request using the RestClient library
         RestClient.Post(currentRequest)
-            .Then(response =>
-            {
-                EEmote maxEmote = ConvertRestResponseToDictionary(response.Text);
-                logData.FerProbabilities = JsonUtility.FromJson<Probabilities>(response.Text);
-                FerHandler.Instance.ProcessRestResponse(maxEmote, logData);
-            })
-            .Catch(error =>
-            { 
-                FerHandler.Instance.ProcessRestError(error, logData);
-                Debug.Log("REST Error: " + error.Message);
-            });
-        Profiler.EndSample();
+            .Then(response => FerHandler.Instance.ProcessRestResponse(response.Text, logData))
+            .Catch(error => FerHandler.Instance.ProcessRestError(error, logData));
+        
+        
+        Profiler.EndSample();   // End the profiling sample
     }
 
+    /// <summary>
+    /// Creates and configures a RequestHelper object for sending a base64-encoded image.
+    /// </summary>
+    /// <param name="image">The base64-encoded image string.</param>
+    /// <returns>A configured RequestHelper object.</returns>
     private static RequestHelper GetBase64RequestHelper(string image)
     {
+        // Initialize a new RequestHelper object
         RequestHelper currentRequest = new()
         {
             Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/base64",
@@ -47,35 +49,4 @@ public static class Rest
         };
         return currentRequest;
     }
-
-    private static EEmote ConvertRestResponseToDictionary(string responseText)
-    {
-        Probabilities probabilities = JsonUtility.FromJson<Probabilities>(responseText);
-        
-        Dictionary<EEmote, float> result = new()
-        {
-            { EEmote.Anger, probabilities.anger },
-            { EEmote.Disgust, probabilities.disgust },
-            { EEmote.Fear, probabilities.fear },
-            { EEmote.Happiness, probabilities.happiness },
-            { EEmote.Neutral, probabilities.neutral },
-            { EEmote.Sadness, probabilities.sadness },
-            { EEmote.Surprise, probabilities.surprise }
-        };
-        
-        return result.OrderByDescending(kv => kv.Value).First().Key;
-    }
-}
-
-[Serializable]
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-public class Probabilities
-{
-    public float anger;
-    public float disgust;
-    public float fear;
-    public float happiness;
-    public float neutral;
-    public float sadness;
-    public float surprise;
 }
