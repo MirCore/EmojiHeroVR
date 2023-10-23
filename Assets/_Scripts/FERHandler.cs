@@ -50,7 +50,7 @@ public class FerHandler : Singleton<FerHandler>
     {
         LogData logData = new()
         {
-            Timestamp = SaveFiles.GetUnixTimestamp(),
+            Timestamp = LoggingSystem.GetUnixTimestamp(),
             LevelID = GameManager.Instance.Level.name,
             EmoteID = GameManager.Instance.GetLevelEmojiProgress(),
             EmoteEmoji = GameManager.Instance.GetEmojiInActionArea().FirstOrDefault(),

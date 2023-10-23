@@ -15,11 +15,10 @@ MonoBehaviour:
   LevelStruct:
     LevelName: Fast Level
     LevelMode: 0
-    MovementSpeed: 0.5
-    SpawnInterval: 2
+    MovementSpeed: 1
+    SpawnInterval: 1.5
     Count: 5
-    Time: 0
-    EmoteIndices: 
+    Emotes: 
     EmoteRepeatAmount: 0
-    LevelArray: 
+    EmoteArray: 
   GenerateNewLevelFile: 0

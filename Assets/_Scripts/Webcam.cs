@@ -16,7 +16,6 @@ public class Webcam : MonoBehaviour
     [SerializeField] private int RequestedCameraWidth = 1080;
     [SerializeField] private int RequestedCameraHeight = 720;
     
-    private Texture2D _snapshot; // Texture to hold the captured webcam frame
     private const int MainWebcam = 0; // Index of the main webcam (you can change this)
     public int Width { get; private set; }
     public int Height { get; private set; }
@@ -24,12 +23,8 @@ public class Webcam : MonoBehaviour
 
     private void Start()
     {
-#if UNITY_EDITOR
         _webcamName.Add(EditorUI.EditorUI.Instance.GetSelectedWebcam());
         InitializeWebcam();
-#else
-        StartCoroutine(GetCamera());
-#endif
     }
 
     private void InitializeWebcam()
@@ -49,7 +44,6 @@ public class Webcam : MonoBehaviour
         // Initialize the snapshot texture based on the main webcam
         Width = _webcam[MainWebcam].width;
         Height = _webcam[MainWebcam].height;
-        _snapshot = new Texture2D(Width, Height);
     }
 
     private IEnumerator GetCamera()

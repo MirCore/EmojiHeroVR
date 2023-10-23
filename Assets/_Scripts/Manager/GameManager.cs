@@ -4,6 +4,7 @@ using System.Linq;
 using Enums;
 using Scriptables;
 using States.Game;
+using Systems;
 using UnityEngine;
 using Utilities;
 
@@ -38,7 +39,7 @@ namespace Manager
                 if (PreventGameStartWithoutUserID)
                     UnityEditor.EditorApplication.isPlaying = false;
                 else
-                    EditorUI.EditorUI.Instance.UserID = SaveFiles.GetUnixTimestamp();
+                    EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
 #endif
             }
 
