@@ -1,49 +1,61 @@
-using System.Collections;
 using Enums;
 using States.Emojis;
 using TMPro;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Manager
 {
+    /// <summary>
+    /// Manages the states and behaviors of an Emoji in the game.
+    /// </summary>
     public class EmojiManager : MonoBehaviour
     {
+        // The current state of the Emoji.
         private EmojiState _emojiState;
-        internal readonly EmojiPreState PreState = new ();
+        
+        // Instances of possible states the Emoji can be in.
+        private readonly EmojiPreState _preState = new ();
         internal readonly EmojiIntraState IntraState = new ();
         internal readonly EmojiFulfilledState FulfilledState = new ();
         internal readonly EmojiFailedState FailedState = new ();
         internal readonly EmojiLeavingState LeavingState = new();
     
+        // Serialized fields for Unity inspector assignment.
         [SerializeField] internal EEmote Emote;
         [SerializeField] private Renderer EmojiRenderer;
         [SerializeField] internal Animator EmojiAnimator;
         [SerializeField] internal TMP_Text EmoteTitle;
             
+        // Material and related properties of the Emoji.
         internal Material EmojiMaterial;
         internal readonly int Sprite = Shader.PropertyToID("_Sprite");
         internal readonly int DissolveAmount = Shader.PropertyToID("_DissolveAmount");
         internal readonly int FailedColorAmount = Shader.PropertyToID("_FailedColorAmount");
         internal readonly int SuccessColorAmount = Shader.PropertyToID("_SuccessColorAmount");
+        
+        // Time left for Emoji to stay in the active area and the size of the action area.
+        // Used for score calculations
         internal float ActiveAreaLeft;
         internal float ActionAreaSize;
-        private Rigidbody _rigidbody;
+        
+        // Rigidbody component for physics interactions.
+        internal Rigidbody Rigidbody;
 
-        private void Start()
+        private void Awake()
         {
-            _rigidbody = GetComponent<Rigidbody>();
+            // Get components and calculate values needed later.
+            Rigidbody = GetComponent<Rigidbody>();
+            // create a copy of the material
+            EmojiMaterial = EmojiRenderer.material;
+            ActionAreaSize = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z;
         }
 
         private void OnEnable()
         {
-            GetComponent<Rigidbody>().isKinematic = true;
-            transform.rotation = new Quaternion();
-            EmojiMaterial = EmojiRenderer.material;
-            ActionAreaSize = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z;
-            
-            // starting state for the state machine
-            SwitchState(PreState);
+            // Initialize the Emoji in the pre state and subscribe to events.
+            SwitchState(_preState);
         
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
@@ -55,63 +67,63 @@ namespace Manager
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         }
 
-
         private void Update()
         {
+            // Update the current state and handle Emoji movement.
             _emojiState.Update(this);
             if (_emojiState != LeavingState)
                 transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.LevelStruct.MovementSpeed * Time.deltaTime);
         }
 
+        /// <summary>
+        /// Switches the current state of the Emoji.
+        /// </summary>
+        /// <param name="state">The new state to switch to.</param>
         internal void SwitchState(EmojiState state)
         {
             _emojiState = state;
             _emojiState.EnterState(this);
         }
 
-        private void OnEmotionDetectedCallback(EEmote emote)
-        {
-            _emojiState.OnEmotionDetectedCallback(this, emote);
-        }
+        // Callback for FER response event. emote is the emotion with the highest probability.
+        private void OnEmotionDetectedCallback(EEmote emote) => _emojiState.OnEmotionDetectedCallback(this, emote);
+
+        // Callback for level stopped event.
+        private void OnLevelStoppedCallback() => FadeOut();
+
+
+        private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(this);
+
+        private void OnTriggerExit(Collider other) => _emojiState.OnTriggerExit(this);
+
         
-        private void OnLevelStoppedCallback()
+        /// <summary>
+        /// Fades out the Emoji and deactivates it.
+        /// </summary>
+        public async void FadeOut()
         {
-            FadeOut();
-        }
-
-        private IEnumerator DeactivateEmoji(float waitTime)
-        {
-            yield return new WaitForSeconds(waitTime);
-            
-            gameObject.SetActive(false);
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            _emojiState.OnTriggerEnter(this);
-        }
-    
-        private void OnTriggerExit(Collider other)
-        {
-            _emojiState.OnTriggerExit(this);
-        }
-
-        public void FadeOut()
-        {
+            // If in training mode, fade out quickly. Otherwise, apply a physics effect and fade out more slowly.
             if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
             {
-                StartCoroutine(MathHelper.SLerp(0, 1, 1f, EmojiRenderer.material, DissolveAmount));
-                StartCoroutine(DeactivateEmoji(1));
+                await MathHelper.SLerpAsync(0, 1, 1f, EmojiRenderer.material, DissolveAmount);
+                DeactivateEmoji();
                 return;
             }
                 
-            _rigidbody.isKinematic = false;
-            _rigidbody.velocity =
+            Rigidbody.isKinematic = false;
+            // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
+            Rigidbody.velocity =
                 -(GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.LevelStruct.MovementSpeed) +
                 GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
-            StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
-            StartCoroutine(DeactivateEmoji(6));
+            await MathHelper.SLerpAsync(0, 1, 6f, EmojiRenderer.material, DissolveAmount);
+            DeactivateEmoji();
         }
 
+        private void DeactivateEmoji()
+        {
+            // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison
+            if (gameObject != null)
+                gameObject.SetActive(false);
+        }
     }
 }

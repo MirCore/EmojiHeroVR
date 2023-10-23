@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Proyecto26;
-using UnityEngine.Profiling;
+using Proyecto26; // Importing the RestClient library
 using Utilities;
 
 /// <summary>
@@ -8,45 +7,37 @@ using Utilities;
 /// </summary>
 public static class Rest
 {
-    private static RequestHelper _currentRequest;
-
     // ReSharper disable Unity.PerformanceAnalysis
-    public static void PostBase64(string image, LogData logData)
+    /// <summary>
+    /// Sends a POST request with a base64-encoded image and handles the response.
+    /// </summary>
+    public static void PostBase64(string image, LogData logData, FerHandler ferHandler)
     {
-        Profiler.BeginSample("Rest");   // Start a profiling sample named 'Rest' to measure performance
-        
-        
         // Create a new HTTP request for sending a base64 image
-        RequestHelper currentRequest = GetBase64RequestHelper(image);
+        RequestHelper currentRequest = CreateBase64RequestHelper(image);
         
-        // Make a POST request using the RestClient library
+        // Make a POST request and handle the response or error
         RestClient.Post(currentRequest)
-            .Then(response => FerHandler.Instance.ProcessRestResponse(response.Text, logData))
-            .Catch(error => FerHandler.Instance.ProcessRestError(error, logData));
-        
-        
-        Profiler.EndSample();   // End the profiling sample
+            .Then(response => ferHandler.ProcessRestResponse(response.Text, logData))  // Process the response if request is successful
+            .Catch(error => ferHandler.ProcessRestError(error, logData));  // Process the error if request fails
     }
 
     /// <summary>
     /// Creates and configures a RequestHelper object for sending a base64-encoded image.
     /// </summary>
     /// <param name="image">The base64-encoded image string.</param>
-    /// <returns>A configured RequestHelper object.</returns>
-    private static RequestHelper GetBase64RequestHelper(string image)
+    /// <returns>A configured RequestHelper object for making the HTTP request.</returns>
+    private static RequestHelper CreateBase64RequestHelper(string image)
     {
-        // Initialize a new RequestHelper object
-        RequestHelper currentRequest = new()
+        // Construct and return a RequestHelper object
+        return new RequestHelper
         {
-            Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/base64",
-            Headers = new Dictionary<string, string>
-            {
-                { "accept", "application/json" }
-            },
-            ContentType = "text/plain",
-            BodyString = image,
-            EnableDebug = false
+            Uri = EditorUI.EditorUI.Instance.RestBasePath + "recognize/base64", // Set the URI for the REST endpoint
+            Headers = new Dictionary<string, string> { { "accept", "application/json" } }, // Set the HTTP headers
+            ContentType = "text/plain", // Set the content type of the request body
+            BodyString = image, // Set the base64-encoded image as the request body
+            EnableDebug = false, // Disable debug logging for the request
+            Timeout = 1 // Set the timeout duration for the request
         };
-        return currentRequest;
     }
 }

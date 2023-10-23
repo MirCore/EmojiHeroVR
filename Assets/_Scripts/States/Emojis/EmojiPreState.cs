@@ -8,48 +8,99 @@ using Random = UnityEngine.Random;
 
 namespace States.Emojis
 {
+    /// <summary>
+    /// Represents the initial state of an Emoji when it is first spawned in the game.
+    /// </summary>
     public class EmojiPreState : EmojiState
     {
+        /// <summary>
+        /// Method called when the Emoji enters this state.
+        /// </summary>
+        /// <param name="emojiManager">The manager controlling the Emoji.</param>
         public override void EnterState(EmojiManager emojiManager)
         {
-            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Predefined)
+            // Set the Emoji's Rigidbody to be kinematic and reset its rotation.
+            emojiManager.Rigidbody.isKinematic = true;
+            emojiManager.transform.rotation = Quaternion.identity;
+            
+            // Determine and set the current Emoji's emotion.
+            GetEmote(emojiManager);
+            
+            // Set the Emoji's title text based on its emotion.
+            emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
+            
+            // Initialize the Emoji's visual elements.
+            SetEmojiTextures(emojiManager);
+        }
+
+        /// <summary>
+        /// Determines and sets the current Emoji's emotion.
+        /// </summary>
+        /// <param name="emojiManager">The manager of the Emoji.</param>
+        private static void GetEmote(EmojiManager emojiManager)
+        {
+            if (GameManager.Instance.Level.LevelStruct.LevelMode != ELevelMode.Predefined)
             {
-                int i = GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount];
-                if (GameManager.Instance.Level.LevelStruct.Emotes.Any())
-                    emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[i];
-                else
-                    emojiManager.Emote = (EEmote)(i + 1);
+                // get random Emote if level is not of type Predefined
+                emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length - 1);
             }
             else
-                emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length-1);
-            
-            emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
-            SetEmojiTextures(emojiManager);
+            {
+                // Get the emotion from the predefined list or enum.
+                int emoteIndex = GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount];
+                
+                if (GameManager.Instance.Level.LevelStruct.Emotes.Any())
+                {
+                    // If a custom Emote list is set, use it.
+                    emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[emoteIndex];
+                }
+                else
+                {
+                    // Otherwise, use the EEmote enum.
+                    emojiManager.Emote = (EEmote)(emoteIndex + 1);
+                }
+            }
         }
 
         public override void Update(EmojiManager emojiManager)
         {
-            
+            // Implementation not required for this state.
         }
 
+        /// <summary>
+        /// Trigger enter event handler. Switches the Emoji to the IntraState when triggered.
+        /// </summary>
         public override void OnTriggerEnter(EmojiManager emojiManager)
         {
             emojiManager.SwitchState(emojiManager.IntraState);
         }
 
+        /// <summary>
+        /// Trigger exit event handler. Not used in this state.
+        /// </summary>
         public override void OnTriggerExit(EmojiManager emojiManager)
         {
-            throw new NotImplementedException();
+            Debug.Log("NotImplementedException");
         }
 
+        /// <summary>
+        /// Emotion detected event handler. Not used in this state.
+        /// </summary>
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
         {
-            
+            // Implementation not required for this state.
         }
 
-        private void SetEmojiTextures(EmojiManager emojiManager)
+        /// <summary>
+        /// Initializes the Emoji's visual elements based on its emotion.
+        /// </summary>
+        /// <param name="emojiManager">The manager of the Emoji.</param>
+        private static void SetEmojiTextures(EmojiManager emojiManager)
         {
+            // Get the texture for the current Emoji's emotion.
             Texture texture = ResourceSystem.Instance.GetEmoji(emojiManager.Emote).Texture;
+            
+            // Set the Emoji's material properties.
             emojiManager.EmojiMaterial.SetTexture(emojiManager.Sprite, texture);
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0);
             emojiManager.EmojiMaterial.SetFloat(emojiManager.SuccessColorAmount, 0);

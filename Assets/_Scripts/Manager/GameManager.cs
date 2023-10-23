@@ -29,21 +29,22 @@ namespace Manager
         
 
         public int SpawnedEmotesCount { get; private set; }
+        
 
         private void OnEnable()
         {
             if (EditorUI.EditorUI.Instance.UserID == "")
             {
                 Debug.LogWarning("No UserID Set");
-#if UNITY_EDITOR
                 if (PreventGameStartWithoutUserID)
                     UnityEditor.EditorApplication.isPlaying = false;
                 else
                     EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
-#endif
             }
 
             Level = EditorUI.EditorUI.Instance.GetSelectedLevel();
+            
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
 
             _gameState = PreparingState;
             SwitchState(PreparingState);
@@ -51,8 +52,15 @@ namespace Manager
 
         private void OnDestroy()
         {
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+            
             // Delete UserID after Game Ended
             EditorUI.EditorUI.Instance.ResetUserID();
+        }
+
+        private void OnLevelStoppedCallback()
+        {
+            SpawnedEmotesCount = 0;
         }
 
         private void Update()

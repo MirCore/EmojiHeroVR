@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,32 +5,61 @@ using Utilities;
 
 public class ObjectPool : Singleton<ObjectPool>
 {
-    [SerializeField] private List<GameObject> PooledObjects;
-    [SerializeField] private GameObject ObjectToPool;
-    [SerializeField] private int AmountToPool;
+    [SerializeField] private GameObject ObjectToPool; // The object template to pool
+    [SerializeField] private int AmountToPool = 20; // The initial amount of objects to pool
+    
+    private readonly List<GameObject> _pooledObjects = new(); // List to store the pooled objects
     
     /// <summary>
-    /// Instantiate Object Pool
+    /// Initializes the object pool by creating a specified number of objects and deactivating them.
     /// </summary>
     private void Start()
     {
+        // Deactivate the object template to ensure it's not enabled at instantiation
         ObjectToPool.SetActive(false);
-        PooledObjects = new List<GameObject>();
+        
+        // Spawn the specified amount of objects and add them to the pool
         for (int i = 0; i < AmountToPool; i++)
         {
-            GameObject tmp = Instantiate(ObjectToPool);
-            tmp.SetActive(false);
-            PooledObjects.Add(tmp);
+            SpawnNewEmote();
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
+    /// <summary>
+    /// Returns an inactive object from the pool, or creates a new one if all are active.
+    /// </summary>
+    /// <returns>An inactive GameObject from the pool.</returns>
     public GameObject GetPooledObject()
     {
-        foreach (GameObject obj in PooledObjects.Where(obj => !obj.activeInHierarchy))
+        // Iterate through the pooled objects
+        foreach (GameObject obj in _pooledObjects.Where(obj => !obj.activeInHierarchy))
         {
+            // Return the first inactive object found
             return obj;
         }
 
-        throw new NullReferenceException("Pooled Object returned null");
+        // If no inactive object is found, log a warning and create a new object
+        Debug.LogWarning("All pooled objects are in use; instantiating a new object.");
+        return SpawnNewEmote();
+    }
+    
+    /// <summary>
+    /// Creates a new object, adds it to the pool, and returns it.
+    /// </summary>
+    /// <returns>The newly created GameObject.</returns>
+    private GameObject  SpawnNewEmote()
+    {
+        // Instantiate a new object from the template
+        GameObject newObject = Instantiate(ObjectToPool);
+        
+        // Deactivate the new object
+        newObject.SetActive(false);
+        
+        // Add the new object to the pool
+        _pooledObjects.Add(newObject);
+        
+        // Return the new object
+        return newObject;
     }
 }

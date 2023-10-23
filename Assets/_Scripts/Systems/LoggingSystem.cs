@@ -3,23 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Enums;
 using Manager;
 using UnityEngine;
 using Utilities;
 
 namespace Systems
 {
+    /// <summary>
+    /// A system for handling logging of game events and images.
+    /// </summary>
     public class LoggingSystem : Singleton<LoggingSystem>
     {
-        // Log Setup:
-        // userID   timestamp    level    # of emoji    emote in ActionArea    name of image file(s)    FER response?  
-
-        private const string RelativePath = "/../SaveFiles/"; // Relative path for the log file
-        private string _fileName; // The name of the log file
+        private const string FileName = "labels.csv"; // The name of the log file
         private string _dirPath; // The full directory path where the log file will be stored
 
-        private List<LogData> _logDataList = new();
+        private readonly List<LogData> _logDataList = new(); // A list to store log data temporarily.
 
         private void OnEnable()
         {
@@ -32,96 +30,142 @@ namespace Systems
 
         private void Start()
         {
-            // Create a unique log file name based on the current date and time
-            _fileName = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + "_EmojiHero-Log.csv";
-            
+            // Get the user ID from the EditorUI instance.
             string userID = EditorUI.EditorUI.Instance.UserID;
             
-            // Combine the specified path with the application's data path
-            _dirPath = Path.Combine(Application.dataPath + RelativePath, userID);
+            // Set the directory path where log files and images will be stored.
+            _dirPath = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
             
+            // Create the CSV headers for the log file.
             CreateCsvHeaders();
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private void OnLevelFinishedCallback()
         {
+            // Write log data to the CSV file when a level is finished.
+            WriteLog();
+            
+            // Start coroutine to write all images post play.
             StartCoroutine(WriteImages());
         }
 
         private IEnumerator WriteImages()
         {
+            yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
+            
+            // Continue until all log data is processed.
             while (_logDataList.Any())
             {
+                // Get the first log data from the list.
                 LogData logData = _logDataList.FirstOrDefault();
-                byte[] bytes = logData.ImageTexture.EncodeToPNG();
-                yield return null;
-                SaveFiles.SaveImageFile(_dirPath, logData, bytes);
-                _logDataList.Remove(logData);
-                yield return null;
+                
+                // Construct the path for saving the image
+                string path = Path.Combine(_dirPath, logData.LevelID, logData.EmoteEmoji.ToString());
+                
+                try
+                {
+                    // Encode the image to PNG format.
+                    byte[] bytes = logData.ImageTexture.EncodeToPNG();
+
+                    // Save the image file.
+                    SaveFiles.SaveImageFile(path, logData, bytes);
+                    
+                    // Remove the processed log data from the list.
+                    _logDataList.Remove(logData);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to save image for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                }
+                
+                yield return null; // Wait for the next frame.
+            }
+        }
+
+        private void WriteLog()
+        {
+            // Write each log data to the CSV file.
+            foreach (LogData logData in _logDataList)
+            {
+                try
+                {
+                    WriteLogLine(logData);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                }
             }
         }
 
         /// <summary>
-        /// Creates the header row for the CSV file.
+        /// Writes a single line of log data to the CSV file.
         /// </summary>
-        private void CreateCsvHeaders()
+        /// <param name="logData">The log data to be written.</param>
+        private void WriteLogLine(LogData logData)
         {
+            // Prepare the data as an array of strings.
             string[] data =
             {
-                "User ID",
-                "Timestamp (Unix)",
-                "Level Name",
-                "Number of Emoji",
-                "Emote in ActionArea",
-                "Name of image file",
-                "Emote with highest probability",
-                "Highest probability",
-                "Full FER response"
-            };
-            
-            // Append the header row to the log CSV file
-            SaveFiles.AppendLineToCsv(_dirPath, _fileName, data);
-        }
-
-        /// <summary>
-        /// Writes a log entry to the CSV file.
-        /// </summary>
-        public void WriteLog(EEmote maxEmote, Dictionary<EEmote, float>  response, string timestamp, EEmote emote)
-        {
-            // Prepare the data to be logged
-            string[] data =
-            {
-                EditorUI.EditorUI.Instance.UserID,
-                timestamp, // Timestamp
-                GameManager.Instance.Level.name, // Level name
-                GameManager.Instance.GetLevelEmojiProgress().ToString(), // Number of emoji
-                emote.ToString(), // Emote in ActionArea
-                "imageFilename", // Name of image file(s)
-                maxEmote.ToString(),
-                response[maxEmote].ToString("F2"),
-                string.Join(";", response.Select(kv => $"{kv.Key}: {kv.Value:F2}")) // FER response
+                logData.Timestamp,
+                logData.LevelID,
+                logData.EmoteID.ToString(),
+                logData.EmoteEmoji.ToString(),
+                logData.EmoteFer.ToString(),
+                logData.FerProbabilities.anger.ToString("F2"),
+                logData.FerProbabilities.disgust.ToString("F2"),
+                logData.FerProbabilities.fear.ToString("F2"),
+                logData.FerProbabilities.happiness.ToString("F2"),
+                logData.FerProbabilities.neutral.ToString("F2"),
+                logData.FerProbabilities.sadness.ToString("F2"),
+                logData.FerProbabilities.surprise.ToString("F2"),
+                logData.UserID,
             };
             
             // Append the data as a line to the log CSV file
-            SaveFiles.AppendLineToCsv(_dirPath, _fileName, data);
+            SaveFiles.AppendLineToCsv(_dirPath, FileName, data);
         }
 
+        /// <summary>
+        /// Creates and writes the header line for the CSV log file.
+        /// </summary>
+        private void CreateCsvHeaders()
+        {
+            // Define the header line.
+            string[] data =
+            {
+                "Timestamp (Unix)",
+                "Level ID",
+                "Emote ID",
+                "Emote todo",
+                "Emote FER",
+                "Anger",
+                "Disgust",
+                "Fear",
+                "Happiness",
+                "Neutral",
+                "Sadness",
+                "Surprise",
+                "User ID",
+            };
+            
+            // Write the header line to the CSV file.
+            SaveFiles.AppendLineToCsv(_dirPath, FileName, data);
+        }
+        
+        /// <summary>
+        /// Adds log data to the list for future processing.
+        /// </summary>
+        /// <param name="logData">The log data to be added.</param>
         public void AddToLogDataList(LogData logData)
         {
             _logDataList.Add(logData);
         }
+        
+        public static string GetUnixTimestamp()
+        {
+            return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
+        }
     }
-}
-
-public struct LogData
-{
-    public string Timestamp;                // Timestamp (same as timestamp.jpg)
-    public string LevelID;                  // Level ID
-    public int EmoteID;                     // ID of Emote in Level sequence
-    public EEmote EmoteEmoji;               // Emote to imitate
-    public EEmote EmoteFer;                 // Emote with highest probability
-    public Probabilities FerProbabilities;  // Class containing all probabilities (seperated into columns when logging)
-    public string UserID;                   // User ID
-
-    public Texture2D ImageTexture;          // Webcam Image
 }

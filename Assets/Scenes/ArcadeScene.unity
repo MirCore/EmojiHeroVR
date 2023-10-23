@@ -960,6 +960,7 @@ GameObject:
   - component: {fileID: 235804611}
   - component: {fileID: 235804612}
   - component: {fileID: 235804613}
+  - component: {fileID: 235804614}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -979,7 +980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f472e1bd5639573479666e6bb3a03fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PooledObjects: []
   ObjectToPool: {fileID: 8516293493071587995, guid: 6d4817cff0730d9498459bb94c94e4df, type: 3}
   AmountToPool: 20
 --- !u!4 &235804609
@@ -1052,6 +1052,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Webcam: {fileID: 1522153667}
   PeriodicalFerMode: 1
+--- !u!114 &235804614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235804607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27de282defae486b9aea560be8b8cd9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentActiveRestPosts: 0
+  TotalPosts: 0
+  CurrentTimeBetweenPosts: 0
+  CurrentPostsFPS: 0
 --- !u!1 &268804709
 GameObject:
   m_ObjectHideFlags: 0
