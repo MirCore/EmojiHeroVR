@@ -111,13 +111,13 @@ namespace EditorUI
         {
             Probabilities probabilities = logData.FerProbabilities;
 
-            _root.Q<ProgressBar>("Anger").value = (_root.Q<ProgressBar>("Anger").value + probabilities.anger) / 2;
-            _root.Q<ProgressBar>("Disgust").value = (_root.Q<ProgressBar>("Disgust").value + probabilities.disgust) / 2;
-            _root.Q<ProgressBar>("Fear").value = (_root.Q<ProgressBar>("Fear").value + probabilities.fear) / 2;
-            _root.Q<ProgressBar>("Happiness").value = (_root.Q<ProgressBar>("Happiness").value + probabilities.happiness) / 2;
-            _root.Q<ProgressBar>("Neutral").value = (_root.Q<ProgressBar>("Neutral").value + probabilities.neutral) / 2;
-            _root.Q<ProgressBar>("Sadness").value = (_root.Q<ProgressBar>("Sadness").value + probabilities.sadness) / 2;
-            _root.Q<ProgressBar>("Surprise").value = (_root.Q<ProgressBar>("Surprise").value + probabilities.surprise) / 2;
+            _root.Q<ProgressBar>("Anger").value = probabilities.anger;
+            _root.Q<ProgressBar>("Disgust").value = probabilities.disgust;
+            _root.Q<ProgressBar>("Fear").value = probabilities.fear;
+            _root.Q<ProgressBar>("Happiness").value = probabilities.happiness;
+            _root.Q<ProgressBar>("Neutral").value = probabilities.neutral;
+            _root.Q<ProgressBar>("Sadness").value = probabilities.sadness;
+            _root.Q<ProgressBar>("Surprise").value = probabilities.surprise;
         }
 
         public string GetSelectedWebcam()
@@ -140,6 +140,11 @@ namespace EditorUI
         {
             SelectedLevel = level.name;
             CreateLevelDropdown();
+        }
+
+        public void SetWebcamTexture(WebCamTexture mainWebcam)
+        {
+            VisualElement webcamUI = _root.Q<VisualElement>("WebcamTexture");
         }
     }
 }

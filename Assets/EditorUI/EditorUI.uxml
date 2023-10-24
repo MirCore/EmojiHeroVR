@@ -36,5 +36,8 @@
             <ui:DropdownField label="Webcam" index="0" name="WebcamDropdown" />
             <ui:TextField picking-mode="Ignore" label="REST basepath" value="http://localhost:8765/" name="RestBasePath" />
         </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement name="WebcamTexture" style="flex-grow: 1; background-image: url(&apos;project://database/Assets/Webcam.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#Webcam&apos;); background-color: rgba(0, 0, 0, 0); height: 225px; width: 300px;" />
+        </ui:VisualElement>
     </ui:ScrollView>
 </ui:UXML>

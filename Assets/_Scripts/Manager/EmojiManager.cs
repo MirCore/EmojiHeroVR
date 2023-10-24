@@ -1,3 +1,4 @@
+using System.Collections;
 using Enums;
 using States.Emojis;
 using TMPro;
@@ -103,32 +104,30 @@ namespace Manager
 
         private void OnTriggerExit(Collider other) => _emojiState.OnTriggerExit(this);
 
-        
+
+        public void FadeOut() => StartCoroutine(FadeOutCoroutine());
+
         /// <summary>
         /// Fades out the Emoji and deactivates it.
         /// </summary>
-        public async void FadeOut()
+        private IEnumerator FadeOutCoroutine()
         {
             // If in training mode, fade out quickly. Otherwise, disable kinematic, apply a physics effect and fade out more slowly.
             if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
             {
-                await MathHelper.SLerpAsync(0, 1, 1f, EmojiRenderer.material, DissolveAmount);
+                yield return StartCoroutine(MathHelper.SLerp(0, 1, 1f, EmojiRenderer.material, DissolveAmount));
             }
             else
             {
                 Rigidbody.isKinematic = false;
                 
                 // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
-                Rigidbody.velocity =
-                    -(_movementSpeed) +
-                    GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.1f, 0.1f);
+                Rigidbody.velocity = - _movementSpeed + GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.1f, 0.1f);
                 
-                await MathHelper.SLerpAsync(0, 1, 6f, EmojiRenderer.material, DissolveAmount);
+                yield return StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             }
             
-            // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison
-            if (this != null)
-                DeactivateEmoji();
+            DeactivateEmoji();
         }
 
         private void DeactivateEmoji()

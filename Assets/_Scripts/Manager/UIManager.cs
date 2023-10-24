@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Enums;
 using Scriptables;
 using Systems;
@@ -23,8 +24,8 @@ namespace Manager
 
         [Header("Score UI")]
         [SerializeField] private TMP_Text LevelNameField;
-        [SerializeField] private TMP_Text ResultField;
-        [SerializeField] private TMP_Text ScoreField;
+        [SerializeField] private List<TMP_Text> ResultField;
+        [SerializeField] private List<TMP_Text> ScoreField;
         
         // Holds the data for the current level.
         private LevelStruct _level;
@@ -105,14 +106,21 @@ namespace Manager
         private void LoadScoreUI()
         {
             int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
-            
-            ResultField.text = _level.LevelMode switch
+
+            foreach (TMP_Text t in ResultField)
             {
-                ELevelMode.Training => $"{emojiProgress}",
-                ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
-                _ => emojiProgress + "/" + _level.Count
-            };
-            ScoreField.text = GameManager.Instance.GetLevelScore.ToString();
+                t.text = _level.LevelMode switch
+                {
+                    ELevelMode.Training => $"{emojiProgress}",
+                    ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
+                    _ => emojiProgress + "/" + _level.Count
+                };
+            }
+
+            foreach (TMP_Text t in ScoreField)
+            {
+                t.text = GameManager.Instance.GetLevelScore.ToString();
+            }
             
         }
 
