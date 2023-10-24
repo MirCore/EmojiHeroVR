@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Utilities
 {
+    /// <summary>
+    /// Represents the probabilities of the emotions.
+    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public struct Probabilities
     {
@@ -18,34 +21,97 @@ namespace Utilities
         public float surprise;
     }
 
+    /// <summary>
+    /// Represents the data to be logged for a specific event.
+    /// </summary>
     public struct LogData
     {
-        public string Timestamp;                // Timestamp (same as timestamp.jpg)
-        public string LevelID;                  // Level ID
-        public int EmoteID;                     // ID of Emote in Level sequence
-        public EEmote EmoteEmoji;               // Emote to imitate
-        public EEmote EmoteFer;                 // Emote with highest probability
-        public Probabilities FerProbabilities;  // Class containing all probabilities (seperated into columns when logging)
-        public string UserID;                   // User ID
+        /// <summary>
+        /// Gets or sets the timestamp (same as timestamp.png)
+        /// </summary>
+        public string Timestamp;
 
-        public Texture2D ImageTexture;          // Webcam Image
+        /// <summary>
+        /// Gets or sets the level ID.
+        /// </summary>
+        public string LevelID;
+
+        /// <summary>
+        /// Gets or sets the ID of the Emote in the level sequence.
+        /// </summary>
+        public int EmoteID;
+
+        /// <summary>
+        /// Gets or sets the emote to imitate.
+        /// </summary>
+        public EEmote EmoteEmoji;
+
+        /// <summary>
+        /// Gets or sets the emote with the highest probability from the facial expression recognition system.
+        /// </summary>
+        public EEmote EmoteFer;
+
+        /// <summary>
+        /// Gets or sets the probabilities of all emotions from the facial expression recognition system.
+        /// </summary>
+        public Probabilities FerProbabilities;
+
+        /// <summary>
+        /// Gets or sets the user ID.
+        /// </summary>
+        public string UserID;
+
+        /// <summary>
+        /// Gets or sets the webcam image.
+        /// </summary>
+        public Texture2D ImageTexture;
     }
 
+    /// <summary>
+    /// Represents the settings and data for a game level.
+    /// </summary>
     [Serializable]
     public struct LevelStruct
     {
+        /// <summary>
+        /// Gets or sets the name of the level.
+        /// </summary>
         public string LevelName;
+
+        /// <summary>
+        /// Gets or sets the game mode of the level.
+        /// </summary>
         public ELevelMode LevelMode;
 
-        public float MovementSpeed; // 0.2f
-        public float SpawnInterval; // 3f
-    
+        /// <summary>
+        /// Gets or sets the movement speed in the level.
+        /// </summary>
+        public float MovementSpeed;
+
+        /// <summary>
+        /// Gets or sets the interval between spawns in the level.
+        /// </summary>
+        public float SpawnInterval;
+
+        /// <summary>
+        /// Gets or sets the count of Emojis in the level.
+        /// </summary>
         public int Count;
-    
+
+        /// <summary>
+        /// Gets or sets the predefined emotes for the level.
+        /// </summary>
         [Header("Predefined Level Settings")]
         public List<EEmote> Emotes;
+
+        /// <summary>
+        /// Gets or sets the amount to repeat each emote in the level.
+        /// </summary>
         public int EmoteRepeatAmount;
-    
+
+        /// <summary>
+        /// Gets or sets the array of emote IDs for the level.
+        /// </summary>
         public int[] EmoteArray;
     }
 }

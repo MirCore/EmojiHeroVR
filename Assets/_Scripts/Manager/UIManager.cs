@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Enums;
 using Scriptables;
 using Systems;
@@ -10,104 +8,117 @@ using Utilities;
 
 namespace Manager
 {
+    /// <summary>
+    /// Manages the User Interface (UI) elements and interactions within the game.
+    /// </summary>
     public class UIManager : MonoBehaviour
     {
+        [Header("UI GameObjects")]
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
         [SerializeField] private GameObject LevelEndScreenUI;
-        [SerializeField] private GameObject LevelPrefab;
         [SerializeField] private GameObject LevelUI;
+        
+        [SerializeField] private GameObject LevelPrefab;
 
         [Header("Score UI")]
         [SerializeField] private TMP_Text LevelNameField;
-        [SerializeField] private List<TMP_Text> ResultField = new();
-        [SerializeField] private List<TMP_Text> ScoreField = new();
+        [SerializeField] private TMP_Text ResultField;
+        [SerializeField] private TMP_Text ScoreField;
         
+        // Holds the data for the current level.
         private LevelStruct _level;
 
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
-            EventManager.OnLevelFinished += OnOnLevelFinishedCallback;
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
 
+            // Load the UI elements for level selection.
             LoadLevelUI();
+            // Initialize the UI state.
             OnLevelStoppedCallback();
         }
-
 
         private void OnDisable()
         {
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
-            EventManager.OnLevelFinished -= OnOnLevelFinishedCallback;
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
         }
 
-        private void OnEmoteExitedAreaCallback(EEmote emote)
-        {
-            LoadScoreUI();
-        }
+        /// <summary>
+        /// Updates the score UI when an emote exits the action area.
+        /// </summary>
+        private void OnEmoteExitedAreaCallback(EEmote emote) => LoadScoreUI();
 
+        /// <summary>
+        /// Instantiates UI elements for each level based on the levels available in the ResourceSystem.
+        /// </summary>
         private void LoadLevelUI()
         {
-            Dictionary<ScriptableLevel, GameObject> uis = new ();
-            foreach (ScriptableLevel level in ResourceSystem.Instance.GetLevels)
+            int id = 0;
+            foreach (ScriptableLevel level in ResourceSystem.Instance.Levels)
             {
                 GameObject ui = Instantiate(LevelPrefab, LevelUI.transform);
-                uis.Add(level, ui);
-            }
-
-            int id = 0;
-
-            foreach ((ScriptableLevel scriptableLevel, GameObject uiGameObject) in uis)
-            {
-                TMP_Text[] texts = uiGameObject.GetComponentsInChildren<TMP_Text>();
-                Button button = uiGameObject.GetComponent<Button>();
-                button.onClick.AddListener(() => OnLevelButtonClicked(scriptableLevel));
                 
+                TMP_Text[] texts = ui.GetComponentsInChildren<TMP_Text>();
+                Button button = ui.GetComponent<Button>();
+                button.onClick.AddListener(() => OnLevelButtonClicked(level));
+                
+                // Set UI text fields based on level properties.
                 texts[0].text = "#" + id;
-                texts[1].text = scriptableLevel.LevelStruct.LevelName;
+                texts[1].text = level.LevelStruct.LevelName;
 
-                texts[2].text = scriptableLevel.LevelStruct.LevelMode switch
+                texts[2].text = level.LevelStruct.LevelMode switch
                 {
                     ELevelMode.Training => "<sprite index=1>",
-                    ELevelMode.Predefined => scriptableLevel.LevelStruct.EmoteArray.Length + "<sprite index=0>",
-                    _ => scriptableLevel.LevelStruct.Count + "<sprite index=0>"
+                    ELevelMode.Predefined => level.LevelStruct.EmoteArray.Length + "<sprite index=0>",
+                    _ => level.LevelStruct.Count + "<sprite index=0>"
                 };
 
-                if (scriptableLevel.LevelStruct.LevelMode == ELevelMode.Training)
-                    texts[3].text = "<sprite index=2>";
-                else
-                    texts[3].text = 60 * scriptableLevel.LevelStruct.MovementSpeed + "<sprite index=0>/m";
+                texts[3].text = level.LevelStruct.LevelMode switch
+                {
+                    ELevelMode.Training => "<sprite index=2>",
+                    _ => 60 * level.LevelStruct.MovementSpeed + "<sprite index=0>/m"
+                };
 
                 id++;
             }
         }
 
+        /// <summary>
+        /// Loads the UI for the end screen, displaying level name and score.
+        /// </summary>
         private void LoadEndScreenUI()
         {
             LevelNameField.text = _level.LevelName;
             LoadScoreUI();
         }
 
+        /// <summary>
+        /// Updates the score UI based on the current game progress and score.
+        /// </summary>
         private void LoadScoreUI()
         {
-            for (int i = 0; i <= 1; i++)
+            int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
+            
+            ResultField.text = _level.LevelMode switch
             {
-                int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
-                
-                ResultField[i].text = _level.LevelMode switch
-                {
-                    ELevelMode.Training => $"{emojiProgress}",
-                    ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
-                    _ => emojiProgress + "/" + _level.Count
-                };
-                ScoreField[i].text = GameManager.Instance.GetLevelScore.ToString();
-            }
+                ELevelMode.Training => $"{emojiProgress}",
+                ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
+                _ => emojiProgress + "/" + _level.Count
+            };
+            ScoreField.text = GameManager.Instance.GetLevelScore.ToString();
+            
         }
 
+        /// <summary>
+        /// Updates the UI to reflect the level started state.
+        /// </summary>
         private void OnLevelStartedCallback()
         {
             _level = GameManager.Instance.Level;
@@ -118,6 +129,9 @@ namespace Manager
             LoadScoreUI();
         }
         
+        /// <summary>
+        /// Updates the UI to reflect the level stopped state.
+        /// </summary>
         private void OnLevelStoppedCallback()
         {
             LevelPlayingUI.SetActive(false);
@@ -125,7 +139,10 @@ namespace Manager
             LevelEndScreenUI.SetActive(false);
         }
         
-        private void OnOnLevelFinishedCallback()
+        /// <summary>
+        /// Updates the UI to reflect the level finished state.
+        /// </summary>
+        private void OnLevelFinishedCallback()
         {
             LevelPlayingUI.SetActive(false);
             PreparingUI.SetActive(false);
@@ -133,25 +150,11 @@ namespace Manager
             LoadEndScreenUI();
         }
 
+        // Methods to handle button presses, triggering corresponding actions in the GameManager.
         public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
         public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
-        private static void OnLevelButtonClicked(ScriptableLevel level)
-        {
-            GameManager.Instance.OnButtonPressed(level);
-        }
-        
+        private static void OnLevelButtonClicked(ScriptableLevel level) => GameManager.Instance.OnButtonPressed(level);
     }
 }
-
-[Serializable]
-public enum UIType
-{
-    Default,
-    StartLevel,
-    StopLevel,
-    PauseLevel,
-    ContinueEndScreen,
-    StartStopLevel
-} 

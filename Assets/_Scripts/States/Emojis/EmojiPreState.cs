@@ -101,7 +101,7 @@ namespace States.Emojis
         private static void SetEmojiTextures(EmojiManager emojiManager)
         {
             // Get the texture for the current Emoji's emotion.
-            Texture texture = ResourceSystem.Instance.GetEmoji(emojiManager.Emote).Texture;
+            Texture texture = ResourceSystem.Instance.EmojiTextures[emojiManager.Emote];
             
             // Set the Emoji's material properties.
             emojiManager.EmojiMaterial.SetTexture(emojiManager.Sprite, texture);

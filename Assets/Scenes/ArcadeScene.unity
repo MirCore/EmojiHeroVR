@@ -654,12 +654,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderRampDuration: 0.2
-  LossColorRampDuration: 3
-  LossColor: {r: 1, g: 0, b: 0, a: 0.5019608}
-  ResetColor: {r: 1, g: 0.4, b: 0, a: 0.5019608}
-  ResetColorRampDuration: 0.5
   LowGradientPosition: -0.3
   HighGradientPosition: 0
+  TimePressureColorRampDuration: 3
+  ResetColorRampDuration: 0.5
+  TimePressureColor: {r: 1, g: 0, b: 0, a: 1}
+  ResetColor: {r: 1, g: 0.4, b: 0, a: 0.5019608}
 --- !u!1 &136506829
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PreventGameStartWithoutUserID: 0
   <EmojiSpawnPosition>k__BackingField: {fileID: 268804710}
-  <ActionArea>k__BackingField: {fileID: 131909669}
+  ActionArea: {fileID: 131909669}
 --- !u!114 &235804611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3646,17 +3646,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5270502623069923645, guid: 8c1cc75555b76494ebcd6945534a3b38, type: 3}
   m_PrefabInstance: {fileID: 894082837}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &917667409 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 914058586305959171, guid: 40318e9643024b84499cad4b24373be6, type: 3}
-  m_PrefabInstance: {fileID: 1474338595}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &934988943
 GameObject:
   m_ObjectHideFlags: 0
@@ -4223,15 +4212,11 @@ MonoBehaviour:
   PreparingUI: {fileID: 555513197}
   LevelPlayingUI: {fileID: 1879322580}
   LevelEndScreenUI: {fileID: 679789285}
-  LevelPrefab: {fileID: 2235702434093064232, guid: 1f1174da510489a4caf50c8391613e2d, type: 3}
   LevelUI: {fileID: 1545555092}
+  LevelPrefab: {fileID: 2235702434093064232, guid: 1f1174da510489a4caf50c8391613e2d, type: 3}
   LevelNameField: {fileID: 1483560453}
-  ResultField:
-  - {fileID: 616775085}
-  - {fileID: 917667409}
-  ScoreField:
-  - {fileID: 167405216}
-  - {fileID: 1961675344}
+  ResultField: {fileID: 616775085}
+  ScoreField: {fileID: 167405216}
 --- !u!4 &1167101765
 Transform:
   m_ObjectHideFlags: 0
@@ -5790,17 +5775,6 @@ Transform:
   - {fileID: 894082838}
   m_Father: {fileID: 170509657}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1961675344 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 914058586305959171, guid: 40318e9643024b84499cad4b24373be6, type: 3}
-  m_PrefabInstance: {fileID: 1203174211}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2057267829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1226607126602248091, guid: 40318e9643024b84499cad4b24373be6, type: 3}

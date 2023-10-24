@@ -143,7 +143,7 @@ namespace Manager
         /// <summary>
         /// Increments the count of spawned emojis.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => PlayingLevelState.SpawnedEmotesCount++;
+        public void IncreaseSpawnedEmotesCount() => PlayingLevelState.IncreaseSpawnedEmotesCount();
 
     }
 }

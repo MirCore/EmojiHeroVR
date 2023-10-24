@@ -5,8 +5,14 @@ using UnityEngine;
 
 namespace Utilities
 {
+    /// <summary>
+    /// Provides mathematical helper functions, particularly for smooth interpolation.
+    /// </summary>
     public abstract class MathHelper
     {
+        /// <summary>
+        /// Smoothly interpolates a material's float property over time.
+        /// </summary>
         public static IEnumerator SLerp(float from, float to, float duration, Material material, int nameID)
         {
             float t = 0;
@@ -22,6 +28,9 @@ namespace Utilities
             material.SetFloat(nameID, to);
         }
         
+        /// <summary>
+        /// Asynchronously smoothly interpolates a material's float property over time.
+        /// </summary>
         public static async Task SLerpAsync(float from, float to, float duration, Material material, int nameID)
         {
             float t = 0;
@@ -46,6 +55,9 @@ namespace Utilities
                 material.SetFloat(nameID, to);
         }
         
+        /// <summary>
+        /// Smoothly interpolates the time scale over time.
+        /// </summary>
         public static IEnumerator SLerpTimeScale(float from, float to, float duration)
         {
             float t = 0;
