@@ -4,6 +4,7 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace States.Emojis
@@ -39,7 +40,9 @@ namespace States.Emojis
         /// <param name="emojiManager">The manager of the Emoji.</param>
         private static void GetEmote(EmojiManager emojiManager)
         {
-            if (GameManager.Instance.Level.LevelStruct.LevelMode != ELevelMode.Predefined)
+            LevelStruct level = GameManager.Instance.Level;
+            
+            if (level.LevelMode != ELevelMode.Predefined)
             {
                 // get random Emote if level is not of type Predefined
                 emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length - 1);
@@ -47,12 +50,12 @@ namespace States.Emojis
             else
             {
                 // Get the emotion from the predefined list or enum.
-                int emoteIndex = GameManager.Instance.Level.LevelStruct.EmoteArray[GameManager.Instance.SpawnedEmotesCount];
+                int emoteIndex = level.EmoteArray[GameManager.Instance.GetSpawnedEmotesCount];
                 
-                if (GameManager.Instance.Level.LevelStruct.Emotes.Any())
+                if (level.Emotes.Any())
                 {
                     // If a custom Emote list is set, use it.
-                    emojiManager.Emote = GameManager.Instance.Level.LevelStruct.Emotes[emoteIndex];
+                    emojiManager.Emote = level.Emotes[emoteIndex];
                 }
                 else
                 {

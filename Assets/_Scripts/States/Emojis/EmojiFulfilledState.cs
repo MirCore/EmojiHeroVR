@@ -26,7 +26,7 @@ namespace States.Emojis
             EventManager.InvokeEmoteFulfilled(emojiManager.Emote, emojiManager.ActiveAreaLeft);
             
             // If the game is in Training mode, immediately switch to the Leaving State.
-            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
+            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
                 emojiManager.SwitchState(emojiManager.LeavingState);
         }
 

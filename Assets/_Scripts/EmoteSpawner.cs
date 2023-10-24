@@ -44,7 +44,7 @@ public class EmoteSpawner : MonoBehaviour
         }
         
         // Define a specific spawn location for the Training mode.
-        _actionAreaSpawnLocation = GameManager.Instance.ActionArea.transform.position + GameManager.Instance.ActionArea.transform.up * 0.15f;
+        _actionAreaSpawnLocation = GameManager.Instance.ActionAreaTransform.position + GameManager.Instance.ActionAreaTransform.up * 0.15f;
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = true;
         
         // Determine the spawning behavior based on the level mode.
-        if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
+        if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
             StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 0));
         else
             StartCoroutine(SpawnEmoteAtSpawnLocation());
@@ -67,7 +67,7 @@ public class EmoteSpawner : MonoBehaviour
     private void OnEmoteFulfilledCallback(EEmote emote, float score)
     {
         // In Training mode, spawn a new emote when the previous one is fulfilled.
-        if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
+        if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
             StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1));
     }
     
@@ -83,7 +83,7 @@ public class EmoteSpawner : MonoBehaviour
             ActivatePooledEmote(position);
             CheckLevelEndConditions();
 
-            yield return new WaitForSeconds(GameManager.Instance.Level.LevelStruct.SpawnInterval);
+            yield return new WaitForSeconds(GameManager.Instance.Level.SpawnInterval);
         }
     }
 
@@ -119,7 +119,7 @@ public class EmoteSpawner : MonoBehaviour
     /// </summary>
     private void CheckLevelEndConditions()
     {
-        if (GameManager.Instance.CheckLevelEndConditions(GameManager.Instance.SpawnedEmotesCount))
+        if (GameManager.Instance.CheckLevelEndConditions(GameManager.Instance.GetSpawnedEmotesCount))
             StopSpawning();
     }
     

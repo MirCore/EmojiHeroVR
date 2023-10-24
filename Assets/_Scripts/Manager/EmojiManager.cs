@@ -42,6 +42,10 @@ namespace Manager
         
         // Rigidbody component for physics interactions.
         internal Rigidbody Rigidbody;
+        
+        // Movement for the current level
+        private Vector3 _movementSpeed;
+
 
         private void Awake()
         {
@@ -49,7 +53,10 @@ namespace Manager
             Rigidbody = GetComponent<Rigidbody>();
             // create a copy of the material
             EmojiMaterial = EmojiRenderer.material;
-            ActionAreaSize = GameManager.Instance.ActionArea.GetComponent<Renderer>().bounds.size.z;
+            ActionAreaSize = GameManager.Instance.ActionAreaSize;
+
+            // Calculate movement based on Action Area direction and movement speed
+            _movementSpeed = GameManager.Instance.ActionAreaTransform.forward * GameManager.Instance.Level.MovementSpeed;
         }
 
         private void OnEnable()
@@ -72,7 +79,7 @@ namespace Manager
             // Update the current state and handle Emoji movement.
             _emojiState.Update(this);
             if (_emojiState != LeavingState)
-                transform.position -= GameManager.Instance.ActionArea.transform.forward * (GameManager.Instance.Level.LevelStruct.MovementSpeed * Time.deltaTime);
+                transform.position -= _movementSpeed * Time.deltaTime;
         }
 
         /// <summary>
@@ -102,28 +109,31 @@ namespace Manager
         /// </summary>
         public async void FadeOut()
         {
-            // If in training mode, fade out quickly. Otherwise, apply a physics effect and fade out more slowly.
-            if (GameManager.Instance.Level.LevelStruct.LevelMode == ELevelMode.Training)
+            // If in training mode, fade out quickly. Otherwise, disable kinematic, apply a physics effect and fade out more slowly.
+            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
             {
                 await MathHelper.SLerpAsync(0, 1, 1f, EmojiRenderer.material, DissolveAmount);
-                DeactivateEmoji();
-                return;
             }
+            else
+            {
+                Rigidbody.isKinematic = false;
                 
-            Rigidbody.isKinematic = false;
-            // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
-            Rigidbody.velocity =
-                -(GameManager.Instance.ActionArea.transform.forward * GameManager.Instance.Level.LevelStruct.MovementSpeed) +
-                GameManager.Instance.ActionArea.transform.right * Random.Range(-0.1f, 0.1f);
-            await MathHelper.SLerpAsync(0, 1, 6f, EmojiRenderer.material, DissolveAmount);
-            DeactivateEmoji();
+                // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
+                Rigidbody.velocity =
+                    -(_movementSpeed) +
+                    GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.1f, 0.1f);
+                
+                await MathHelper.SLerpAsync(0, 1, 6f, EmojiRenderer.material, DissolveAmount);
+            }
+            
+            // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison
+            if (this != null)
+                DeactivateEmoji();
         }
 
         private void DeactivateEmoji()
         {
-            // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison
-            if (gameObject != null)
-                gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }

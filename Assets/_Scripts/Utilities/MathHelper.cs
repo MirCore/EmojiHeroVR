@@ -35,7 +35,7 @@ namespace Utilities
 
                     await Task.Yield();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return;
                 }

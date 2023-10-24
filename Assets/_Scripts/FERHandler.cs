@@ -59,7 +59,7 @@ public class FerHandler : MonoBehaviour
         const float interval = 0.3f;
         float nextPostTime = Time.realtimeSinceStartup + interval;
         
-        while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea())
+        while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea)
         {
             // Log a new FER request.
             EditorUIFerStats.Instance.LogNewRestRequest();
@@ -87,9 +87,9 @@ public class FerHandler : MonoBehaviour
         LogData logData = new()
         {
             Timestamp = LoggingSystem.GetUnixTimestamp(),
-            LevelID = GameManager.Instance.Level.name,
-            EmoteID = GameManager.Instance.GetLevelEmojiProgress(),
-            EmoteEmoji = GameManager.Instance.GetEmojiInActionArea().FirstOrDefault(),
+            LevelID = GameManager.Instance.Level.LevelName,
+            EmoteID = GameManager.Instance.GetLevelEmojiProgress,
+            EmoteEmoji = GameManager.Instance.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
             ImageTexture = new Texture2D(Webcam.Width, Webcam.Height)
         };
@@ -147,7 +147,7 @@ public class FerHandler : MonoBehaviour
         EditorUIFerStats.Instance.LogRestResponse(logData);
 
         // If emojis are still in the action area, continue the FER process.
-        if (GameManager.Instance.EmojisAreInActionArea())
+        if (GameManager.Instance.EmojisAreInActionArea)
             SendRestImage();
     }
     

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using Scriptables;
@@ -10,29 +9,42 @@ using Utilities;
 
 namespace Manager
 {
+    /// <summary>
+    /// Manages core game logic, handling game states and level conditions.
+    /// </summary>
     public class GameManager : Singleton<GameManager>
     {
-        [Header("Prevent Game From Starting When UserID Is Missing")]
-        [SerializeField] private bool PreventGameStartWithoutUserID;
-        
-        [Header("States")]
-            private GameState _gameState;
-            internal readonly GamePreparingState PreparingState = new();
-            internal readonly GamePlayingLevelState PlayingLevelState = new();
-            internal readonly GameLevelFinishedState LevelFinishedState = new();
-        
+        // Configuration to prevent the game from starting if the UserID is not set
+        [Header("Prevent Game From Starting When UserID Is Missing")] [SerializeField]
+        private bool PreventGameStartWithoutUserID;
+
+        // Game states
+        private GameState _gameState;
+        internal readonly GamePreparingState PreparingState = new();
+        internal readonly GamePlayingLevelState PlayingLevelState = new();
+        internal readonly GameLevelFinishedState LevelFinishedState = new();
+
         [field: Header("Level Setup GameObjects")]
-            [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
-            [field: SerializeField] public GameObject ActionArea { get; private set; }
-
-            public ScriptableLevel Level { get; private set; }
+        [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
+        [SerializeField] private GameObject ActionArea;
+        public float ActionAreaSize { get; private set; }
         
+        // Current selected/playing level
+        private ScriptableLevel _level;
 
-        public int SpawnedEmotesCount { get; private set; }
-        
+        // Properties for accessing game data
+        public Transform ActionAreaTransform => ActionArea.transform;
+        public LevelStruct Level => _level.LevelStruct;
+        public int GetSpawnedEmotesCount => PlayingLevelState.SpawnedEmotesCount;
+        public int GetLevelScore => PlayingLevelState.LevelScore;
+        public bool EmojisAreInActionArea => PlayingLevelState.EmojiInActionArea.Any();
+        public EEmote GetEmojiInActionArea => PlayingLevelState.EmojiInActionArea.FirstOrDefault();
+        public int GetLevelEmojiProgress => PlayingLevelState.FinishedEmoteCount;
+
 
         private void OnEnable()
         {
+            // Check if a user ID is set. Generate a Unix timestamp user ID if none is set
             if (EditorUI.EditorUI.Instance.UserID == "")
             {
                 Debug.LogWarning("No UserID Set");
@@ -42,33 +54,32 @@ namespace Manager
                     EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
             }
 
-            Level = EditorUI.EditorUI.Instance.GetSelectedLevel();
-            
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
+            // Fetching the action area size and setting the selected level
+            ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;
+            _level = EditorUI.EditorUI.Instance.GetSelectedLevel();
 
-            _gameState = PreparingState;
-            SwitchState(PreparingState);
+            // Switch to the initial preparing state
+            SwitchState(_gameState = PreparingState);
         }
 
         private void OnDestroy()
         {
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
-            
-            // Delete UserID after Game Ended
+            // Reset the user ID once the game ends
             EditorUI.EditorUI.Instance.ResetUserID();
         }
 
-        private void OnLevelStoppedCallback()
-        {
-            SpawnedEmotesCount = 0;
-        }
 
         private void Update()
         {
+            // Start Level with space bar
             if (Input.GetButtonDown("Jump"))
                 OnButtonPressed(UIType.StartStopLevel);
         }
 
+        /// <summary>
+        /// Switches the game to the provided state.
+        /// </summary>
+        /// <param name="state">The game state to switch to.</param>
         public void SwitchState(GameState state)
         {
             _gameState.LeaveState();
@@ -76,16 +87,21 @@ namespace Manager
             _gameState.EnterState();
         }
 
+        /// <summary>
+        /// Checks if the current level's end conditions have been met.
+        /// </summary>
+        /// <param name="count">The current count of spawned or processed emojis.</param>
+        /// <returns>True if the end conditions are met, false otherwise.</returns>
         public bool CheckLevelEndConditions(int count)
         {
-            switch (Level.LevelStruct.LevelMode)
+            switch (Level.LevelMode)
             {
                 case ELevelMode.Count:
-                    if (count >= Level.LevelStruct.Count)
+                    if (count >= Level.Count) // Check if Emoji count is reached
                         return true;
                     break;
                 case ELevelMode.Predefined:
-                    if (count >= Level.LevelStruct.EmoteArray.Length)
+                    if (count >= Level.EmoteArray.Length) // Check if all predefined Emojis have been spawned
                         return true;
                     break;
                 case ELevelMode.Training: // TODO: implement training end conditions
@@ -97,29 +113,37 @@ namespace Manager
             return false;
         }
 
+        /// <summary>
+        /// Handles button presses related to general UI interactions.
+        /// </summary>
+        /// <param name="uiType">Type of UI action.</param>
         public void OnButtonPressed(UIType uiType) => _gameState.HandleUIInput(uiType);
-        
+
+        /// <summary>
+        /// Handles button presses when selecting a level in the UI
+        /// </summary>
+        /// <param name="level">The selected level.</param>
         public void OnButtonPressed(ScriptableLevel level) => _gameState.HandleUIInput(level);
-        
-        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1,0,1f));
 
+        /// <summary>
+        /// Stops the game's time scale, effectively pausing in-game action.
+        /// </summary>
+        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 1f));
 
+        /// <summary>
+        /// Sets a new level for the game and the EditorUI.
+        /// </summary>
+        /// <param name="level">The new level to set.</param>
         public void SetNewLevel(ScriptableLevel level)
         {
-            Level = level;
+            _level = level;
             EditorUI.EditorUI.Instance.SetNewLevel(level);
         }
+        
+        /// <summary>
+        /// Increments the count of spawned emojis.
+        /// </summary>
+        public void IncreaseSpawnedEmotesCount() => PlayingLevelState.SpawnedEmotesCount++;
 
-        public int GetLevelEmojiProgress() => PlayingLevelState.FinishedEmoteCount;
-
-        public IEnumerable<EEmote> GetEmojiInActionArea() => PlayingLevelState.EmojiInActionArea;
-
-        public int GetLevelScore() => PlayingLevelState.LevelScore;
-
-        public void SetSpawnedEmotesCount(int spawnedEmotesCount) => SpawnedEmotesCount = spawnedEmotesCount;
-
-        public void IncreaseSpawnedEmotesCount() => SpawnedEmotesCount++;
-
-        public bool EmojisAreInActionArea() => PlayingLevelState.EmojiInActionArea.Any();
     }
 }

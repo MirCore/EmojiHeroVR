@@ -11,7 +11,9 @@ namespace States.Game
     {
         [field: Header("Level Progress")]
         public int FinishedEmoteCount { get; private set; }
-        public int FulfilledEmoteCount { get; private set; }
+
+        private int FulfilledEmoteCount { get; set; }
+        public int SpawnedEmotesCount { get; internal set; }
         public int LevelScore { get; private set; }
         public readonly List<EEmote> EmojiInActionArea = new();
         
@@ -26,14 +28,15 @@ namespace States.Game
             EventManager.InvokeLevelStarted();
         }
 
+
         public override void LeaveState()
         {
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
-            
-            EmojiInActionArea.Clear();
+
+            ResetLevelState();
         }
 
         private void ResetLevelState()
@@ -41,6 +44,8 @@ namespace States.Game
             FinishedEmoteCount = 0;
             FulfilledEmoteCount = 0;
             LevelScore = 0;
+            SpawnedEmotesCount = 0;
+            EmojiInActionArea.Clear();
         }
         
         private void OnEmoteEnteredAreaCallback(EEmote emote)

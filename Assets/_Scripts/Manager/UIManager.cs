@@ -6,6 +6,7 @@ using Systems;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 
 namespace Manager
 {
@@ -22,6 +23,8 @@ namespace Manager
         [SerializeField] private List<TMP_Text> ResultField = new();
         [SerializeField] private List<TMP_Text> ScoreField = new();
         
+        private LevelStruct _level;
+
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
@@ -85,7 +88,7 @@ namespace Manager
 
         private void LoadEndScreenUI()
         {
-            LevelNameField.text = GameManager.Instance.Level.LevelStruct.LevelName;
+            LevelNameField.text = _level.LevelName;
             LoadScoreUI();
         }
 
@@ -93,18 +96,22 @@ namespace Manager
         {
             for (int i = 0; i <= 1; i++)
             {
-                ResultField[i].text = GameManager.Instance.Level.LevelStruct.LevelMode switch
+                int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
+                
+                ResultField[i].text = _level.LevelMode switch
                 {
-                    ELevelMode.Training => $"{GameManager.Instance.GetLevelEmojiProgress()}",
-                    ELevelMode.Predefined => GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.EmoteArray.Length,
-                    _ => GameManager.Instance.GetLevelEmojiProgress() + "/" + GameManager.Instance.Level.LevelStruct.Count
+                    ELevelMode.Training => $"{emojiProgress}",
+                    ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
+                    _ => emojiProgress + "/" + _level.Count
                 };
-                ScoreField[i].text = GameManager.Instance.GetLevelScore().ToString();
+                ScoreField[i].text = GameManager.Instance.GetLevelScore.ToString();
             }
         }
 
         private void OnLevelStartedCallback()
         {
+            _level = GameManager.Instance.Level;
+            
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
