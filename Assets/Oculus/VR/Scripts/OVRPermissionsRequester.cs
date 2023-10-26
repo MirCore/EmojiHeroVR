@@ -26,7 +26,7 @@ using UnityEngine.Android;
 /// <summary>
 /// This class handles android permission requests for the capabilities listed in <see cref = "Permission"/>.
 /// </summary>
-internal static class OVRPermissionsRequester
+public static class OVRPermissionsRequester
 {
     /// <summary>
     /// Occurs when a <see cref="Permission"/> is granted.

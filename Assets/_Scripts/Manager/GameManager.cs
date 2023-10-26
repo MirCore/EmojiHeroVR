@@ -4,6 +4,7 @@ using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
+using UnityEditor;
 using UnityEngine;
 using Utilities;
 
@@ -74,6 +75,10 @@ namespace Manager
             // Start Level with space bar
             if (Input.GetButtonDown("Jump"))
                 OnButtonPressed(UIType.StartStopLevel);
+            
+            // Stop game with escape
+            else if (Input.GetButtonDown("Cancel"))
+                EditorApplication.ExitPlaymode();
         }
 
         /// <summary>

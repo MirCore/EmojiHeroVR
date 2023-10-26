@@ -121,6 +121,7 @@ namespace Systems
                 logData.FerProbabilities.sadness.ToString("F2"),
                 logData.FerProbabilities.surprise.ToString("F2"),
                 logData.UserID,
+                logData.FaceExpressions,
             };
             
             // Append the data as a line to the log CSV file
@@ -148,6 +149,7 @@ namespace Systems
                 "Sadness",
                 "Surprise",
                 "User ID",
+                "OVR Face Expressions"
             };
             
             // Write the header line to the CSV file.

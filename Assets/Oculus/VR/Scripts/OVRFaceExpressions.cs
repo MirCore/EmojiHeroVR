@@ -182,47 +182,12 @@ public class OVRFaceExpressions : MonoBehaviour, IReadOnlyCollection<float>, OVR
                     expression,
                     $"Value must be between 0 to {(int)FaceExpression.Max}");
             }
-
-            if (Frame >= 0 && Frame < _recordedFaceExpressions.Count) 
-                return _recordedFaceExpressions[Frame].Expressions[(int)expression];
             
             return _currentFaceState.ExpressionWeights[(int)expression];
         }
     }
     
-    private readonly List<FaceExpressionsData> _recordedFaceExpressions = new();
-    [SerializeField] private int Frame;
-        
-    private void Start()
-    {
-        LoadMovement();
-    }
-        
-    private void LoadMovement()
-    {
-        string path = Path.Combine(Application.dataPath + "/../SaveFiles/", "FaceExpression.json");
-        
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"File not found: {path}");
-        }
-        
-        string[] json = File.ReadAllLines(path);
-        foreach (string line in json)
-        {
-            try
-            {
-                FaceExpressionsData data = JsonUtility.FromJson<FaceExpressionsData>(line);
-                _recordedFaceExpressions.Add(data);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to deserialize line: {line}. Error: {e}");
-            }
-        }
-    }
-
-    public float GetWeight(FaceExpression expression) => this[expression];
+   public float GetWeight(FaceExpression expression) => this[expression];
 
     /// <summary>
     /// This method tries to gets the weight of the given expression if it's available.
@@ -456,12 +421,6 @@ public class OVRFaceExpressions : MonoBehaviour, IReadOnlyCollection<float>, OVR
         public void Dispose()
         {
         }
-    }
-    
-    [Serializable]
-    public struct FaceExpressionsData
-    {
-        public float[] Expressions;
     }
 
     #endregion
