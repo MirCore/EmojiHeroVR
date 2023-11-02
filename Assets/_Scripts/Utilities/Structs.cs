@@ -64,7 +64,7 @@ namespace Utilities
         /// <summary>
         /// Gets or sets the webcam image.
         /// </summary>
-        public Texture2D ImageTexture;
+        public List<Texture2D> ImageTextures;
 
         /// <summary>
         /// Gets or sets the Face Expression data

@@ -1,69 +1,73 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Utilities;
 
 public class Webcam : MonoBehaviour
 {
-    //private readonly List<WebCamTexture> _webcam = new();
-    private WebCamTexture _mainWebcam;
-
-    //private readonly List<string> _webcamName = new();
-    private string _mainWebcamName;
-    [SerializeField] private RenderTexture RenderTexture;
+    private readonly List<WebCamTexture> _webcams = new();
+    [SerializeField] private List<RenderTexture> RenderTextures = new();
 
     [SerializeField] private int RequestedCameraWidth = 1080;
     [SerializeField] private int RequestedCameraHeight = 720;
 
-    public int Width { get; private set; }
-    public int Height { get; private set; }
-
-
     private void Start()
     {
-        _mainWebcamName = EditorUI.EditorUI.Instance.GetSelectedWebcam();
-        InitializeWebcam();
+        string mainWebcamName = EditorUI.EditorUI.Instance.GetMainWebcam();
+        string secondaryWebcamName = EditorUI.EditorUI.Instance.GetSecondaryWebcam();
+        InitializeWebcams(mainWebcamName, secondaryWebcamName);
     }
 
     private void Update()
     {
-        if (_mainWebcam.didUpdateThisFrame)
-            Graphics.Blit(_mainWebcam, RenderTexture);
+        for (int i = 0; i < _webcams.Count; i++)
+            if (_webcams[i].didUpdateThisFrame)
+                Blit(i);
     }
 
-    private void InitializeWebcam()
+    private void InitializeWebcams(string mainWebcamName, string secondaryWebcamName)
     {
         // Initialize webcam and set up RawImage to display their feed
-        _mainWebcam = new WebCamTexture(_mainWebcamName, RequestedCameraWidth, RequestedCameraHeight);
-        _mainWebcam.Play();
-        Graphics.Blit(_mainWebcam, RenderTexture);
-        /*for (int i = 0; i < Math.Min(Image.Count, _webcam.Count); i++)
-        {
-            Image[i].texture = _webcam[i];
-            _mainWebcam[i].Play();
-        }*/
+        _webcams.Add(new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight));
+        if (secondaryWebcamName != "-" && secondaryWebcamName != mainWebcamName)
+            _webcams.Add(new WebCamTexture(secondaryWebcamName, RequestedCameraWidth, RequestedCameraHeight));
 
-        // Initialize the snapshot texture based on the main webcam
-        Width = _mainWebcam.width;
-        Height = _mainWebcam.height;
+        for (int i = 0; i < _webcams.Count; i++)
+        {
+            _webcams[i].Play();
+            Blit(i);
+        }
+    }
+
+    private void Blit(int webcamIndex)
+    {
+        if (RenderTextures.Count > webcamIndex)
+            Graphics.Blit(_webcams[webcamIndex], RenderTextures[webcamIndex]);
     }
 
     private void OnDestroy()
     {
         // Stop all webcams and release resources when the script is destroyed
-        /*foreach (WebCamTexture webCam in _webcam)
-        {
-            webCam.Stop();
-        }*/
-        _mainWebcam.Stop();
+        foreach (WebCamTexture webcam in _webcams) 
+            webcam.Stop();
+        
+        foreach (RenderTexture texture in RenderTextures) 
+            texture.DiscardContents();
     }
 
     public void GetSnapshot(LogData logData)
     {
         Profiler.BeginSample("GetPixels");
+        
         // Capture a single frame
-        logData.ImageTexture.SetPixels(_mainWebcam.GetPixels());
-        logData.ImageTexture.Apply();
+        foreach (WebCamTexture webcam in _webcams)
+        {
+            Texture2D texture = new(webcam.width, webcam.height);
+            texture.SetPixels(webcam.GetPixels());
+            texture.Apply();
+            logData.ImageTextures.Add(texture);
+        }
 
         Profiler.EndSample();
     }
@@ -72,7 +76,7 @@ public class Webcam : MonoBehaviour
     {
         Profiler.BeginSample("EncodeToJPG");
         // Encode frame as JPG
-        byte[] image = logData.ImageTexture.EncodeToJPG();
+        byte[] image = logData.ImageTextures[0].EncodeToJPG();
         Profiler.EndSample();
 
         Profiler.BeginSample("ToBase64String");

@@ -93,7 +93,7 @@ public class FerHandler : MonoBehaviour
             EmoteID = GameManager.Instance.GetLevelEmojiProgress,
             EmoteEmoji = GameManager.Instance.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            ImageTexture = new Texture2D(Webcam.Width, Webcam.Height),
+            ImageTextures = new List<Texture2D>(),
             FaceExpressions = FaceExpressionLogger.GetFaceExpressionsAsJson()
         };
         

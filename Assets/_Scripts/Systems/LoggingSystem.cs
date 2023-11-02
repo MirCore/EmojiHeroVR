@@ -62,22 +62,28 @@ namespace Systems
                 
                 // Construct the path for saving the image
                 string path = Path.Combine(_dirPath, logData.LevelID, logData.EmoteEmoji.ToString());
-                
-                try
-                {
-                    // Encode the image to PNG format.
-                    byte[] bytes = logData.ImageTexture.EncodeToPNG();
 
-                    // Save the image file.
-                    SaveFiles.SaveImageFile(path, logData, bytes);
-                    
-                    // Remove the processed log data from the list.
-                    _logDataList.Remove(logData);
-                }
-                catch (Exception ex)
+                for (int i = 0; i < logData.ImageTextures.Count; i++)
                 {
-                    Debug.LogError($"Failed to save image for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                    try
+                    {
+                        // Encode the image to PNG format.
+                        byte[] bytes = logData.ImageTextures[i].EncodeToPNG();
+
+                        // Add webcam index to filename if its not the main webcam (index > 0)
+                        string filename = i == 0 ? $"{logData.Timestamp}.png" : $"{logData.Timestamp}-{i}.png";
+
+                        // Save the image file.
+                        SaveFiles.SaveImageFile(path, filename, logData, bytes);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Failed to save image for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                    }
                 }
+                
+                // Remove the processed log data from the list.
+                _logDataList.Remove(logData);
                 
                 yield return null; // Wait for the next frame.
             }

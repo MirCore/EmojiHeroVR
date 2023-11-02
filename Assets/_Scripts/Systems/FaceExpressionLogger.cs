@@ -21,8 +21,9 @@ namespace Systems
 
         public string GetFaceExpressionsAsJson()
         {
-            CheckValidity();
-            
+            if (!_validExpressions)
+                return ""; 
+                    
             string faceData = JsonUtility.ToJson(_currentFaceState);
 
             return faceData;

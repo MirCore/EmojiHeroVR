@@ -3828,7 +3828,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eac8b1cd0c46cd489aabc4749f11039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RenderTexture: {fileID: 8400000, guid: 61408ff309c53d9448e4cb6b4a8f6433, type: 2}
+  RenderTextures:
+  - {fileID: 8400000, guid: 61408ff309c53d9448e4cb6b4a8f6433, type: 2}
+  - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
   RequestedCameraWidth: 1024
   RequestedCameraHeight: 1024
 --- !u!1 &1545555092
