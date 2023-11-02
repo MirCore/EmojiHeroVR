@@ -2204,7 +2204,7 @@ public class OVRManager : MonoBehaviour, OVRMixedRealityCaptureConfiguration
         // Apply validation criteria to _localDimming toggle to ensure it isn't active on invalid systems
         if (!OVRPlugin.localDimmingSupported)
         {
-            Debug.LogWarning("Local Dimming feature is not supported");
+//            Debug.LogWarning("Local Dimming feature is not supported");
             _localDimming = false;
         }
         else

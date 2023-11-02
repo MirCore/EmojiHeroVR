@@ -178,7 +178,7 @@ public static class OVRHaptics
             {
                 if (PrevSampleRateHz != 0)
                 {
-                    Debug.Log("Unable to process a controller whose SampleRateHz is 0 now.");
+//                    Debug.Log("Unable to process a controller whose SampleRateHz is 0 now.");
                     PrevSampleRateHz = 0;
                 }
 
