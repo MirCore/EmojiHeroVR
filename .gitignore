@@ -12,6 +12,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Uu][Ii][Ee]lements[Ss]chema/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -32,6 +33,7 @@
 # Jetbrain Rider Cache
 .idea/
 Assets/Plugins/Editor/JetBrains*
+*.[Dd]ot[Ss]ettings
 
 # Gradle cache directory
 .gradle/
@@ -77,3 +79,6 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# OVR Files
+/[Aa]ssets/[Oo]culus/*

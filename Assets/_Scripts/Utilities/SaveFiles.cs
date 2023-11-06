@@ -6,13 +6,13 @@ namespace Utilities
 {
     public abstract class SaveFiles
     {
-        public static void SaveImageFile(string dirPath, LogData logData, byte[] bytes)
+        public static void SaveImageFile(string dirPath, string filename, byte[] bytes)
         {
             // Start a new thread for file saving to avoid blocking the main thread
             Thread saveFile = new(() =>
             {
                 // Save the captured image to a file
-                SaveFileInternal(dirPath, $"{logData.Timestamp}.png", bytes);
+                SaveFileInternal(dirPath, filename, bytes);
             });
             saveFile.Start();
         }

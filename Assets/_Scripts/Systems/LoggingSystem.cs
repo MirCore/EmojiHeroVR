@@ -15,9 +15,10 @@ namespace Systems
     public class LoggingSystem : Singleton<LoggingSystem>
     {
         private const string FileName = "labels.csv"; // The name of the log file
-        private string _dirPath; // The full directory path where the log file will be stored
+        private string _dirPathWithUserID; // The full directory path where the log file will be stored
 
         private readonly List<LogData> _logDataList = new(); // A list to store log data temporarily.
+        private readonly List<Snapshot> _snapshots = new(); // A list to store log data temporarily.
 
         private void OnEnable()
         {
@@ -34,7 +35,7 @@ namespace Systems
             string userID = EditorUI.EditorUI.Instance.UserID;
             
             // Set the directory path where log files and images will be stored.
-            _dirPath = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
+            _dirPathWithUserID = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
             
             // Create the CSV headers for the log file.
             CreateCsvHeaders();
@@ -54,30 +55,43 @@ namespace Systems
         {
             yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
             
-            // Continue until all log data is processed.
-            while (_logDataList.Any())
+            
+            Texture2D texture = new Texture2D(WebcamManager.Instance.WebcamWidth, WebcamManager.Instance.WebcamHeight);
+            
+            // Continue until all snapshots is processed.
+            while (_snapshots.Any())
             {
-                // Get the first log data from the list.
-                LogData logData = _logDataList.FirstOrDefault();
+                // Get the first snapshot from the list.
+                Snapshot snapshot = _snapshots.FirstOrDefault();
                 
                 // Construct the path for saving the image
-                string path = Path.Combine(_dirPath, logData.LevelID, logData.EmoteEmoji.ToString());
-                
-                try
-                {
-                    // Encode the image to PNG format.
-                    byte[] bytes = logData.ImageTexture.EncodeToPNG();
+                string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, snapshot.EmoteEmoji.ToString());
 
-                    // Save the image file.
-                    SaveFiles.SaveImageFile(path, logData, bytes);
-                    
-                    // Remove the processed log data from the list.
-                    _logDataList.Remove(logData);
-                }
-                catch (Exception ex)
+                for (int i = 0; i < snapshot.ImageTextures.Count; i++)
                 {
-                    Debug.LogError($"Failed to save image for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                    try
+                    {
+                        
+                        texture.SetPixels32(snapshot.ImageTextures[i]);
+                        texture.Apply();
+                        
+                        // Encode the image to PNG format.
+                        byte[] bytes = texture.EncodeToPNG();
+
+                        // Add webcam index to filename if its not the main webcam (index > 0)
+                        string filename = i == 0 ? $"{snapshot.Timestamp}.png" : $"{snapshot.Timestamp}-{i}.png";
+
+                        // Save the image file.
+                        SaveFiles.SaveImageFile(path, filename, bytes);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Failed to save image for logData with LevelID: {snapshot.LevelID}. Exception: {ex}");
+                    }
                 }
+                
+                // Remove the processed snapshot from the list.
+                _snapshots.Remove(snapshot);
                 
                 yield return null; // Wait for the next frame.
             }
@@ -121,10 +135,11 @@ namespace Systems
                 logData.FerProbabilities.sadness.ToString("F2"),
                 logData.FerProbabilities.surprise.ToString("F2"),
                 logData.UserID,
+                logData.FaceExpressions,
             };
             
             // Append the data as a line to the log CSV file
-            SaveFiles.AppendLineToCsv(_dirPath, FileName, data);
+            SaveFiles.AppendLineToCsv(_dirPathWithUserID, FileName, data);
         }
 
         /// <summary>
@@ -148,10 +163,11 @@ namespace Systems
                 "Sadness",
                 "Surprise",
                 "User ID",
+                "OVR Face Expressions"
             };
             
             // Write the header line to the CSV file.
-            SaveFiles.AppendLineToCsv(_dirPath, FileName, data);
+            SaveFiles.AppendLineToCsv(_dirPathWithUserID, FileName, data);
         }
         
         /// <summary>
@@ -166,6 +182,12 @@ namespace Systems
         public static string GetUnixTimestamp()
         {
             return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
+        }
+
+        public Snapshot LatestSnapshot
+        {
+            get => _snapshots.LastOrDefault();
+            set => _snapshots.Add(value);
         }
     }
 }

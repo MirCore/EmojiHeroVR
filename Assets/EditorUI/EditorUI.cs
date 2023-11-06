@@ -19,6 +19,7 @@ namespace EditorUI
         private static VisualElement _root;
 
         [SerializeField] public string SelectedWebcam;
+        [SerializeField] public string SelectedSecondaryWebcam;
         [SerializeField] public string SelectedLevel;
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
@@ -69,6 +70,7 @@ namespace EditorUI
             }
             
             CreateWebcamDropdown();
+            CreateSecondaryWebcamDropdown();
             CreateLevelDropdown();
         }
 
@@ -107,6 +109,20 @@ namespace EditorUI
             });
         }
 
+        private void CreateSecondaryWebcamDropdown()
+        {
+            List<string> webCamDevices = WebCamTexture.devices.Select(device => device.name).ToList();
+            webCamDevices.Insert(0, "-");
+
+            DropdownField dropdown = _root.Q<DropdownField>("SecondaryWebcamDropdown");
+            dropdown.choices = webCamDevices;
+            dropdown.index = webCamDevices.IndexOf(SelectedSecondaryWebcam);
+            dropdown.RegisterValueChangedCallback(evt =>
+            {
+                SelectedSecondaryWebcam = evt.newValue;
+            });
+        }
+
         public static void SetRestResponseData(LogData logData)
         {
             Probabilities probabilities = logData.FerProbabilities;
@@ -120,10 +136,8 @@ namespace EditorUI
             _root.Q<ProgressBar>("Surprise").value = probabilities.surprise;
         }
 
-        public string GetSelectedWebcam()
-        {
-            return SelectedWebcam;
-        }
+        public string GetMainWebcam() => SelectedWebcam;
+        public string GetSecondaryWebcam() => SelectedSecondaryWebcam;
 
         public void ResetUserID()
         {
@@ -146,6 +160,7 @@ namespace EditorUI
         {
             VisualElement webcamUI = _root.Q<VisualElement>("WebcamTexture");
         }
+
     }
 }
 #endif

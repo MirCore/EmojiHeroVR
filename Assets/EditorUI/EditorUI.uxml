@@ -34,10 +34,12 @@
         <ui:VisualElement style="flex-grow: 1; padding-top: 10px; padding-bottom: 5px;">
             <ui:Label tabindex="-1" text="Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold;" />
             <ui:DropdownField label="Webcam" index="0" name="WebcamDropdown" />
+            <ui:DropdownField label="Secondary Webcam" index="0" name="SecondaryWebcamDropdown" />
             <ui:TextField picking-mode="Ignore" label="REST basepath" value="http://localhost:8765/" name="RestBasePath" />
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1;">
-            <ui:VisualElement name="WebcamTexture" style="flex-grow: 1; background-image: url(&apos;project://database/Assets/Webcam.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#Webcam&apos;); background-color: rgba(0, 0, 0, 0); height: 225px; width: 300px;" />
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;">
+            <ui:VisualElement name="WebcamTexture1" style="flex-grow: 0; background-image: url(&apos;project://database/Assets/WebcamTexture%201.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#WebcamTexture 1&apos;); background-color: rgba(0, 0, 0, 0); height: 150px; width: 200px;" />
+            <ui:VisualElement name="WebcamTexture2" style="flex-grow: 0; background-image: url(&apos;project://database/Assets/WebcamTexture%202.renderTexture?fileID=8400000&amp;guid=b2512dd1d8eb9d749913b85d9f0060de&amp;type=2#WebcamTexture 2&apos;); background-color: rgba(0, 0, 0, 0); height: 150px; width: 200px;" />
         </ui:VisualElement>
     </ui:ScrollView>
 </ui:UXML>
