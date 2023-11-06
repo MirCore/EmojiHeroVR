@@ -6,6 +6,7 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities;
 
 /// <summary>
@@ -13,8 +14,8 @@ using Utilities;
 /// </summary>
 public class FerHandler : MonoBehaviour
 {
-    // Reference to the Webcam component, used for capturing images for FER.
-    [SerializeField] private Webcam Webcam;
+    // Reference to the WebcamManager component, used for capturing images for FER.
+    [FormerlySerializedAs("Webcam")] [SerializeField] private WebcamManager WebcamManager;
     
     [SerializeField] private FaceExpressionLogger FaceExpressionLogger;
     
@@ -85,24 +86,28 @@ public class FerHandler : MonoBehaviour
     /// </summary>
     private IEnumerator PostRestImage()
     {
+        Snapshot snapshot = WebcamManager.GetSnapshot();
+        
+        while (snapshot.Timestamp == null)
+        {
+            yield return null;
+            snapshot = WebcamManager.GetSnapshot();
+            Debug.Log(snapshot.Timestamp);
+        }
+        
         // Initialize log data for the current FER process.
         LogData logData = new()
         {
-            Timestamp = LoggingSystem.GetUnixTimestamp(),
+            Timestamp = snapshot.Timestamp,
             LevelID = GameManager.Instance.Level.LevelName,
             EmoteID = GameManager.Instance.GetLevelEmojiProgress,
             EmoteEmoji = GameManager.Instance.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            ImageTextures = new List<Texture2D>(),
             FaceExpressions = FaceExpressionLogger.GetFaceExpressionsAsJson()
         };
         
-        // Capture a frame from the webcam.
-        Webcam.GetSnapshot(logData);
-        yield return null;  // Wait until the next frame to reduce lag
-        
         // Convert the captured image to base64 format.
-        string image = Webcam.GetBase64(logData);
+        string image = WebcamManager.GetBase64(snapshot);
         yield return null;  // Wait until the next frame to reduce lag
 
         // Send the base64 image for FER processing.

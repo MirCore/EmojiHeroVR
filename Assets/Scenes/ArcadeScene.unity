@@ -690,7 +690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7437e89228a4dc19cfdd308a8212ecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Webcam: {fileID: 1522153667}
+  WebcamManager: {fileID: 1522153667}
   FaceExpressionLogger: {fileID: 1042620000}
   PeriodicalFerMode: 1
 --- !u!114 &235804614
@@ -2659,7 +2659,6 @@ Transform:
   - {fileID: 672929086}
   - {fileID: 697409310}
   - {fileID: 1756785554}
-  - {fileID: 1522153666}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &849202386 stripped
@@ -3507,6 +3506,7 @@ Transform:
   - {fileID: 1167101765}
   - {fileID: 1332808474}
   - {fileID: 1042619999}
+  - {fileID: 1522153666}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1474338595
@@ -3795,7 +3795,7 @@ GameObject:
   - component: {fileID: 1522153666}
   - component: {fileID: 1522153667}
   m_Layer: 0
-  m_Name: Webcam
+  m_Name: WebcamManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3814,7 +3814,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 842324840}
+  m_Father: {fileID: 1454390529}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1522153667
 MonoBehaviour:
@@ -3831,8 +3831,8 @@ MonoBehaviour:
   RenderTextures:
   - {fileID: 8400000, guid: 61408ff309c53d9448e4cb6b4a8f6433, type: 2}
   - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
-  RequestedCameraWidth: 1024
-  RequestedCameraHeight: 1024
+  RequestedCameraWidth: 1280
+  RequestedCameraHeight: 720
 --- !u!1 &1545555092
 GameObject:
   m_ObjectHideFlags: 0
