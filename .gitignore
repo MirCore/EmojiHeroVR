@@ -33,6 +33,7 @@
 # Jetbrain Rider Cache
 .idea/
 Assets/Plugins/Editor/JetBrains*
+.[Dd]ot[Ss]ettings
 
 # Gradle cache directory
 .gradle/
