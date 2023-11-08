@@ -17,8 +17,13 @@ namespace Utilities
             saveFile.Start();
         }
 
+        public static void WriteFile(string dirPath, string filename, string data)
+        {
+            SaveFileInternal(dirPath, filename, data);
+        }
+        
         /// <summary>
-        /// Internal method to handle logic for saving files
+        /// Internal method to handle logic for saving byte[] files
         /// </summary>
         private static async void SaveFileInternal(string path, string fileName, byte[] bytes)
         { 
@@ -30,6 +35,27 @@ namespace Utilities
             {
                 string filePath = Path.Combine(path, fileName);
                 await File.WriteAllBytesAsync(filePath, bytes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error saving file {fileName}: {e}");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Internal method to handle logic for saving string files
+        /// </summary>
+        private static async void SaveFileInternal(string path, string fileName, string data)
+        { 
+            // Create the directory if it doesn't exist
+            if(!Directory.Exists(path)) 
+                Directory.CreateDirectory(path);
+
+            try
+            {
+                string filePath = Path.Combine(path, fileName);
+                await File.WriteAllTextAsync(filePath, data);
             }
             catch (Exception e)
             {
@@ -70,6 +96,6 @@ namespace Utilities
                 throw;
             }
         }
-        
+
     }
 }
