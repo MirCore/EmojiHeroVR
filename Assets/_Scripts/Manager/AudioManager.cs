@@ -21,7 +21,7 @@ namespace Manager
         {
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
+            EventManager.OnLevelFinished += OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
         }
@@ -30,7 +30,7 @@ namespace Manager
         {
             // Unsubscribe from game event notifications
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+            EventManager.OnLevelFinished -= OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
         }
