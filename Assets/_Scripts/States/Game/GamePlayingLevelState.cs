@@ -29,6 +29,9 @@ namespace States.Game
 
         public override void EnterState()
         {
+            // Reset state values.
+            ResetLevelState();
+            
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
@@ -47,8 +50,6 @@ namespace States.Game
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
 
-            // Reset state values.
-            ResetLevelState();
         }
 
         /// <summary>

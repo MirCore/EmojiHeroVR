@@ -23,7 +23,8 @@ namespace Manager
         [SerializeField] private GameObject LevelPrefab;
 
         [Header("Score UI")]
-        [SerializeField] private TMP_Text LevelNameField;
+        [SerializeField] private List<TMP_Text> LevelNameField;
+        [SerializeField] private TMP_Text ProgressField;
         [SerializeField] private List<TMP_Text> ResultField;
         [SerializeField] private List<TMP_Text> ScoreField;
         
@@ -54,7 +55,7 @@ namespace Manager
         /// <summary>
         /// Updates the score UI when an emote exits the action area.
         /// </summary>
-        private void OnEmoteExitedAreaCallback(EEmote emote) => LoadScoreUI();
+        private void OnEmoteExitedAreaCallback(EEmote emote) => UpdateScoreUI();
 
         /// <summary>
         /// Instantiates UI elements for each level based on the levels available in the ResourceSystem.
@@ -94,16 +95,25 @@ namespace Manager
         /// <summary>
         /// Loads the UI for the end screen, displaying level name and score.
         /// </summary>
-        private void LoadEndScreenUI()
+        private void LoadEndScreenUI() => UpdateScoreUI();
+
+        /// <summary>
+        /// Loads the score UI with the current game progress and score.
+        /// </summary>
+        private void LoadScoreUI()
         {
-            LevelNameField.text = _level.LevelName;
-            LoadScoreUI();
+            foreach (TMP_Text t in LevelNameField)
+            {
+                t.text = _level.LevelName;
+            }
+
+            UpdateScoreUI();
         }
 
         /// <summary>
         /// Updates the score UI based on the current game progress and score.
         /// </summary>
-        private void LoadScoreUI()
+        private void UpdateScoreUI()
         {
             int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
 
@@ -121,7 +131,6 @@ namespace Manager
             {
                 t.text = GameManager.Instance.GetLevelScore.ToString();
             }
-            
         }
 
         /// <summary>
@@ -134,6 +143,7 @@ namespace Manager
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
+            
             LoadScoreUI();
         }
         
