@@ -14,7 +14,7 @@ namespace Systems
     /// </summary>
     public class LoggingSystem : Singleton<LoggingSystem>
     {
-        private const string FileName = "labels.csv"; // The name of the log file
+        private const string CsvFileName = "labels.csv"; // The name of the log file
         private string _dirPathWithUserID; // The full directory path where the log file will be stored
 
         private readonly List<LogData> _logDataList = new(); // A list to store log data temporarily.
@@ -71,7 +71,7 @@ namespace Systems
                 {
                     try
                     {
-                        
+                        // Convert Pixels to an image
                         texture.SetPixels32(snapshot.ImageTextures[i]);
                         texture.Apply();
                         
@@ -99,9 +99,9 @@ namespace Systems
 
         private void WriteLog()
         {
-            // Write each log data to the CSV file.
             foreach (LogData logData in _logDataList)
             {
+                // Write each log data to the CSV file.
                 try
                 {
                     WriteLogLine(logData);
@@ -110,7 +110,28 @@ namespace Systems
                 {
                     Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
                 }
+                
+                // Write each FaceExpression to a json file.
+                try
+                {
+                    WriteFaceExpressionJson(logData);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
+                }
             }
+        }
+
+        private void WriteFaceExpressionJson(LogData logData)
+        {
+            // Construct the path for saving the image
+            string path = Path.Combine(_dirPathWithUserID, logData.LevelID, logData.EmoteEmoji.ToString());
+            
+            string filename = $"{logData.Timestamp}.json";
+            
+            // Write json file
+            SaveFiles.WriteFile(path, filename, logData.FaceExpressions);
         }
 
         /// <summary>
@@ -139,7 +160,7 @@ namespace Systems
             };
             
             // Append the data as a line to the log CSV file
-            SaveFiles.AppendLineToCsv(_dirPathWithUserID, FileName, data);
+            SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, data);
         }
 
         /// <summary>
@@ -167,7 +188,7 @@ namespace Systems
             };
             
             // Write the header line to the CSV file.
-            SaveFiles.AppendLineToCsv(_dirPathWithUserID, FileName, data);
+            SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, data);
         }
         
         /// <summary>
