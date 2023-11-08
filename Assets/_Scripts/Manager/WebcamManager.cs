@@ -64,7 +64,7 @@ namespace Manager
         {
             // Initialize webcam and set up RawImage to display their feed
             _webcams.Add(new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight));
-            if (secondaryWebcamName != "-" && secondaryWebcamName != mainWebcamName)
+            if (secondaryWebcamName != "-" && secondaryWebcamName != "" && secondaryWebcamName != mainWebcamName)
                 _webcams.Add(new WebCamTexture(secondaryWebcamName, RequestedCameraWidth, RequestedCameraHeight));
 
             for (int i = 0; i < _webcams.Count; i++)
