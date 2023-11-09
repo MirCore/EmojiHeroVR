@@ -21,7 +21,7 @@ Set up EmojiHeroVR by following these steps:
 
 ## Logging
 
-The application logs webcam images, face expressions (with OVR), and FER probabilities to the directory `/EmojiHeroVR/SavedImages/[UserID]`. Logging is executed after each level to minimize system impact.
+The application logs webcam images, face expressions (with OVR), and FER probabilities to the directory `/EmojiHeroVR/SavedImages/[UserID]/`. Logging is executed after each level to minimize system impact.
 
 The logging structure is as follows:
 - FER probabilities and metadata: `[User ID]/logdata.csv`
@@ -45,6 +45,6 @@ The [RestClient for Unity](https://github.com/proyecto26/RestClient) is develope
 
 This project's source code is licensed under the [MIT License](LICENSE.md).
 
-- **Emojis**: The emojis used in this project are designed by [OpenMoji](https://openmoji.org/) and are subject to the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/#). Proper attribution to OpenMoji is required when using these emojis.
+**Emojis**: The emojis used in this project are designed by [OpenMoji](https://openmoji.org/) and are subject to the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/#). Proper attribution to OpenMoji is required when using these emojis.
 
 By using this project, you agree to comply with the terms of both licenses.
