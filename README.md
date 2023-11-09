@@ -3,23 +3,43 @@
 
 ## Getting Started
 
-Follow the steps below to get started with EmojiHeroVR:
+This project has two branches with different VR integration methods. The `main` branch uses the `OpenXR Plugin`, while the `Oculus-Face-Expression` branch is built around the `Oculus Integration (OVR) Plugin`.
+The latter supports facial expression tracking with the Meta Quest Pro provided by the OVR plugin. Apart from the VR integration, the branches are not different.
 
-1. Open the project in Unity, preferably using version 2022.3 or later.
+Set up EmojiHeroVR by following these steps:
 
-2. Open the *EmojiHero Editor Window* by selecting `Window > EmojiHero Editor Window` in Unity.
-  - **Select the primary webcam**: Make sure you select the primary webcam device you want to use for emotion recognition. This webcam will be used to capture the user's facial expressions.
-  - **Set the REST API basepath**: Configure the REST API basepath where the EmojiHeroVR application communicates with the [FER-Microservice](#Dependencies). For example, if you are running the server locally, set the basepath to `http://localhost:8000/`.
+1. Clone or download the project from the desired branch.
+   
+2. Open the project in Unity. The minimum tested version is 2022.3.1f1
 
-## Dependencies
+3. Load the scene appropriate for your branch: `Arcade Scene` for `main` or `Arcade Scene OVR` for `Oculus-Face-Expression`.
 
-- [FER-Microservice](https://github.com/affective-reality-group/facial-expression-recognition-microservice): A microservice providing an HTTP API for Facial Expression Recognition (FER).
+4. Access the *EmojiHero Editor Window* via `Window > EmojiHero Editor Window` in Unity.
+   - **Primary Webcam**: Select your primary webcam for capturing facial expressions.
+   - **Secondary Webcam** [Optional]: This is only utilized in [logging](#logging) to capture additional visual data.
+   - **REST API Basepath**: Set this to the basepath of the [FER-Microservice](#requirements) for communication between the application and the facial expression recognition server, e.g., `http://localhost:8000/`.
+
+## Logging
+
+The application logs webcam images, face expressions (with OVR), and FER probabilities to the directory `/EmojiHeroVR/SavedImages/[UserID]`. Logging is executed after each level to minimize system impact.
+
+The logging structure is as follows:
+- FER probabilities and metadata: `[User ID]/logdata.csv`
+- Images and face expression data: `[User ID]/[Level Name]/[Emotion]/[timestamp].png` or `[timestamp].json`
+
+## Requirements
+
+- [FER-Microservice](https://github.com/affective-reality-group/facial-expression-recognition-microservice): This microservice provides an HTTP API for Facial Expression Recognition and is essential for the project's functionality.
+
+- [Oculus Integration (OVR) Plugin](https://assetstore.unity.com/packages/tools/integration/oculus-integration-82022): Required for the `Oculus-Face-Expression` branch. Please follow the provided link for installation instructions.
 
 ## Credits
 
 All emojis designed by [OpenMoji](https://openmoji.org/) – the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#)
 
 The [RestClient for Unity](https://github.com/proyecto26/RestClient) is developed by [proyecto26](https://github.com/proyecto26). License: [MIT License](https://github.com/proyecto26/RestClient/blob/develop/LICENSE)
+
+8-bit sounds are provided courtesy of [Pixabay](https://pixabay.com/sound-effects/search/8bit/).
 
 ## License
 
