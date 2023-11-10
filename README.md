@@ -1,5 +1,9 @@
 # EmojiHeroVR
 
+EmojiHeroVR combines virtual reality with affective computing to improve emotion recognition in VR environments. 
+
+This project develops an emotion recognition system tailored to work around the visual limitations of VR headsets, which obscure the upper face.
+Applied within an accessible VR game, EmojiHeroVR aims to advance the field of implicit emotion recognition and contribute to an area with significant room for research and development.
 
 ## Getting Started
 
