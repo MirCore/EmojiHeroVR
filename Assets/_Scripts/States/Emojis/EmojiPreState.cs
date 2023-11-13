@@ -41,8 +41,8 @@ namespace States.Emojis
         private static void GetEmote(EmojiManager emojiManager)
         {
             LevelStruct level = GameManager.Instance.Level;
-            
-            if (level.LevelMode != ELevelMode.Predefined)
+
+            if (level.LevelMode != ELevelMode.Predefined && level.EmoteArray.Length == 0)
             {
                 // get random Emote if level is not of type Predefined
                 emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length - 1);
@@ -50,7 +50,7 @@ namespace States.Emojis
             else
             {
                 // Get the emotion from the predefined list or enum.
-                int emoteIndex = level.EmoteArray[GameManager.Instance.LevelProgress.SpawnedEmotesCount];
+                int emoteIndex = level.EmoteArray[GameManager.Instance.LevelProgress.SpawnedEmotesCount % (Enum.GetValues(typeof(EEmote)).Length - 1)];
                 
                 if (level.Emotes.Any())
                 {

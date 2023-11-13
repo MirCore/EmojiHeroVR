@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 975c049d1a0a4e079c02d4aa84e48308, type: 3}
-  m_Name: TrainingLevel
+  m_Name: TrainingLevel (Random)
   m_EditorClassIdentifier: 
   LevelStruct:
-    LevelName: Training Level
+    LevelName: Training (Random)
     LevelMode: 1
     MovementSpeed: 0
     SpawnInterval: 0
     Count: 0
     Emotes: 
-    EmoteRepeatAmount: 1
-    EmoteArray: 04000000010000000000000002000000030000000600000005000000
+    EmoteRepeatAmount: 0
+    EmoteArray: 
   GenerateNewLevelFile: 0
