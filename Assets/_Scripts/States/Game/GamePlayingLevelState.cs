@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data;
 using Enums;
 using Manager;
 using Scriptables;
 using UnityEngine;
+using Utilities;
 
 namespace States.Game
 {
@@ -15,29 +17,15 @@ namespace States.Game
         private const int BaseScoreForCompletion = 50;
         private const int ScoreMultiplier = 10;
 
-        /// <summary>Gets the count of finished emotes.</summary>
-        public int FinishedEmoteCount { get; private set; }
-
-        /// <summary>Gets the count of spawned emotes.</summary>
-        public int SpawnedEmotesCount { get; private set; }
-
-        /// <summary>Gets the current level score.</summary>
-        public int LevelScore { get; private set; }
-
-        /// <summary>Gets the list of emotes currently in the action area.</summary>
-        public readonly List<EEmote> EmojiInActionArea = new();
+        public LevelProgress LevelProgress;
 
         public override void EnterState()
         {
-            // Reset state values.
-            ResetLevelState();
+            LevelProgress = new LevelProgress();
             
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
-
-            // Reset state values.
-            ResetLevelState();
             
             // Notify the game that a new level has started.
             EventManager.InvokeLevelStarted();
@@ -49,25 +37,13 @@ namespace States.Game
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
-
-        }
-
-        /// <summary>
-        /// Resets the level state, clearing all emotes from the action area and resetting counters and scores.
-        /// </summary>
-        private void ResetLevelState()
-        {
-            FinishedEmoteCount = 0;
-            LevelScore = 0;
-            SpawnedEmotesCount = 0;
-            EmojiInActionArea.Clear();
         }
 
         /// <summary>
         /// Handles the behavior when an emote enters the action area.
         /// </summary>
         /// <param name="emote">The emote that entered.</param>
-        private void OnEmoteEnteredAreaCallback(EEmote emote) => EmojiInActionArea.Add(emote);
+        private void OnEmoteEnteredAreaCallback(EEmote emote) => LevelProgress.AddEmoteToActionArea(emote);
 
         /// <summary>
         /// Handles the behavior when an emote exits the action area.
@@ -75,11 +51,11 @@ namespace States.Game
         /// <param name="emote">The emote that exited.</param>
         private void OnEmoteExitedAreaCallback(EEmote emote)
         {
-            if (!EmojiInActionArea.Remove(emote))
+            if (!LevelProgress.RemoveEmoteFromActionArea(emote))
                 Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emote}");
 
-            FinishedEmoteCount++;
-            if (GameManager.Instance.CheckLevelEndConditions(FinishedEmoteCount))
+            LevelProgress.FinishedEmoteCount++;
+            if (GameManager.Instance.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
                 GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
         }
 
@@ -91,7 +67,8 @@ namespace States.Game
         /// <param name="score">The base score associated with the emote.</param>
         private void OnEmoteFulfilledCallback(EEmote emote, float score)
         {
-            LevelScore += BaseScoreForCompletion + (int)(score * ScoreMultiplier) * 10;
+            LevelProgress.FulfilledEmoteCount++;
+            LevelProgress.LevelScore += BaseScoreForCompletion + (int)(score * ScoreMultiplier) * 10;
         }
 
         /// <summary>
@@ -129,6 +106,6 @@ namespace States.Game
         /// <summary>
         /// Increments the count of spawned emotes.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => SpawnedEmotesCount++;
+        public void IncreaseSpawnedEmotesCount() => LevelProgress.SpawnedEmotesCount++;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Data;
 using Manager;
 using UnityEngine;
 using Utilities;

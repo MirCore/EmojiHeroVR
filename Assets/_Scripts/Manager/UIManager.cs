@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Data;
 using Enums;
 using Scriptables;
 using Systems;
@@ -39,7 +41,7 @@ namespace Manager
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
 
             // Load the UI elements for level selection.
-            LoadLevelUI();
+            ResetScoreUI();
             // Initialize the UI state.
             OnLevelStoppedCallback();
         }
@@ -55,7 +57,7 @@ namespace Manager
         /// <summary>
         /// Updates the score UI when an emote exits the action area.
         /// </summary>
-        private void OnEmoteExitedAreaCallback(EEmote emote) => UpdateScoreUI();
+        private void OnEmoteExitedAreaCallback(EEmote emote) => StartCoroutine(UpdateScoreUI());
 
         /// <summary>
         /// Instantiates UI elements for each level based on the levels available in the ResourceSystem.
@@ -95,7 +97,7 @@ namespace Manager
         /// <summary>
         /// Loads the UI for the end screen, displaying level name and score.
         /// </summary>
-        private void LoadEndScreenUI() => UpdateScoreUI();
+        private void LoadEndScreenUI() => StartCoroutine(UpdateScoreUI());
 
         /// <summary>
         /// Loads the score UI with the current game progress and score.
@@ -107,29 +109,62 @@ namespace Manager
                 t.text = _level.LevelName;
             }
 
-            UpdateScoreUI();
+            StartCoroutine(UpdateScoreUI());
         }
 
         /// <summary>
         /// Updates the score UI based on the current game progress and score.
         /// </summary>
-        private void UpdateScoreUI()
+        private IEnumerator UpdateScoreUI()
         {
-            int emojiProgress = GameManager.Instance.GetLevelEmojiProgress;
+            // Wait to the end of the frame to ensure LevelProgress has been properly updated
+            yield return new WaitForEndOfFrame();
+            
+            LevelProgress levelProgress = GameManager.Instance.LevelProgress;
+
+            ProgressField.text = _level.LevelMode switch
+            {
+                ELevelMode.Training => $"{levelProgress.FinishedEmoteCount}",
+                ELevelMode.Predefined => levelProgress.FinishedEmoteCount + "/" + _level.EmoteArray.Length,
+                _ => levelProgress.FinishedEmoteCount + "/" + _level.Count
+            };
 
             foreach (TMP_Text t in ResultField)
             {
                 t.text = _level.LevelMode switch
                 {
-                    ELevelMode.Training => $"{emojiProgress}",
-                    ELevelMode.Predefined => emojiProgress + "/" + _level.EmoteArray.Length,
-                    _ => emojiProgress + "/" + _level.Count
+                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount}",
+                    ELevelMode.Predefined => levelProgress.FulfilledEmoteCount + "/" + _level.EmoteArray.Length,
+                    _ => levelProgress.FulfilledEmoteCount + "/" + _level.Count
                 };
             }
 
             foreach (TMP_Text t in ScoreField)
             {
-                t.text = GameManager.Instance.GetLevelScore.ToString();
+                t.text = GameManager.Instance.LevelProgress.LevelScore.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Resets the score UI.
+        /// </summary>
+        private void ResetScoreUI()
+        {
+            ProgressField.text = "";
+            
+            foreach (TMP_Text t in LevelNameField)
+            {
+                t.text = "";
+            }
+
+            foreach (TMP_Text t in ResultField)
+            {
+                t.text = "";
+            }
+
+            foreach (TMP_Text t in ScoreField)
+            {
+                t.text = "";
             }
         }
 
@@ -152,6 +187,7 @@ namespace Manager
         /// </summary>
         private void OnLevelStoppedCallback()
         {
+            ResetScoreUI();
             LevelPlayingUI.SetActive(false);
             PreparingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);

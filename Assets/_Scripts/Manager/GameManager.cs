@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Data;
 using Enums;
 using Scriptables;
 using States.Game;
@@ -36,11 +37,7 @@ namespace Manager
         // Properties for accessing game data
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
-        public int GetSpawnedEmotesCount => PlayingLevelState.SpawnedEmotesCount;
-        public int GetLevelScore => PlayingLevelState.LevelScore;
-        public bool EmojisAreInActionArea => PlayingLevelState.EmojiInActionArea.Any();
-        public EEmote GetEmojiInActionArea => PlayingLevelState.EmojiInActionArea.FirstOrDefault();
-        public int GetLevelEmojiProgress => PlayingLevelState.FinishedEmoteCount;
+        public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
 
 
         private void OnEnable()

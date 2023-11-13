@@ -119,7 +119,7 @@ public class EmoteSpawner : MonoBehaviour
     /// </summary>
     private void CheckLevelEndConditions()
     {
-        if (GameManager.Instance.CheckLevelEndConditions(GameManager.Instance.GetSpawnedEmotesCount))
+        if (GameManager.Instance.CheckLevelEndConditions(GameManager.Instance.LevelProgress.SpawnedEmotesCount))
             StopSpawning();
     }
     

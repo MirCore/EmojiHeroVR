@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Data;
 using Enums;
 using Systems;
 using UnityEngine;
@@ -93,7 +94,7 @@ namespace Manager
 
             int count = 0;
             
-            while (count == 0 || GameManager.Instance.EmojisAreInActionArea)
+            while (count == 0 || GameManager.Instance.LevelProgress.EmojisAreInActionArea)
             {
                 TakeSnapshot();
                 count++;
@@ -124,7 +125,7 @@ namespace Manager
             {
                 Timestamp = LoggingSystem.GetUnixTimestamp(),
                 LevelID =  GameManager.Instance.Level.LevelName,
-                EmoteEmoji = GameManager.Instance.GetEmojiInActionArea,
+                EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
                 ImageTextures = new List<Color32[]>(),
             };
         

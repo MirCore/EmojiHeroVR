@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Data;
 using Enums;
 using Manager;
 using Systems;
@@ -62,7 +63,7 @@ public class FerHandler : MonoBehaviour
         const float interval = 0.3f;
         float nextPostTime = Time.realtimeSinceStartup + interval;
         
-        while (PeriodicalFerMode && GameManager.Instance.EmojisAreInActionArea)
+        while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
         {
             // Log a new FER request.
             EditorUIFerStats.Instance.LogNewRestRequest();
@@ -100,8 +101,8 @@ public class FerHandler : MonoBehaviour
         {
             Timestamp = snapshot.Timestamp,
             LevelID = GameManager.Instance.Level.LevelName,
-            EmoteID = GameManager.Instance.GetLevelEmojiProgress,
-            EmoteEmoji = GameManager.Instance.GetEmojiInActionArea,
+            EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
+            EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
             FaceExpressions = FaceExpressionLogger.GetFaceExpressionsAsJson()
         };
@@ -155,7 +156,7 @@ public class FerHandler : MonoBehaviour
         EditorUIFerStats.Instance.LogRestResponse(logData);
 
         // If emojis are still in the action area, continue the FER process.
-        if (GameManager.Instance.EmojisAreInActionArea)
+        if (GameManager.Instance.LevelProgress.EmojisAreInActionArea)
             SendRestImage();
     }
     

@@ -50,7 +50,7 @@ namespace States.Emojis
             else
             {
                 // Get the emotion from the predefined list or enum.
-                int emoteIndex = level.EmoteArray[GameManager.Instance.GetSpawnedEmotesCount];
+                int emoteIndex = level.EmoteArray[GameManager.Instance.LevelProgress.SpawnedEmotesCount];
                 
                 if (level.Emotes.Any())
                 {
