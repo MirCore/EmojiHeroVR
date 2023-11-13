@@ -57,7 +57,7 @@ namespace Systems
             yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
             
             
-            Texture2D texture = new Texture2D(WebcamManager.Instance.WebcamWidth, WebcamManager.Instance.WebcamHeight);
+            Texture2D texture = new (WebcamManager.Instance.WebcamWidth, WebcamManager.Instance.WebcamHeight);
             
             // Continue until all snapshots is processed.
             while (_snapshots.Any())
@@ -84,6 +84,8 @@ namespace Systems
 
                         // Save the image file.
                         SaveFiles.SaveImageFile(path, filename, bytes);
+                        
+                        EditorUI.EditorUI.Instance.UpdateImageProgress(_snapshots.Count);
                     }
                     catch (Exception ex)
                     {
@@ -209,7 +211,11 @@ namespace Systems
         public Snapshot LatestSnapshot
         {
             get => _snapshots.LastOrDefault();
-            set => _snapshots.Add(value);
+            set
+            {
+                _snapshots.Add(value);
+                EditorUI.EditorUI.Instance.UpdateImageBacklog(_snapshots.Count);
+            }
         }
     }
 }

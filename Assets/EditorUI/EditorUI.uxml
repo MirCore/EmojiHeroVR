@@ -16,23 +16,27 @@
             <ui:ProgressBar value="0" title="Sadness" name="Sadness" high-value="1" />
             <ui:ProgressBar value="0" title="Surprise" name="Surprise" high-value="1" />
             <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                <ui:Label tabindex="-1" text="Pending REST responses:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                <ui:Label tabindex="-1" text="Pending REST responses:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" style="flex-shrink: 1;" />
                 <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PendingRestResponses" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                <ui:Label tabindex="-1" text="Total REST calls:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                <ui:Label tabindex="-1" text="Total REST calls:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" style="flex-shrink: 1;" />
                 <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TotalRestCalls" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                <ui:Label tabindex="-1" text="Time between REST calls:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                <ui:Label tabindex="-1" text="Time between REST calls:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" style="flex-shrink: 1;" />
                 <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TimeBetweenPosts" text="?" style="min-width: 40px; -unity-text-align: upper-right;" />
                 <ui:Label tabindex="-1" text="ms " parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-left: 0; padding-left: 0;" />
                 <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PostsFPS" text="?" style="min-width: 40px; -unity-text-align: upper-right;" />
                 <ui:Label tabindex="-1" text="FPS" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="margin-left: 0; padding-left: 0;" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                <ui:Label tabindex="-1" text="Snapshot FPS:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                <ui:Label tabindex="-1" text="Snapshot FPS:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" />
                 <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SnapshotFPS" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <ui:Label tabindex="-1" text="Snapshot writing:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" style="flex-shrink: 1;" />
+                <ui:ProgressBar value="0" name="ImageSaveProgress" high-value="0" style="flex-grow: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 1; padding-top: 10px; padding-bottom: 5px;">

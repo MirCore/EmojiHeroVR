@@ -21,6 +21,7 @@ namespace EditorUI
     {
         [SerializeField] private VisualTreeAsset VisualTreeAsset;
         private static VisualElement _root;
+        private ProgressBar _imageProgressBar;
 
         [SerializeField] public string SelectedWebcam;
         [SerializeField] public string SelectedSecondaryWebcam;
@@ -28,7 +29,6 @@ namespace EditorUI
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
         private List<ScriptableLevel> _levels;
-        private IBinding _binding;
 
 
         [MenuItem("Window/EmojiHero Editor Window")]
@@ -63,6 +63,8 @@ namespace EditorUI
             _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
 
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
+            
+            _imageProgressBar = _root.Q<ProgressBar>("ImageSaveProgress");
 
             if (EditorUIFerStats.Instance != null)
             {
@@ -161,11 +163,17 @@ namespace EditorUI
             CreateLevelDropdown();
         }
 
-        public void SetWebcamTexture(WebCamTexture mainWebcam)
+        public void UpdateImageProgress(int value)
         {
-            VisualElement webcamUI = _root.Q<VisualElement>("WebcamTexture");
+            _imageProgressBar.value = _imageProgressBar.highValue - value + 1;
+            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
         }
-
+        public void UpdateImageBacklog(int value)
+        {
+            _imageProgressBar.value = 0;
+            _imageProgressBar.highValue = value;
+            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
+        }
     }
 }
 #endif

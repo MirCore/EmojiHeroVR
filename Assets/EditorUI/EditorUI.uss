@@ -1,0 +1,4 @@
+.title {
+    flex-shrink: 1;
+    min-width: 170px;
+}
