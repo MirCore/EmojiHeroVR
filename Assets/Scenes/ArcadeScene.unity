@@ -504,6 +504,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 268804710}
     - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
+      propertyPath: PlayMusicClips
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
       propertyPath: MusicAudioSource
       value: 
       objectReference: {fileID: 1283297254}
@@ -511,6 +515,22 @@ PrefabInstance:
       propertyPath: EffectAudioSource
       value: 
       objectReference: {fileID: 1912127397}
+    - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
+      propertyPath: MusicClips.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
+      propertyPath: MusicClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 026891e9d0119c949bb90c57f6b08f47, type: 3}
+    - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
+      propertyPath: MusicClips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 72a8e2e8b90e31c4280a6ed0da894744, type: 3}
+    - target: {fileID: 3248450009266701907, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
+      propertyPath: MusicClips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 72a8e2e8b90e31c4280a6ed0da894744, type: 3}
     - target: {fileID: 7744697604909881363, guid: c16da1d3ef4b2b54bb03365ee4a9c4d4, type: 3}
       propertyPath: LevelUI
       value: 
@@ -615,6 +635,10 @@ PrefabInstance:
     - target: {fileID: 4320546485582380506, guid: 156fcc30c262ad5448d970be0be390d7, type: 3}
       propertyPath: m_Name
       value: SETUP
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772766268643969534, guid: 156fcc30c262ad5448d970be0be390d7, type: 3}
+      propertyPath: m_Volume
+      value: 0.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

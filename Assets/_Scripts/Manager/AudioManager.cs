@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using UnityEngine;
 
@@ -15,13 +17,21 @@ namespace Manager
         [SerializeField] private AudioClip SuccessSound; // Sound to play on emote success
         [SerializeField] private AudioClip LevelStartSound; // Sound to play when level starts
         [SerializeField] private AudioClip LevelStoppedSound; // Sound to play when level stops
-
+        [SerializeField] private List<AudioClip> MusicClips; // List of music clips to play when playing a level
+        
+        private int _lastMusicClip; // Index of last played music clip
+        private float _musicVolume;
+        private bool _levelPlaying;
+        [SerializeField] private bool PlayMusicClips; // Whether music should be played
 
         private void OnEnable()
         {
+            _musicVolume = MusicAudioSource.volume;
+            
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
-            EventManager.OnLevelFinished += OnLevelStoppedCallback;
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
         }
@@ -30,7 +40,8 @@ namespace Manager
         {
             // Unsubscribe from game event notifications
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
-            EventManager.OnLevelFinished -= OnLevelStoppedCallback;
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
         }
@@ -40,23 +51,74 @@ namespace Manager
         /// </summary>
         private void OnLevelStartedCallback()
         {
+            _levelPlaying = true;
+            
             // Play level started sound
             PlaySoundEffect(LevelStartSound);
             
-            // Start playing the background music from the beginning, with a slight delay to allow the start sound to be heard
-            MusicAudioSource.volume = 1;
+            // Play music
+            PlayMusic();
+        }
+
+        /// <summary>
+        /// Plays the level music.
+        /// </summary>
+        private void PlayMusic()
+        {
+            if (!PlayMusicClips)
+                return;
+            
+            // Determine which music clip to play.
+            switch (MusicClips.Count)
+            {
+                // If there is only one music clip available, select it to be played.
+                case 1:
+                    MusicAudioSource.clip = MusicClips.First();
+                    break;
+                // If there is more than one music clip, choose one at random.
+                case > 1:
+                {
+                    // Generate a random index to select a music clip.
+                    int index = Random.Range(0, MusicClips.Count);
+
+                    // If the random index is the same as the last played clip, find a new index. This ensures variety in music playback.
+                    while (index == _lastMusicClip)
+                    {
+                        index = Random.Range(0, MusicClips.Count);
+                    }
+
+                    // Set the selected music clip to the audio source.
+                    MusicAudioSource.clip = MusicClips[index];
+                    // Update the last music clip index to the one currently selected.
+                    _lastMusicClip = index;
+                    break;
+                }
+            }
+
+            // Set the volume to full.
+            MusicAudioSource.volume = _musicVolume;
+            // Reset the playback position of the audio source to the beginning of the clip.
             MusicAudioSource.time = 0;
+            // Play the selected music clip with a delay to allow the level start sound to be heard first.
             MusicAudioSource.PlayDelayed(0.9f);
         }
+
+        private void OnLevelFinishedCallback() => LevelFinished();
+
+        private void OnLevelStoppedCallback() => LevelFinished();
 
         /// <summary>
         /// Callback for when the level stops, stops the music and plays the stop sound.
         /// </summary>
-        private void OnLevelStoppedCallback()
+        private void LevelFinished()
         {
+            if (!_levelPlaying)
+                return;
+            _levelPlaying = false;
+            
             // Stop the music when the level stops
             StartCoroutine(FadeOutMusicCoroutine(2f));
-            
+
             // Play level stopped sound
             PlaySoundEffect(LevelStoppedSound);
         }
@@ -75,6 +137,9 @@ namespace Manager
         /// </summary>
         private void OnEmoteFailedCallback(EEmote emote)
         {
+            if (!_levelPlaying)
+                return;
+            
             // Play fail sound
             PlaySoundEffect(FailSound);
         }
@@ -95,11 +160,11 @@ namespace Manager
         /// <param name="duration">The duration over which to fade out the music.</param>
         private IEnumerator FadeOutMusicCoroutine(float duration)
         {
-            float startVolume = MusicAudioSource.volume;
+            _musicVolume = MusicAudioSource.volume;
 
             for (float t = 0; t < duration; t += Time.deltaTime)
             {
-                MusicAudioSource.volume = Mathf.Lerp(startVolume, 0, t / duration);
+                MusicAudioSource.volume = Mathf.Lerp(_musicVolume, 0, t / duration);
                 yield return null;
             }
 

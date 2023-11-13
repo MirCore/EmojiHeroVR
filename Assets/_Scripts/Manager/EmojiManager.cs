@@ -55,9 +55,6 @@ namespace Manager
             // create a copy of the material
             EmojiMaterial = EmojiRenderer.material;
             ActionAreaSize = GameManager.Instance.ActionAreaSize;
-
-            // Calculate movement based on Action Area direction and movement speed
-            _movementSpeed = GameManager.Instance.ActionAreaTransform.forward * GameManager.Instance.Level.MovementSpeed;
         }
 
         private void OnEnable()
@@ -65,6 +62,9 @@ namespace Manager
             // Initialize the Emoji in the pre state and subscribe to events.
             SwitchState(_preState);
         
+            // Calculate movement based on Action Area direction and movement speed
+            _movementSpeed = GameManager.Instance.ActionAreaTransform.forward * GameManager.Instance.Level.MovementSpeed;
+            
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
         }
