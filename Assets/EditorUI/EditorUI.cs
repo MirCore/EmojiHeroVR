@@ -6,10 +6,13 @@ using Enums;
 using Manager;
 using Scriptables;
 using UnityEditor;
+using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utilities;
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 #if UNITY_EDITOR
 namespace EditorUI

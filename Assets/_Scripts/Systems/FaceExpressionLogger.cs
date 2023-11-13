@@ -26,9 +26,8 @@ namespace Systems
         {
 #if OVR_IMPLEMENTED      
             if (!_validExpressions)
-                return faceData = JsonUtility.ToJson(_currentFaceState);
+                return JsonUtility.ToJson(_currentFaceState);
 #endif
-            
             return ""; 
         }
 
