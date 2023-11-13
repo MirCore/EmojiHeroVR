@@ -83,7 +83,7 @@ namespace States.Game
                 case UIType.StopLevel:
                 case UIType.StartStopLevel:
                     // Transition to the preparing state when the level is stopped.
-                    GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
+                    GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
                     break;
                 case UIType.PauseLevel:
                 case UIType.StartLevel:

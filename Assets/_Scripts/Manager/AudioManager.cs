@@ -117,7 +117,7 @@ namespace Manager
             _levelPlaying = false;
             
             // Stop the music when the level stops
-            StartCoroutine(FadeOutMusicCoroutine(2f));
+            StartCoroutine(FadeOutMusicCoroutine(1f));
 
             // Play level stopped sound
             PlaySoundEffect(LevelStoppedSound);
@@ -162,7 +162,7 @@ namespace Manager
         {
             _musicVolume = MusicAudioSource.volume;
 
-            for (float t = 0; t < duration; t += Time.deltaTime)
+            for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
             {
                 MusicAudioSource.volume = Mathf.Lerp(_musicVolume, 0, t / duration);
                 yield return null;
