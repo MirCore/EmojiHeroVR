@@ -16,6 +16,7 @@ public class EditorUIFerStats : Singleton<EditorUIFerStats>
     [SerializeField, HideInInspector] public int TotalPosts;    // Total number of REST POST requests made.
     [SerializeField, HideInInspector] public double CurrentTimeBetweenPosts;    // Time in milliseconds between the last two REST POST requests.
     [SerializeField, HideInInspector] public double CurrentPostsFPS;    // Frames per second calculated based on the time between the last two REST POST requests.
+    [SerializeField, HideInInspector] public double SnapshotFPS;    // Frames per second of the snapshots.
     
     /// <summary>
     /// Called when a new REST POST request is made. Updates the time between posts, calculates the posts per second, and increments the active and total post counters.

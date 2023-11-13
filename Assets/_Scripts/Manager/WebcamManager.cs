@@ -96,8 +96,9 @@ namespace Manager
             
             while (count == 0 || GameManager.Instance.LevelProgress.EmojisAreInActionArea)
             {
-                TakeSnapshot();
+                TakeSnapshots();
                 count++;
+                EditorUIFerStats.Instance.SnapshotFPS = Math.Round(count / (Time.realtimeSinceStartup - firstPostTime),1);
 
                 // Calculate time needed to wait to ensure periodic execution
                 float waitTime = Math.Max(nextPostTime - Time.realtimeSinceStartup, 0);
@@ -113,13 +114,12 @@ namespace Manager
                 nextPostTime += interval;
             }
 
-            Debug.Log("Snapshot fps (average): " + (count / (Time.realtimeSinceStartup - firstPostTime)));
             _coroutine = null;
         }
 
-        private void TakeSnapshot()
+        private void TakeSnapshots()
         {
-            Profiler.BeginSample("TakeSnapshot");
+            Profiler.BeginSample("TakeSnapshots");
             
             Snapshot snapshot = new()
             {

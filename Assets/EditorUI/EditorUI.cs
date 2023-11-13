@@ -68,6 +68,7 @@ namespace EditorUI
                 _root.Q<Label>("TimeBetweenPosts").BindProperty(ferStats.FindProperty("CurrentTimeBetweenPosts"));
                 _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
                 _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
+                _root.Q<Label>("SnapshotFPS").BindProperty(ferStats.FindProperty("SnapshotFPS"));
             }
             
             CreateWebcamDropdown();
