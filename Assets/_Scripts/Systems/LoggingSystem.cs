@@ -33,21 +33,21 @@ namespace Systems
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         }
 
-        private void Start()
-        {
-            // Get the user ID from the EditorUI instance.
-            string userID = EditorUI.EditorUI.Instance.UserID;
-            
-            // Set the directory path where log files and images will be stored.
-            _dirPathWithUserID = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
-            
-            // Create the CSV headers for the log file.
-            CreateCsvHeaders();
-        }
-
         // ReSharper disable Unity.PerformanceAnalysis
         private void OnLevelFinishedCallback()
         {
+            if (_dirPathWithUserID == null)
+            {
+                // Get the user ID from the EditorUI instance.
+                string userID = EditorUI.EditorUI.Instance.UserID;
+                
+                // Set the directory path where log files and images will be stored.
+                _dirPathWithUserID = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
+
+                // Create the CSV headers for the log file.
+                CreateCsvHeaders();
+            }
+            
             // Write log data to the CSV file when a level is finished.
             WriteLog();
             
