@@ -12,8 +12,6 @@ namespace States.Game
     /// </summary>
     public class GamePlayingLevelState : GameState
     {
-        internal const int BaseScoreForCompletion = 50;
-        private const int ScoreMultiplier = 10;
 
         public LevelProgress LevelProgress;
         public int MaxScore { get; private set; }
@@ -50,8 +48,8 @@ namespace States.Game
                     throw new ArgumentOutOfRangeException();
             }
 
-            MaxScore =  emojiCount * (BaseScoreForCompletion +
-                                      (int)(GameManager.Instance.ActionAreaSize * 0.9 / GameManager.Instance.Level.MovementSpeed * ScoreMultiplier) * 10);
+            MaxScore =  emojiCount * (GameManager.BaseScoreForCompletion +
+                                      (int)(GameManager.Instance.ActionAreaSize * 0.9 / GameManager.Instance.Level.MovementSpeed * GameManager.ScoreMultiplier) * 10);
         }
 
 
@@ -93,7 +91,7 @@ namespace States.Game
         private void OnEmoteFulfilledCallback(EEmote emote, float score)
         {
             LevelProgress.FulfilledEmoteCount++;
-            LevelProgress.LevelScore += BaseScoreForCompletion + (int)(score * ScoreMultiplier) * 10;
+            LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)(score * GameManager.ScoreMultiplier) * 10;
         }
 
         /// <summary>

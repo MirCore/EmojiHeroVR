@@ -38,7 +38,10 @@ namespace Manager
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
-        public static int BaseScoreForCompletion => GamePlayingLevelState.BaseScoreForCompletion;
+        
+        // Scoring
+        internal const int BaseScoreForCompletion = 50;
+        internal const int ScoreMultiplier = 10;
 
 
         private void OnEnable()

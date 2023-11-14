@@ -121,7 +121,7 @@ namespace Manager
             }
 
             DetailedEmojiScoreField.text = $"Matched Emojis: {levelProgress.FulfilledEmoteCount}";
-            DetailedTimeScoreField.text = $"Time Bonus: {Math.Round((float)(levelProgress.LevelScore - levelProgress.FulfilledEmoteCount * GameManager.BaseScoreForCompletion) / 100, 1)}";
+            DetailedTimeScoreField.text = $"Time Bonus: {Math.Round((float)(levelProgress.LevelScore - levelProgress.FulfilledEmoteCount * GameManager.BaseScoreForCompletion) / GameManager.ScoreMultiplier / 10, 1)}";
         }
 
         /// <summary>
