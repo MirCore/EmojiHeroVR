@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using Data;
 using Enums;
 using Manager;
 using Scriptables;
 using UnityEngine;
-using Utilities;
 
 namespace States.Game
 {
@@ -18,10 +16,13 @@ namespace States.Game
         private const int ScoreMultiplier = 10;
 
         public LevelProgress LevelProgress;
+        public int MaxScore { get; private set; }
 
         public override void EnterState()
         {
             LevelProgress = new LevelProgress();
+
+            CalculateMaxScore();
             
             EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
@@ -29,6 +30,28 @@ namespace States.Game
             
             // Notify the game that a new level has started.
             EventManager.InvokeLevelStarted();
+        }
+
+        private void CalculateMaxScore()
+        {
+            
+            int emojiCount = 0;
+            switch (GameManager.Instance.Level.LevelMode)
+            {
+                case ELevelMode.Predefined:
+                    emojiCount = GameManager.Instance.Level.EmoteArray.Length;
+                    break;
+                case ELevelMode.Count:
+                    emojiCount = GameManager.Instance.Level.Count;
+                    break;
+                case ELevelMode.Training:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            MaxScore =  emojiCount * (BaseScoreForCompletion +
+                                      (int)(GameManager.Instance.ActionAreaSize * 0.9 / GameManager.Instance.Level.MovementSpeed * ScoreMultiplier) * 10);
         }
 
 

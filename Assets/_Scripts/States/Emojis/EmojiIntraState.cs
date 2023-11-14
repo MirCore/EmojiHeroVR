@@ -20,13 +20,13 @@ namespace States.Emojis
             EventManager.InvokeEmoteEnteredArea(emojiManager.Emote);
             
             // Calculate the time the Emoji has left in the Action Area based on the movement speed and area size. Used for the score.
-            emojiManager.ActiveAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.MovementSpeed;
+            emojiManager.ActionAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.MovementSpeed;
         }
 
         public override void Update(EmojiManager emojiManager)
         {
             // Decrease the time left for the Emoji in the Action Area, ensuring it doesn't go below 0.
-            emojiManager.ActiveAreaLeft = Mathf.Max(emojiManager.ActiveAreaLeft - Time.deltaTime, 0);
+            emojiManager.ActionAreaLeft = Mathf.Max(emojiManager.ActionAreaLeft - Time.deltaTime, 0);
         }
 
         public override void OnTriggerEnter(EmojiManager emojiManager)

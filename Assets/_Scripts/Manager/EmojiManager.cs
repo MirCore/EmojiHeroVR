@@ -38,7 +38,7 @@ namespace Manager
         
         // Time left for Emoji to stay in the active area and the size of the action area.
         // Used for score calculations
-        internal float ActiveAreaLeft;
+        internal float ActionAreaLeft;
         internal float ActionAreaSize;
         
         // Rigidbody component for physics interactions.

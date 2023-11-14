@@ -47,7 +47,7 @@ namespace Manager
             {
                 Debug.LogWarning("No UserID Set");
                 if (PreventGameStartWithoutUserID)
-                    UnityEditor.EditorApplication.isPlaying = false;
+                    EditorApplication.isPlaying = false;
                 else
                     EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
             }
@@ -122,12 +122,6 @@ namespace Manager
         public void OnButtonPressed(UIType uiType) => _gameState.HandleUIInput(uiType);
 
         /// <summary>
-        /// Handles button presses when selecting a level in the UI
-        /// </summary>
-        /// <param name="level">The selected level.</param>
-        public void OnButtonPressed(ScriptableLevel level) => _gameState.HandleUIInput(level);
-
-        /// <summary>
         /// Stops the game's time scale, effectively pausing in-game action.
         /// </summary>
         public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 1f));
@@ -147,5 +141,6 @@ namespace Manager
         /// </summary>
         public void IncreaseSpawnedEmotesCount() => PlayingLevelState.IncreaseSpawnedEmotesCount();
 
+        public int GetMaxScore() => PlayingLevelState.MaxScore;
     }
 }
