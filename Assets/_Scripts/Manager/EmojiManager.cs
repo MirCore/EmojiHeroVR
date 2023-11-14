@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Enums;
 using States.Emojis;
@@ -46,6 +47,9 @@ namespace Manager
         
         // Movement for the current level
         private Vector3 _movementSpeed;
+        
+        // Spawn time for Training level mode
+        private DateTime _spawnTime;
 
 
         private void Awake()
@@ -64,6 +68,10 @@ namespace Manager
         
             // Calculate movement based on Action Area direction and movement speed
             _movementSpeed = GameManager.Instance.ActionAreaTransform.forward * GameManager.Instance.Level.MovementSpeed;
+
+            // Start the despawn timer if in Training mode
+            if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
+                StartCoroutine(DespawnTimer());
             
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
@@ -77,8 +85,10 @@ namespace Manager
 
         private void Update()
         {
-            // Update the current state and handle Emoji movement.
+            // Call the Update Event of the current state.
             _emojiState.Update(this);
+            
+            // Emoji movement
             if (_emojiState != LeavingState)
                 transform.position -= _movementSpeed * Time.deltaTime;
         }
@@ -105,7 +115,18 @@ namespace Manager
         private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(this);
 
         private void OnTriggerExit(Collider other) => _emojiState.OnTriggerExit(this);
-
+        
+        // ReSharper disable Unity.PerformanceAnalysis
+        /// <summary>
+        /// Despawn the Emoji in training level mode
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator DespawnTimer()
+        {
+            float timer = GameManager.Instance.Level.Count > 0 ? GameManager.Instance.Level.Count : 5f;
+            yield return new WaitForSeconds(timer);
+            _emojiState.OnTriggerExit(this);
+        }
 
         public void FadeOut() => StartCoroutine(FadeOutCoroutine());
 

@@ -52,6 +52,7 @@ namespace Utilities
         /// <summary>
         /// Gets or sets the count of Emojis in the level.
         /// </summary>
+        [Tooltip("Acts as timer in Training mode")]
         public int Count;
 
         /// <summary>

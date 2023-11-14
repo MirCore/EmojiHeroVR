@@ -24,6 +24,7 @@ public class EmoteSpawner : MonoBehaviour
         EventManager.OnLevelStarted += OnLevelStartedCallback;
         EventManager.OnLevelStopped += OnLevelStoppedCallback;
         EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
+        EventManager.OnEmoteFailed += OnEmoteFailedCallback;
     }
 
     private void OnDisable()
@@ -31,6 +32,7 @@ public class EmoteSpawner : MonoBehaviour
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
         EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
+        EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
     }
 
     private void Start()
@@ -62,15 +64,22 @@ public class EmoteSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// Spawn a new emote in Training mode when the previous one is failed.
+    /// </summary>
+    private void OnEmoteFailedCallback(EEmote obj) => SpawnTrainingEmote();
+
+    /// <summary>
     /// Spawn a new emote in Training mode when the previous one is fulfilled.
     /// </summary>
-    private void OnEmoteFulfilledCallback(EEmote emote, float score)
+    private void OnEmoteFulfilledCallback(EEmote emote, float score) => SpawnTrainingEmote();
+
+    private void SpawnTrainingEmote()
     {
         // In Training mode, spawn a new emote when the previous one is fulfilled.
         if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
             StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1.1f));
     }
-    
+
     /// <summary>
     /// Coroutine to handle spawning of emotes at the start of the lane.
     /// </summary>
