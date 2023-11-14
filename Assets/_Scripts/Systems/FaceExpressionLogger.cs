@@ -5,43 +5,37 @@ namespace Systems
 {
     public class FaceExpressionLogger : MonoBehaviour
     {
-#if OVR_IMPLEMENTED
-        private const OVRPermissionsRequester.Permission FaceTrackingPermission = OVRPermissionsRequester.Permission.FaceTracking;
-        
+#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
         private OVRPlugin.FaceState _currentFaceState;
 #endif
+        
         private bool _validExpressions;
 
         private void Start()
         {
-#if OVR_IMPLEMENTED
-            if (!OVRPermissionsRequester.IsPermissionGranted(FaceTrackingPermission))
-                Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start face tracking.");
+#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
             if (!OVRPlugin.StartFaceTracking()) 
                 Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start face tracking.");
+            if (!OVRPlugin.StartEyeTracking()) 
+                Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start eye tracking.");
 #endif
         }
 
         public string GetFaceExpressionsAsJson()
         {
-#if OVR_IMPLEMENTED      
-            if (!_validExpressions)
+#if !OVRPLUGIN_UNSUPPORTED_PLATFORM      
+            if (_validExpressions)
                 return JsonUtility.ToJson(_currentFaceState);
+            Debug.LogWarning($"Face expression not valid.");
 #endif
             return ""; 
         }
 
         private void Update()
         {
-#if OVR_IMPLEMENTED
+#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
             _validExpressions = OVRPlugin.GetFaceState(OVRPlugin.Step.Render, -1, ref _currentFaceState) && _currentFaceState.Status.IsValid;
 #endif
-        }
-
-        private void CheckValidity()
-        {
-            if (!_validExpressions)
-                throw new InvalidOperationException($"Face expressions are not valid at this time. Use {nameof(_validExpressions)} to check for validity.");
         }
     }
 }
