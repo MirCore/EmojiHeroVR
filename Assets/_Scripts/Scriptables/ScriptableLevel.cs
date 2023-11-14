@@ -63,8 +63,13 @@ namespace Scriptables
             // Read the JSON content of the file.
             string json = File.ReadAllText(_filePath);
 
+            LevelStruct levelStruct = JsonUtility.FromJson<LevelStruct>(json);
+            
+            if (levelStruct.LevelName == "")
+                return;
+            
             // Deserialize the JSON content to populate the LevelStruct.
-            LevelStruct = JsonUtility.FromJson<LevelStruct>(json);
+            LevelStruct = levelStruct;
         }
 
         /// <summary>
@@ -79,6 +84,9 @@ namespace Scriptables
             if (LevelStruct.LevelMode == ELevelMode.Predefined)
                 LevelStruct.EmoteArray = GenerateRandomOrder(LevelStruct.Emotes.Count);
         
+            if (LevelStruct.LevelName == "")
+                return;
+            
             // Serialize the LevelStruct to JSON and write it to the file.
             File.WriteAllText(_filePath, JsonUtility.ToJson(LevelStruct));
         }

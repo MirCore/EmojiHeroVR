@@ -97,8 +97,10 @@ namespace Manager
         private void OnEmotionDetectedCallback(EEmote emote) => _emojiState.OnEmotionDetectedCallback(this, emote);
 
         // Callback for level stopped event.
-        private void OnLevelStoppedCallback() => FadeOut();
-
+        private void OnLevelStoppedCallback()
+        {
+            FadeOut();
+        }
 
         private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(this);
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Enums;
+using UnityEngine;
 
 namespace Data
 {
@@ -41,6 +42,7 @@ namespace Data
         /// Removes an emote from the action area.
         /// </summary>
         public bool RemoveEmoteFromActionArea(EEmote emote) => _emojiInActionArea.Remove(emote);
-        
+
+        public void ClearEmotesInActionAreaList() => _emojiInActionArea.Clear();
     }
 }

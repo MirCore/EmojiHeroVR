@@ -125,7 +125,7 @@ namespace Manager
         /// <summary>
         /// Stops the game's time scale, effectively pausing in-game action.
         /// </summary>
-        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 1f));
+        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 2f));
 
         /// <summary>
         /// Sets a new level for the game and the EditorUI.

@@ -68,7 +68,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         // In Training mode, spawn a new emote when the previous one is fulfilled.
         if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1));
+            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1.1f));
     }
     
     /// <summary>

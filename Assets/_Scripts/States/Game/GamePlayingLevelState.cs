@@ -57,6 +57,8 @@ namespace States.Game
 
         public override void LeaveState()
         {
+            LevelProgress.ClearEmotesInActionAreaList();
+            
             EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
             EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
@@ -76,7 +78,7 @@ namespace States.Game
         {
             if (!LevelProgress.RemoveEmoteFromActionArea(emote))
                 Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emote}");
-
+            
             LevelProgress.FinishedEmoteCount++;
             if (GameManager.Instance.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
                 GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
