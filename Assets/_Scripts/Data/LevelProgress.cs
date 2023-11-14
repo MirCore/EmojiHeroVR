@@ -31,7 +31,7 @@ namespace Data
         /// <summary>
         /// Gets the first emote in the action area or the default value.
         /// </summary>
-        public EEmote GetEmojiInActionArea => _emojiInActionArea.FirstOrDefault();
+        public EEmote GetEmojiInActionArea => _emojiInActionArea.LastOrDefault();
         
         /// <summary>
         /// Adds an emote to the action area.

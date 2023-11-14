@@ -125,6 +125,7 @@ namespace Manager
             {
                 Timestamp = LoggingSystem.GetUnixTimestamp(),
                 LevelID =  GameManager.Instance.Level.LevelName,
+                LevelMode = GameManager.Instance.Level.LevelMode,
                 EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
                 ImageTextures = new List<Color32[]>(),
             };

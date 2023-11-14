@@ -150,8 +150,10 @@ public class FerHandler : MonoBehaviour
 
     private void HandleFerCompletion(LogData logData)
     {
-        // Log the FER results.
-        LoggingSystem.Instance.AddToLogDataList(logData);
+        // Log the FER results if it is not of type Training.
+        if (LoggingSystem.Instance.LogTrainingLevel || GameManager.Instance.Level.LevelMode != ELevelMode.Training)
+            LoggingSystem.Instance.AddToLogDataList(logData);
+        
         // Update the UI with the FER results.
         EditorUIFerStats.Instance.LogRestResponse(logData);
 

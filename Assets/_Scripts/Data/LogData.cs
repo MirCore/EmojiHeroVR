@@ -17,7 +17,7 @@ namespace Data
         /// Gets or sets the level ID.
         /// </summary>
         public string LevelID;
-     
+        
         /// <summary>
         /// Gets or sets the ID of the Emote in the level sequence.
         /// </summary>

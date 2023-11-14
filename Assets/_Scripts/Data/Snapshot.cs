@@ -20,6 +20,11 @@ namespace Data
         public string LevelID;
      
         /// <summary>
+        /// Gets or sets the level ID.
+        /// </summary>
+        public ELevelMode LevelMode;
+     
+        /// <summary>
         /// Gets or sets the emote to imitate.
         /// </summary>
         public EEmote EmoteEmoji;

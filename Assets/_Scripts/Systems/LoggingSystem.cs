@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Data;
+using Enums;
 using Manager;
 using UnityEngine;
 using Utilities;
@@ -15,6 +16,8 @@ namespace Systems
     /// </summary>
     public class LoggingSystem : Singleton<LoggingSystem>
     {
+        [SerializeField] internal bool LogTrainingLevel = false;
+        
         private const string CsvFileName = "labels.csv"; // The name of the log file
         private string _dirPathWithUserID; // The full directory path where the log file will be stored
 
@@ -65,31 +68,34 @@ namespace Systems
                 // Get the first snapshot from the list.
                 Snapshot snapshot = _snapshots.FirstOrDefault();
                 
-                // Construct the path for saving the image
-                string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, snapshot.EmoteEmoji.ToString());
-
-                for (int i = 0; i < snapshot.ImageTextures.Count; i++)
+                if (snapshot != null && (LogTrainingLevel || snapshot.LevelMode != ELevelMode.Training))
                 {
-                    try
-                    {
-                        // Convert Pixels to an image
-                        texture.SetPixels32(snapshot.ImageTextures[i]);
-                        texture.Apply();
-                        
-                        // Encode the image to PNG format.
-                        byte[] bytes = texture.EncodeToPNG();
+                    // Construct the path for saving the image
+                    string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, snapshot.EmoteEmoji.ToString());
 
-                        // Add webcam index to filename if its not the main webcam (index > 0)
-                        string filename = i == 0 ? $"{snapshot.Timestamp}.png" : $"{snapshot.Timestamp}-{i}.png";
-
-                        // Save the image file.
-                        SaveFiles.SaveImageFile(path, filename, bytes);
-                        
-                        EditorUI.EditorUI.Instance.UpdateImageProgress(_snapshots.Count);
-                    }
-                    catch (Exception ex)
+                    for (int i = 0; i < snapshot.ImageTextures.Count; i++)
                     {
-                        Debug.LogError($"Failed to save image for logData with LevelID: {snapshot.LevelID}. Exception: {ex}");
+                        try
+                        {
+                            // Convert Pixels to an image
+                            texture.SetPixels32(snapshot.ImageTextures[i]);
+                            texture.Apply();
+
+                            // Encode the image to PNG format.
+                            byte[] bytes = texture.EncodeToPNG();
+
+                            // Add webcam index to filename if its not the main webcam (index > 0)
+                            string filename = i == 0 ? $"{snapshot.Timestamp}.png" : $"{snapshot.Timestamp}-{i}.png";
+
+                            // Save the image file.
+                            SaveFiles.SaveImageFile(path, filename, bytes);
+
+                            EditorUI.EditorUI.Instance.UpdateImageProgress(_snapshots.Count);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogError($"Failed to save image for logData with LevelID: {snapshot.LevelID}. Exception: {ex}");
+                        }
                     }
                 }
                 
@@ -113,17 +119,20 @@ namespace Systems
                 {
                     Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
                 }
-                
+
                 // Write each FaceExpression to a json file.
                 try
                 {
-                    WriteFaceExpressionJson(logData);
+                    if (logData.FaceExpressions != "")
+                        WriteFaceExpressionJson(logData);
                 }
                 catch (Exception ex)
                 {
                     Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
                 }
             }
+
+            _logDataList.Clear();
         }
 
         private void WriteFaceExpressionJson(LogData logData)
@@ -213,6 +222,11 @@ namespace Systems
             get => _snapshots.LastOrDefault();
             set
             {
+                // replace the Snapshots in Training mode
+                if (!LogTrainingLevel && value.LevelMode == ELevelMode.Training)
+                    _snapshots.Clear();
+                
+                // Add Snapshot to List
                 _snapshots.Add(value);
                 EditorUI.EditorUI.Instance.UpdateImageBacklog(_snapshots.Count);
             }
