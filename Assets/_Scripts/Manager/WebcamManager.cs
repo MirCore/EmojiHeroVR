@@ -17,6 +17,8 @@ namespace Manager
 
         [SerializeField] private int RequestedCameraWidth = 1280;
         [SerializeField] private int RequestedCameraHeight = 720;
+        
+        [SerializeField] private int TargetSnapshotFPS = 30;
 
         private Texture2D _texture;
         public int WebcamWidth => _webcams[0].width;
@@ -88,7 +90,7 @@ namespace Manager
             yield return new WaitForEndOfFrame();
             
             // Interval between each snapshot.
-            const float interval = 0.0333f;
+            float interval = 1f / TargetSnapshotFPS;
             float firstPostTime = Time.realtimeSinceStartup;
             float nextPostTime = Time.realtimeSinceStartup + interval;
 
