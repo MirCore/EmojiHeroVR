@@ -38,6 +38,7 @@ namespace Manager
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
+        public static int BaseScoreForCompletion => GamePlayingLevelState.BaseScoreForCompletion;
 
 
         private void OnEnable()

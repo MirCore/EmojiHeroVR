@@ -12,7 +12,7 @@ namespace States.Game
     /// </summary>
     public class GamePlayingLevelState : GameState
     {
-        private const int BaseScoreForCompletion = 50;
+        internal const int BaseScoreForCompletion = 50;
         private const int ScoreMultiplier = 10;
 
         public LevelProgress LevelProgress;
