@@ -3,12 +3,12 @@ using System.Linq;
 using UnityEngine;
 using Utilities;
 
-public class ObjectPool : Singleton<ObjectPool>
+public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private GameObject ObjectToPool; // The object template to pool
     [SerializeField] private int AmountToPool = 20; // The initial amount of objects to pool
     
-    private readonly List<GameObject> _pooledObjects = new(); // List to store the pooled objects
+    private static readonly List<GameObject> _pooledObjects = new(); // List to store the pooled objects
     
     /// <summary>
     /// Initializes the object pool by creating a specified number of objects and deactivating them.

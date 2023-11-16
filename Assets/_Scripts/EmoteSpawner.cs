@@ -18,6 +18,8 @@ public class EmoteSpawner : MonoBehaviour
     private readonly List<Vector3> _spawnLocations = new(); // List of possible locations for emote spawning.
     private Vector3 _actionAreaSpawnLocation; // Specific location to spawn emotes during Training mode.
 
+    private static ObjectPool _objectPool;
+
 
     private void OnEnable()
     {
@@ -37,6 +39,8 @@ public class EmoteSpawner : MonoBehaviour
 
     private void Start()
     {
+        _objectPool = GetComponent<ObjectPool>();
+        
         // Calculate and store possible emote spawn locations based on lanes and width.
         Vector3 spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
         for (int lane = 0; lane < Lanes; lane++)
@@ -57,10 +61,9 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = true;
         
         // Determine the spawning behavior based on the level mode.
-        if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 0));
-        else
-            StartCoroutine(SpawnEmoteAtSpawnLocation());
+        StartCoroutine(GameManager.Instance.Level.LevelMode == ELevelMode.Training
+            ? SpawnEmoteInActionArea(waitBeforeSpawn: 0)
+            : SpawnEmoteAtSpawnLocation());
     }
 
     /// <summary>
@@ -115,7 +118,7 @@ public class EmoteSpawner : MonoBehaviour
     private static void ActivatePooledEmote(Vector3 position)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
-        GameObject emote = ObjectPool.Instance.GetPooledObject();
+        GameObject emote = _objectPool.GetPooledObject();
         emote.transform.position = position;
         emote.SetActive(true);
         

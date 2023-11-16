@@ -55,6 +55,9 @@ namespace Manager
                 else
                     EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
             }
+            
+            // Create an instance of the ResourceSystem
+            ResourceSystem unused = new ();
 
             // Fetching the action area size and setting the selected level
             ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;

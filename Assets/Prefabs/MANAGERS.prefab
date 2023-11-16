@@ -60,9 +60,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4526790046406843153}
   - component: {fileID: 1374309847328840861}
-  - component: {fileID: 8698838219172504912}
   - component: {fileID: 2015343149069100989}
-  - component: {fileID: 3395366893480398949}
   - component: {fileID: 7217422131120342535}
   m_Layer: 0
   m_Name: GameManager
@@ -101,20 +99,6 @@ MonoBehaviour:
   PreventGameStartWithoutUserID: 0
   <EmojiSpawnPosition>k__BackingField: {fileID: 0}
   ActionArea: {fileID: 0}
---- !u!114 &8698838219172504912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2531051017718116015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f472e1bd5639573479666e6bb3a03fae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectToPool: {fileID: 8516293493071587995, guid: 6d4817cff0730d9498459bb94c94e4df, type: 3}
-  AmountToPool: 20
 --- !u!114 &2015343149069100989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,20 +112,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LogTrainingLevel: 0
---- !u!114 &3395366893480398949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2531051017718116015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b8e148544df50e4082cfc3824eb4aee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XWidth: 0.195
-  Lanes: 4
 --- !u!114 &7217422131120342535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7437e89228a4dc19cfdd308a8212ecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WebcamManager: {fileID: 1076769572553907979}
   PeriodicalFerMode: 1
 --- !u!1 &3900504359128329765
 GameObject:
@@ -294,7 +263,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8241465673698539333}
-  - component: {fileID: 4458289229717699939}
   m_Layer: 0
   m_Name: ResourceSystem
   m_TagString: Untagged
@@ -317,18 +285,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 420253182343510322}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4458289229717699939
+--- !u!1 &8132102157435539426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2732375740064158619}
+  - component: {fileID: 4498554571126555869}
+  - component: {fileID: 5346110038011119962}
+  m_Layer: 0
+  m_Name: Emoji ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2732375740064158619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8132102157435539426}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 420253182343510322}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4498554571126555869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6049302487403350158}
+  m_GameObject: {fileID: 8132102157435539426}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909b03995f82dbd4599ee5e6baa5245f, type: 3}
+  m_Script: {fileID: 11500000, guid: f472e1bd5639573479666e6bb3a03fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ObjectToPool: {fileID: 8516293493071587995, guid: 6d4817cff0730d9498459bb94c94e4df, type: 3}
+  AmountToPool: 20
+--- !u!114 &5346110038011119962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8132102157435539426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b8e148544df50e4082cfc3824eb4aee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XWidth: 0.195
+  Lanes: 4
 --- !u!1 &8206802230215778799
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,5 +380,6 @@ Transform:
   - {fileID: 8241465673698539333}
   - {fileID: 6758178698428389844}
   - {fileID: 567764710821786383}
+  - {fileID: 2732375740064158619}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
