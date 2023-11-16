@@ -17,7 +17,7 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             // Notify other systems, mainly the FER Handler that an Emoji has entered the Action Area.
-            EventManager.InvokeEmoteEnteredArea(emojiManager.Emote);
+            EventManager.InvokeEmoteEnteredActionArea(emojiManager.Emote);
             
             // Calculate the time the Emoji has left in the Action Area based on the movement speed and area size. Used for the score.
             emojiManager.ActionAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.MovementSpeed;
@@ -29,15 +29,18 @@ namespace States.Emojis
             emojiManager.ActionAreaLeft = Mathf.Max(emojiManager.ActionAreaLeft - Time.deltaTime, 0);
         }
 
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }
 
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
-            // If the Emoji exits the Action Area without successful reenactment, switch to FailedState.
-            emojiManager.SwitchState(emojiManager.FailedState);
+            if (collider.CompareTag("ActionArea"))
+                // If the Emoji exits the Action Area without successful reenactment, switch to FailedState.
+                emojiManager.SwitchState(emojiManager.FailedState);
+            else if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emote);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

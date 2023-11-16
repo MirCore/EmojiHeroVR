@@ -38,7 +38,7 @@ namespace Manager
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
 
             // Load the UI elements for level selection.
@@ -52,7 +52,7 @@ namespace Manager
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         }
 
@@ -60,7 +60,7 @@ namespace Manager
         /// <summary>
         /// Updates the score UI when an emote exits the action area.
         /// </summary>
-        private void OnEmoteExitedAreaCallback(EEmote emote) => StartCoroutine(UpdateScoreUI());
+        private void EmoteExitedActionAreaCallback(EEmote emote) => StartCoroutine(UpdateScoreUI());
         
         /// <summary>
         /// Updates the score UI when an emote is fulfilled.

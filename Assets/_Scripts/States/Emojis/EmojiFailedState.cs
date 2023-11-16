@@ -20,7 +20,7 @@ namespace States.Emojis
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
             
             // Notify other systems that the Emoji has exited the Action Area.
-            EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
+            EventManager.InvokeEmoteExitedActionArea(emojiManager.Emote);
             
             // Notify other systems that the Emoji has failed to be matched.
             EventManager.InvokeEmoteFailed(emojiManager.Emote);
@@ -37,12 +37,12 @@ namespace States.Emojis
             // Implementation not required for this state.
         }
 
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }
 
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }

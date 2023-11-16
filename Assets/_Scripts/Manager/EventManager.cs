@@ -7,10 +7,10 @@ namespace Manager
     public class EventManager : MonoBehaviour
     {
         /// <summary>Triggered when an emote enters the ActionArea.</summary>
-        public static event Action<EEmote> OnEmoteEnteredArea;
-        /// <summary>Invokes the OnEmoteEnteredArea event.</summary>
+        public static event Action<EEmote> OnEmoteEnteredActionArea;
+        /// <summary>Invokes the OnEmoteEnteredActionArea event.</summary>
         /// <param name="emote">The emote that entered the area.</param>
-        public static void InvokeEmoteEnteredArea(EEmote emote) => OnEmoteEnteredArea?.Invoke(emote);
+        public static void InvokeEmoteEnteredActionArea(EEmote emote) => OnEmoteEnteredActionArea?.Invoke(emote);
 
         
         /// <summary>Triggered when an emotion is detected.</summary>
@@ -29,10 +29,10 @@ namespace Manager
 
         
         /// <summary>Triggered when an emote exits the ActionArea.</summary>
-        public static event Action<EEmote> OnEmoteExitedArea;
-        /// <summary>Invokes the OnEmoteExitedArea event.</summary>
+        public static event Action<EEmote> OnEmoteExitedActionArea;
+        /// <summary>Invokes the OnEmoteExitedActionArea event.</summary>
         /// <param name="emote">The emote that exited the area.</param>
-        public static void InvokeEmoteExitedArea(EEmote emote) => OnEmoteExitedArea?.Invoke(emote);
+        public static void InvokeEmoteExitedActionArea(EEmote emote) => OnEmoteExitedActionArea?.Invoke(emote);
 
         
         /// <summary>Triggered when an emote fails to be reenacted.</summary>
@@ -58,5 +58,19 @@ namespace Manager
         public static event Action OnLevelFinished;
         /// <summary>Invokes the OnLevelFinished event.</summary>
         public static void InvokeLevelFinished() => OnLevelFinished?.Invoke();
+        
+        
+        /// <summary>Triggered when an emote enters the WebcamArea.</summary>
+        public static event Action<EEmote> OnEmoteEnteredWebcamArea;
+        /// <summary>Invokes the OnEmoteEnteredWebcamArea event.</summary>
+        /// <param name="emote">The emote that entered the WebcamArea.</param>
+        public static void InvokeEmoteEnteredWebcamArea(EEmote emote) => OnEmoteEnteredWebcamArea?.Invoke(emote);
+        
+        
+        /// <summary>Triggered when an emote exits the WebcamArea.</summary>
+        public static event Action<EEmote> OnEmoteExitedWebcamArea;
+        /// <summary>Invokes the OnEmoteExitedWebcamArea event.</summary>
+        /// <param name="emote">The emote that exited the WebcamArea.</param>
+        public static void InvokeEmoteExitedWebcamArea(EEmote emote) => OnEmoteExitedWebcamArea?.Invoke(emote);
     }
 }

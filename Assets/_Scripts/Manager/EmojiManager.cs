@@ -112,9 +112,9 @@ namespace Manager
             FadeOut();
         }
 
-        private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(this);
+        private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(other, this);
 
-        private void OnTriggerExit(Collider other) => _emojiState.OnTriggerExit(this);
+        private void OnTriggerExit(Collider other) => _emojiState.OnTriggerExit(other, this);
         
         // ReSharper disable Unity.PerformanceAnalysis
         /// <summary>
@@ -125,7 +125,7 @@ namespace Manager
         {
             float timer = GameManager.Instance.Level.Count > 0 ? GameManager.Instance.Level.Count : 5f;
             yield return new WaitForSeconds(timer);
-            _emojiState.OnTriggerExit(this);
+            _emojiState.OnTriggerExit(null, this);
         }
 
         public void FadeOut() => StartCoroutine(FadeOutCoroutine());

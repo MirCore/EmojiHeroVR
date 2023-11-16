@@ -1,5 +1,6 @@
 using Enums;
 using Manager;
+using UnityEngine;
 
 namespace States.Emojis
 {
@@ -23,14 +24,16 @@ namespace States.Emojis
         /// <summary>
         /// Invoked when the emoji enters a collider.
         /// </summary>
+        /// <param name="collider"></param>
         /// <param name="emojiManager">The emoji manager instance.</param>
-        public abstract void OnTriggerEnter(EmojiManager emojiManager);
+        public abstract void OnTriggerEnter(Collider collider, EmojiManager emojiManager);
 
         /// <summary>
         /// Invoked when the emoji leaves a collider.
         /// </summary>
+        /// <param name="collider"></param>
         /// <param name="emojiManager">The emoji manager instance.</param>
-        public abstract void OnTriggerExit(EmojiManager emojiManager);
+        public abstract void OnTriggerExit(Collider collider, EmojiManager emojiManager);
 
         /// <summary>
         /// Invoked when an emotion is detected by the FER.

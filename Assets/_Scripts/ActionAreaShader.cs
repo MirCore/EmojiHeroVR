@@ -47,20 +47,20 @@ public class ActionAreaShader : MonoBehaviour
 
     private void Awake()
     {
-        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-        EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+        EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
+        EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
     }
 
     private void OnDestroy()
     {
-        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-        EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+        EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
+        EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
     }
 
     /// <summary>
     /// Callback for when an emoji enters the area.
     /// </summary>
-    private void OnEmoteEnteredAreaCallback(EEmote emote)
+    private void EmoteEnteredActionAreaCallback(EEmote emote)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();
@@ -73,7 +73,7 @@ public class ActionAreaShader : MonoBehaviour
     /// <summary>
     /// Callback for when an emoji exits the area.
     /// </summary>
-    private void OnEmoteExitedAreaCallback(EEmote emote)
+    private void EmoteExitedActionAreaCallback(EEmote emote)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();

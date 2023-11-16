@@ -22,8 +22,8 @@ namespace States.Game
 
             CalculateMaxScore();
             
-            EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
+            EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             
             // Notify the game that a new level has started.
@@ -57,8 +57,8 @@ namespace States.Game
         {
             LevelProgress.ClearEmotesInActionAreaList();
             
-            EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
+            EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         }
 
@@ -66,13 +66,13 @@ namespace States.Game
         /// Handles the behavior when an emote enters the action area.
         /// </summary>
         /// <param name="emote">The emote that entered.</param>
-        private void OnEmoteEnteredAreaCallback(EEmote emote) => LevelProgress.AddEmoteToActionArea(emote);
+        private void EmoteEnteredActionAreaCallback(EEmote emote) => LevelProgress.AddEmoteToActionArea(emote);
 
         /// <summary>
         /// Handles the behavior when an emote exits the action area.
         /// </summary>
         /// <param name="emote">The emote that exited.</param>
-        private void OnEmoteExitedAreaCallback(EEmote emote)
+        private void EmoteExitedActionAreaCallback(EEmote emote)
         {
             if (!LevelProgress.RemoveEmoteFromActionArea(emote))
                 Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emote}");

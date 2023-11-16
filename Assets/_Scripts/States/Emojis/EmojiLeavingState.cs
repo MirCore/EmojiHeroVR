@@ -1,5 +1,6 @@
 ﻿using Enums;
 using Manager;
+using UnityEngine;
 
 namespace States.Emojis
 {
@@ -24,14 +25,15 @@ namespace States.Emojis
             // Implementation not required for this state.
         }
 
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             // Implementation not required for this state.
         }
 
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
-            // Implementation not required for this state.
+            if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emote);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

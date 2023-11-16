@@ -35,7 +35,7 @@ namespace States.Emojis
             // Implementation not required for this state.
         }
 
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }
@@ -44,14 +44,19 @@ namespace States.Emojis
         /// This is called when the Emoji exits the Action Area.
         /// Switches the Emoji's state to LeavingState and triggers the event.
         /// </summary>
+        /// <param name="collider"></param>
         /// <param name="emojiManager">The manager controlling the Emoji.</param>
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
-            // Switch to the Leaving State when the Emoji exits the Action Area.
-            emojiManager.SwitchState(emojiManager.LeavingState);
-            
-            // Notify other systems that the Emoji has exited the Action Area.
-            EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
+            if (collider.CompareTag("ActionArea"))
+            {
+                // Switch to the Leaving State when the Emoji exits the Action Area.
+                emojiManager.SwitchState(emojiManager.LeavingState);
+                // Notify other systems that the Emoji has exited the Action Area.
+                EventManager.InvokeEmoteExitedActionArea(emojiManager.Emote);
+            }
+            else if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emote);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

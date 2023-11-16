@@ -73,15 +73,18 @@ namespace States.Emojis
         /// <summary>
         /// Trigger enter event handler. Switches the Emoji to the IntraState when triggered.
         /// </summary>
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
-            emojiManager.SwitchState(emojiManager.IntraState);
+            if (collider.CompareTag("ActionArea"))
+                emojiManager.SwitchState(emojiManager.IntraState);
+            else if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emote);
         }
 
         /// <summary>
         /// Trigger exit event handler. Not used in this state.
         /// </summary>
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }

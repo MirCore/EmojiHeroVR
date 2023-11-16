@@ -1617,6 +1617,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -25
       objectReference: {fileID: 0}
+    - target: {fileID: 7303089976813078923, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
+      propertyPath: m_Name
+      value: WebcamArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 8078375978172442700, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038953528534422307, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.155
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038953528534422307, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.009
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038953528534422307, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.451
+      objectReference: {fileID: 0}
     - target: {fileID: 9204475600501845201, guid: 82181dd679175014ebcafc5a9f9077d8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

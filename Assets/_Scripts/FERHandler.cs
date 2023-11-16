@@ -29,16 +29,16 @@ public class FerHandler : MonoBehaviour
 
     private void Start()
     {
-        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+        EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
     }
 
     private void OnDestroy()
     {
-        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
+        EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
     }
     
     // Callback for when an emote enters the action area, triggers the facial emotion recognition
-    private void OnEmoteEnteredAreaCallback(EEmote emote) => SendRestImage();
+    private void EmoteEnteredActionAreaCallback(EEmote emote) => SendRestImage();
 
     /// <summary>
     /// Initiates the sending of REST images for FER processing.
