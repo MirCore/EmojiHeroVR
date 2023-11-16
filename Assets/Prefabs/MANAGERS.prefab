@@ -64,7 +64,6 @@ GameObject:
   - component: {fileID: 2015343149069100989}
   - component: {fileID: 3395366893480398949}
   - component: {fileID: 7217422131120342535}
-  - component: {fileID: 1630000183954767945}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -157,23 +156,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WebcamManager: {fileID: 1076769572553907979}
   PeriodicalFerMode: 1
---- !u!114 &1630000183954767945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2531051017718116015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27de282defae486b9aea560be8b8cd9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentActiveRestPosts: 0
-  TotalPosts: 0
-  CurrentTimeBetweenPosts: 0
-  CurrentPostsFPS: 0
-  SnapshotFPS: 0
 --- !u!1 &3900504359128329765
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4167353075214403249}
   - component: {fileID: 7744697604909881363}
+  - component: {fileID: 3981137837302549682}
   m_Layer: 0
   m_Name: UI Manager
   m_TagString: Untagged
@@ -285,6 +268,23 @@ MonoBehaviour:
   - {fileID: 0}
   DetailedEmojiScoreField: {fileID: 0}
   DetailedTimeScoreField: {fileID: 0}
+--- !u!114 &3981137837302549682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020644305432894672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27de282defae486b9aea560be8b8cd9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentActiveRestPosts: 0
+  TotalPosts: 0
+  CurrentTimeBetweenPosts: 0
+  CurrentPostsFPS: 0
+  SnapshotFPS: 0
 --- !u!1 &6049302487403350158
 GameObject:
   m_ObjectHideFlags: 0

@@ -60,7 +60,7 @@ namespace Systems
             yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
             
             
-            Texture2D texture = new (WebcamManager.Instance.WebcamWidth, WebcamManager.Instance.WebcamHeight);
+            Texture2D texture = new (WebcamManager.WebcamWidth, WebcamManager.WebcamHeight);
             
             // Continue until all snapshots is processed.
             while (_snapshots.Any())

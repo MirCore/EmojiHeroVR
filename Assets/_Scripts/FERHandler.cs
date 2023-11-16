@@ -7,7 +7,6 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 
 /// <summary>
@@ -15,9 +14,6 @@ using Utilities;
 /// </summary>
 public class FerHandler : MonoBehaviour
 {
-    // Reference to the WebcamManager component, used for capturing images for FER.
-    [FormerlySerializedAs("Webcam")] [SerializeField] private WebcamManager WebcamManager;
-    
     private FaceExpressionHandler _faceExpressionHandler;
     
     /// <summary>Flag to determine if facial emotion recognition should be done periodically.</summary>

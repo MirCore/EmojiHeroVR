@@ -7,17 +7,16 @@ using Enums;
 using Systems;
 using UnityEngine;
 using UnityEngine.Profiling;
-using Utilities;
 
 namespace Manager
 {
     /// <summary>
     /// Manages the webcams, captures and processes images.
     /// </summary>
-    public class WebcamManager : Singleton<WebcamManager>
+    public class WebcamManager : MonoBehaviour
     {
         // List to store references to the active webcams.
-        private readonly List<WebCamTexture> _webcams = new();
+        private static readonly List<WebCamTexture> Webcams = new();
         
         // List of RenderTextures that are set up to display the webcam feeds.
         [SerializeField] private List<RenderTexture> RenderTextures = new();
@@ -33,11 +32,11 @@ namespace Manager
         private readonly List<EEmote> _emotesInWebcamArea = new();
 
         // A texture for processing the webcam image.
-        private Texture2D _texture;
+        private static Texture2D _texture;
         
         // Accessors for webcam width and height.
-        public int WebcamWidth => _webcams[0].width;
-        public int WebcamHeight => _webcams[0].height;
+        public static int WebcamWidth => Webcams[0].width;
+        public static int WebcamHeight => Webcams[0].height;
         
         
         // A reference to the coroutine that takes continuous snapshots.
@@ -51,7 +50,7 @@ namespace Manager
             
             // Set up the webcams and create a texture for image processing.
             InitializeWebcams(mainWebcamName, secondaryWebcamName);
-            _texture = new Texture2D(_webcams[0].width, _webcams[0].height);
+            _texture = new Texture2D(Webcams[0].width, Webcams[0].height);
             
             EventManager.OnEmoteEnteredWebcamArea += EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea += EmoteExitedWebcamAreaCallback;
@@ -60,7 +59,7 @@ namespace Manager
         private void OnDestroy()
         {
             // Clean up webcams and textures, and unsubscribe from events on destruction.
-            foreach (WebCamTexture webcam in _webcams) 
+            foreach (WebCamTexture webcam in Webcams) 
                 webcam.Stop();
         
             foreach (RenderTexture texture in RenderTextures) 
@@ -86,8 +85,8 @@ namespace Manager
         private void Update()
         {
             // On each frame, update the RenderTextures with the latest webcam image if it has updated.
-            for (int i = 0; i < _webcams.Count; i++)
-                if (_webcams[i].didUpdateThisFrame)
+            for (int i = 0; i < Webcams.Count; i++)
+                if (Webcams[i].didUpdateThisFrame)
                     Blit(i);
         }
 
@@ -96,14 +95,14 @@ namespace Manager
         /// </summary>
         private void InitializeWebcams(string mainWebcamName, string secondaryWebcamName)
         {
-            _webcams.Add(new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight));
+            Webcams.Add(new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight));
             
             if (secondaryWebcamName != "-" && secondaryWebcamName != "" && secondaryWebcamName != mainWebcamName)
-                _webcams.Add(new WebCamTexture(secondaryWebcamName, RequestedCameraWidth, RequestedCameraHeight));
+                Webcams.Add(new WebCamTexture(secondaryWebcamName, RequestedCameraWidth, RequestedCameraHeight));
 
-            for (int i = 0; i < _webcams.Count; i++)
+            for (int i = 0; i < Webcams.Count; i++)
             {
-                _webcams[i].Play();
+                Webcams[i].Play();
                 Blit(i);
             }
         }
@@ -115,7 +114,7 @@ namespace Manager
         private void Blit(int webcamIndex)
         {          
             if (RenderTextures.Count > webcamIndex)
-                Graphics.Blit(_webcams[webcamIndex], RenderTextures[webcamIndex]);
+                Graphics.Blit(Webcams[webcamIndex], RenderTextures[webcamIndex]);
         }
 
 
@@ -175,7 +174,7 @@ namespace Manager
             };
         
             // Capture a single frame for each webcam
-            foreach (WebCamTexture webcam in _webcams)
+            foreach (WebCamTexture webcam in Webcams)
             {
                 Profiler.BeginSample("GetPixels");
                 Color32[] pixels = webcam.GetPixels32();
@@ -194,7 +193,7 @@ namespace Manager
         /// <summary>
         /// Convert the snapshot to a base64 string for network transmission.
         /// </summary>
-        public string GetBase64(Snapshot snapshot)
+        public static string GetBase64(Snapshot snapshot)
         {
             Profiler.BeginSample("SetPixels");
             // Convert pixels to a texture
