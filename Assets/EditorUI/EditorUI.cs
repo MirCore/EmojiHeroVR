@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
@@ -6,13 +5,10 @@ using Enums;
 using Manager;
 using Scriptables;
 using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.PackageManager.Requests;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utilities;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 #if UNITY_EDITOR
 namespace EditorUI
@@ -71,7 +67,6 @@ namespace EditorUI
             {
                 SerializedObject ferStats = new(EditorUIFerStats.Instance);
                 _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
-                _root.Q<Label>("TimeBetweenPosts").BindProperty(ferStats.FindProperty("CurrentTimeBetweenPosts"));
                 _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
                 _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
                 _root.Q<Label>("SnapshotFPS").BindProperty(ferStats.FindProperty("SnapshotFPS"));
