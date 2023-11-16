@@ -31,7 +31,8 @@ namespace States.Emojis
 
         public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
-            // Not needed for this state.
+            if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emote);
         }
 
         public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
@@ -48,6 +49,11 @@ namespace States.Emojis
             // If the detected emotion matches the Emoji's emotion, switch to FulfilledState.
             if (emote == emojiManager.Emote)
                 emojiManager.SwitchState(emojiManager.FulfilledState);
+        }
+
+        public override void Despawn(EmojiManager emojiManager)
+        {
+            emojiManager.SwitchState(emojiManager.FailedState);
         }
     }
 }

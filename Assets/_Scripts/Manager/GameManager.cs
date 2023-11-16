@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Data;
 using Enums;
 using Scriptables;
@@ -8,8 +7,6 @@ using Systems;
 using Unity.XR.CoreUtils;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.XR;
 using Utilities;
 
 namespace Manager
@@ -22,6 +19,8 @@ namespace Manager
         // Configuration to prevent the game from starting if the UserID is not set
         [Header("Prevent Game From Starting When UserID Is Missing")] [SerializeField]
         private bool PreventGameStartWithoutUserID;
+
+        [SerializeField] public bool LogFaceExpressions;
 
         // Game states
         private GameState _gameState;

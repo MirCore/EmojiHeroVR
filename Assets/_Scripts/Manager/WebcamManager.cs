@@ -74,7 +74,18 @@ namespace Manager
         private void OnLevelStoppedCallback()
         {
             _emotesInWebcamArea.Clear();
+
+            StopCoroutine();
+
+            EditorUIFerStats.Instance.SnapshotFPS = $"0 ({EditorUIFerStats.Instance.SnapshotFPS})";
+        }
+
+        private void StopCoroutine()
+        {
+            if (_coroutine == null)
+                return;
             StopCoroutine(_coroutine);
+            _coroutine = null;
         }
 
         private void EmoteEnteredWebcamAreaCallback(EEmote emote)
@@ -146,7 +157,7 @@ namespace Manager
             {
                 TakeSnapshots();
                 count++;
-                EditorUIFerStats.Instance.SnapshotFPS = Math.Round(count / (Time.realtimeSinceStartup - firstPostTime),1);
+                EditorUIFerStats.Instance.SnapshotFPS = $"{Math.Round(count / (Time.realtimeSinceStartup - firstPostTime),1)}";
 
                 // Calculate time needed to wait to ensure periodic execution
                 float waitTime = Math.Max(nextPostTime - Time.realtimeSinceStartup, 0);
@@ -167,7 +178,7 @@ namespace Manager
         /// <summary>
         /// Capture and process a snapshot from each active webcam.
         /// </summary>
-        private void TakeSnapshots()
+        private static void TakeSnapshots()
         {
             Profiler.BeginSample("TakeSnapshots");
             

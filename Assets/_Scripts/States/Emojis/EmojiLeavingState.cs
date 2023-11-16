@@ -40,5 +40,10 @@ namespace States.Emojis
         {
             // Implementation not required for this state.
         }
+
+        public override void Despawn(EmojiManager emojiManager)
+        {
+            // Implementation not required for this state.
+        }
     }
 }

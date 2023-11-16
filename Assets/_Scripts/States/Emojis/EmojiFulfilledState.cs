@@ -63,5 +63,13 @@ namespace States.Emojis
         {
             // Implementation not required for this state.
         }
+
+        public override void Despawn(EmojiManager emojiManager)
+        {
+            // Switch to the Leaving State when the Emoji exits the Action Area.
+            emojiManager.SwitchState(emojiManager.LeavingState);
+            // Notify other systems that the Emoji has exited the Action Area.
+            EventManager.InvokeEmoteExitedActionArea(emojiManager.Emote);
+        }
     }
 }

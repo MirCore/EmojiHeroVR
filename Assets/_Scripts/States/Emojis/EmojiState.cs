@@ -41,6 +41,8 @@ namespace States.Emojis
         /// <param name="emojiManager">The emoji manager instance.</param>
         /// <param name="emote">The detected emotion.</param>
         public abstract void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote);
+
+        public abstract void Despawn(EmojiManager emojiManager);
     }
 }
 

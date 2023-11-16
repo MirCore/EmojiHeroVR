@@ -992,7 +992,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1884,7 +1884,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2855,8 +2855,10 @@ MonoBehaviour:
   SuccessSound: {fileID: 8300000, guid: 28e6e4e5f18efc84cb8d75c76f8606a6, type: 3}
   LevelStartSound: {fileID: 8300000, guid: ded92363fa5850545b516a9d468d041c, type: 3}
   LevelStoppedSound: {fileID: 8300000, guid: ed3992a02cd409e4d907a9582ebc63be, type: 3}
-  MusicClips: []
-  PlayMusicClips: 0
+  MusicClips:
+  - {fileID: 8300000, guid: 026891e9d0119c949bb90c57f6b08f47, type: 3}
+  - {fileID: 8300000, guid: 72a8e2e8b90e31c4280a6ed0da894744, type: 3}
+  PlayMusicClips: 1
 --- !u!1 &7203939549241060143
 GameObject:
   m_ObjectHideFlags: 0

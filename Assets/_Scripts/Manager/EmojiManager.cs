@@ -125,7 +125,7 @@ namespace Manager
         {
             float timer = GameManager.Instance.Level.Count > 0 ? GameManager.Instance.Level.Count : 5f;
             yield return new WaitForSeconds(timer);
-            _emojiState.OnTriggerExit(null, this);
+            _emojiState.Despawn(this);
         }
 
         public void FadeOut() => StartCoroutine(FadeOutCoroutine());

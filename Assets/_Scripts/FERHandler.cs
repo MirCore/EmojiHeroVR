@@ -86,11 +86,11 @@ public class FerHandler : MonoBehaviour
     {
         Snapshot snapshot = WebcamManager.GetSnapshot();
         
-        while (snapshot.Timestamp == null)
+        while (snapshot?.Timestamp == null)
         {
             yield return null;
             snapshot = WebcamManager.GetSnapshot();
-            Debug.Log(snapshot.Timestamp);
+            Debug.Log(snapshot?.Timestamp);
         }
         
         // Initialize log data for the current FER process.
@@ -101,7 +101,7 @@ public class FerHandler : MonoBehaviour
             EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
             EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            FaceExpressions = _faceExpressionHandler.GetFaceExpressionsAsJson()
+            FaceExpressions = GameManager.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
         };
         
         // Convert the captured image to base64 format.

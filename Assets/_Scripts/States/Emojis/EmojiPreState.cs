@@ -88,6 +88,11 @@ namespace States.Emojis
             // Implementation not required for this state.
         }
 
+        public override void Despawn(EmojiManager emojiManager)
+        {
+            Debug.Log("NotImplementedException");
+        }
+
         /// <summary>
         /// Initializes the Emoji's visual elements based on its emotion.
         /// </summary>

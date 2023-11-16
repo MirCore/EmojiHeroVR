@@ -16,7 +16,7 @@ namespace Systems
     /// </summary>
     public class LoggingSystem : Singleton<LoggingSystem>
     {
-        [SerializeField] internal bool LogTrainingLevel = false;
+        [SerializeField] internal bool LogTrainingLevel;
         
         private const string CsvFileName = "labels.csv"; // The name of the log file
         private string _dirPathWithUserID; // The full directory path where the log file will be stored
