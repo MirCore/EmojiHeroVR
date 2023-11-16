@@ -5,8 +5,11 @@ using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
+using Unity.XR.CoreUtils;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.XR;
 using Utilities;
 
 namespace Manager
@@ -26,8 +29,7 @@ namespace Manager
         internal readonly GamePlayingLevelState PlayingLevelState = new();
         internal readonly GameLevelFinishedState LevelFinishedState = new();
 
-        [field: Header("Level Setup GameObjects")]
-        [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
+        [SerializeField] private XROrigin XROrigin;
         [SerializeField] private GameObject ActionArea;
         public float ActionAreaSize { get; private set; }
         
@@ -81,8 +83,8 @@ namespace Manager
                 OnButtonPressed(UIType.StartStopLevel);
             
             // Stop game with escape
-            else if (Input.GetButtonDown("Cancel"))
-                EditorApplication.ExitPlaymode();
+            //else if (Input.GetButtonDown("Cancel"))
+            //    EditorApplication.ExitPlaymode();
         }
 
         /// <summary>
@@ -149,5 +151,11 @@ namespace Manager
         public void IncreaseSpawnedEmotesCount() => PlayingLevelState.IncreaseSpawnedEmotesCount();
 
         public int GetMaxScore() => PlayingLevelState.MaxScore;
+
+        public void RecenterXR()
+        {
+            XROrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
+            XROrigin.MoveCameraToWorldLocation(new Vector3(0, XROrigin.CameraInOriginSpaceHeight, 0));
+        }
     }
 }

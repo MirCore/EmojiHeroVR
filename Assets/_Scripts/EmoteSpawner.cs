@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EmoteSpawner : MonoBehaviour
 {
+    [SerializeField] private Transform EmojiSpawnPosition; // The GameObject indicating the spawn position
     [SerializeField] private float XWidth = 0.5f; // The width between lanes for emote spawning.
     [SerializeField] private int Lanes = 4; // The number of lanes where emotes can be spawned.
 
@@ -42,7 +43,7 @@ public class EmoteSpawner : MonoBehaviour
         _objectPool = GetComponent<ObjectPool>();
         
         // Calculate and store possible emote spawn locations based on lanes and width.
-        Vector3 spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
+        Vector3 spawnDistance = EmojiSpawnPosition.position;
         for (int lane = 0; lane < Lanes; lane++)
         {
             float offset = (Lanes - 1) / 2f;

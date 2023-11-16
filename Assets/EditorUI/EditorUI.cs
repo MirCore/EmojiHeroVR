@@ -63,6 +63,7 @@ namespace EditorUI
             _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
 
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
+            _root.Q<Button>("RecenterXR").RegisterCallback<ClickEvent>(OnRecenterXRButtonClicked);
             
             _imageProgressBar = _root.Q<ProgressBar>("ImageSaveProgress");
 
@@ -84,6 +85,11 @@ namespace EditorUI
         private static void OnStartStopButtonClicked(ClickEvent evt)
         {
             GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+        }
+        
+        private static void OnRecenterXRButtonClicked(ClickEvent evt)
+        {
+            GameManager.Instance.RecenterXR();
         }
 
         private void CreateLevelDropdown()
