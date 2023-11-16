@@ -31,7 +31,6 @@ namespace Manager
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
         }
@@ -41,7 +40,6 @@ namespace Manager
             // Unsubscribe from game event notifications
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
         }
@@ -104,8 +102,6 @@ namespace Manager
         }
 
         private void OnLevelFinishedCallback() => LevelFinished();
-
-        private void OnLevelStoppedCallback() => LevelFinished();
 
         /// <summary>
         /// Callback for when the level stops, stops the music and plays the stop sound.

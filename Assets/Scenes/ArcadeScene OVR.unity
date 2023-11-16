@@ -512,6 +512,74 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2038541021 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+  m_PrefabInstance: {fileID: 4788709425719443576}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2038541023
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038541021}
+  m_Material: {fileID: 13400000, guid: 7d47ccc0edf7fb4479abdc84d0d3d590, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.007744239, y: 0.017653631, z: 0.0020000413}
+  m_Center: {x: 1.654361e-27, y: -0.008826793, z: -0.0009999997}
+--- !u!65 &2038541026
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038541021}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0003726664, y: 0.01765363, z: 0.0024104556}
+  m_Center: {x: -0.004028606, y: -0.008826791, z: -0.0007947921}
+--- !u!65 &2038541027
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038541021}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0003726664, y: 0.01765363, z: 0.0024104556}
+  m_Center: {x: 0.004028606, y: -0.008826791, z: -0.0007947921}
 --- !u!114 &2074340241 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6665603257676788887, guid: 95f1628e965c07d49831c7afd78c015a, type: 3}
@@ -1369,6 +1437,14 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 5307447101361939414, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -1393,6 +1469,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 6410230131516641750, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6816131989183975285, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -1404,6 +1484,10 @@ PrefabInstance:
     - target: {fileID: 6905348691882147046, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       propertyPath: m_StaticShadowCaster
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757178891258603928, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      propertyPath: m_Convex
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7981754766892843098, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1437,6 +1521,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -25
       objectReference: {fileID: 0}
+    - target: {fileID: 8299432098569834717, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9035109385781941192, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -1451,6 +1539,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7260443786703808859}
+    - targetCorrespondingSourceObject: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038541023}
+    - targetCorrespondingSourceObject: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038541027}
+    - targetCorrespondingSourceObject: {fileID: 4977265747622532924, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2038541026}
   m_SourcePrefab: {fileID: 100100000, guid: 24f79eb0d5821454ea777429db180ec1, type: 3}
 --- !u!114 &4830751807641050409
 MonoBehaviour:
@@ -1596,7 +1693,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1712,7 +1809,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1826,6 +1923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PreventGameStartWithoutUserID: 0
+  LogFaceExpressions: 0
   XROrigin: {fileID: 2074340241}
   ActionArea: {fileID: 7366368310148965485}
 --- !u!82 &6789293080834746437

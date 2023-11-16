@@ -25,7 +25,7 @@ public class EmoteSpawner : MonoBehaviour
     private void OnEnable()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
-        EventManager.OnLevelStopped += OnLevelStoppedCallback;
+        EventManager.OnLevelFinished += OnLevelFinishedCallback;
         EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
         EventManager.OnEmoteFailed += OnEmoteFailedCallback;
     }
@@ -33,7 +33,7 @@ public class EmoteSpawner : MonoBehaviour
     private void OnDisable()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
-        EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+        EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
     }
@@ -139,7 +139,7 @@ public class EmoteSpawner : MonoBehaviour
     /// <summary>
     /// Stop spawning emotes when the level stops.
     /// </summary>
-    private void OnLevelStoppedCallback() => StopSpawning();
+    private void OnLevelFinishedCallback() => StopSpawning();
     
     /// <summary>
     /// Ensure that spawning is stopped when this object is destroyed.

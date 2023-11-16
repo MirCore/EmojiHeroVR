@@ -17,7 +17,7 @@ namespace States.Game
         /// </summary>
         public override void EnterState()
         {
-            Time.timeScale = 1;
+            GameManager.Instance.RestartTimeScale();
             EventManager.InvokeLevelStopped();
         }
 

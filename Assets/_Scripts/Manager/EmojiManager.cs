@@ -74,13 +74,13 @@ namespace Manager
                 StartCoroutine(DespawnTimer());
             
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
         }
 
         private void OnDisable()
         {
             EventManager.OnEmotionDetected -= OnEmotionDetectedCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         }
 
         private void Update()
@@ -107,9 +107,10 @@ namespace Manager
         private void OnEmotionDetectedCallback(EEmote emote) => _emojiState.OnEmotionDetectedCallback(this, emote);
 
         // Callback for level stopped event.
-        private void OnLevelStoppedCallback()
+        // ReSharper disable Unity.PerformanceAnalysis
+        private void OnLevelFinishedCallback()
         {
-            FadeOut();
+            _emojiState.Despawn(this);
         }
 
         private void OnTriggerEnter(Collider other) => _emojiState.OnTriggerEnter(other, this);
@@ -145,7 +146,7 @@ namespace Manager
                 Rigidbody.isKinematic = false;
                 
                 // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
-                Rigidbody.velocity = - _movementSpeed + GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.1f, 0.1f);
+                Rigidbody.velocity = - _movementSpeed + GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.05f, 0.05f);
                 
                 yield return StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             }

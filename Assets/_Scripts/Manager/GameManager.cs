@@ -40,6 +40,7 @@ namespace Manager
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
         public bool IsPlayingLevel => _gameState == PlayingLevelState;
+        private Coroutine _timescaleCoroutine;
 
         // Scoring
         internal const int BaseScoreForCompletion = 50;
@@ -133,7 +134,12 @@ namespace Manager
         /// <summary>
         /// Stops the game's time scale, effectively pausing in-game action.
         /// </summary>
-        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 2f));
+        public void StopTimeScale()
+        {
+            if (_timescaleCoroutine != null)
+                StopCoroutine(_timescaleCoroutine);
+            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 2f));
+        }
 
         /// <summary>
         /// Sets a new level for the game and the EditorUI.
@@ -157,6 +163,13 @@ namespace Manager
         {
             XROrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
             XROrigin.MoveCameraToWorldLocation(new Vector3(0, XROrigin.CameraInOriginSpaceHeight, 0));
+        }
+
+        public void RestartTimeScale()
+        {
+            if (_timescaleCoroutine != null)
+                StopCoroutine(_timescaleCoroutine);
+            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(0, 1, 1f));
         }
     }
 }

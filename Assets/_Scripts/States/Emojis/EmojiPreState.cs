@@ -90,7 +90,7 @@ namespace States.Emojis
 
         public override void Despawn(EmojiManager emojiManager)
         {
-            Debug.Log("NotImplementedException");
+            emojiManager.SwitchState(emojiManager.LeavingState);
         }
 
         /// <summary>
