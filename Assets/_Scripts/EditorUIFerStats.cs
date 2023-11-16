@@ -6,6 +6,7 @@ using UnityEngine;
 using Utilities;
 
 [SuppressMessage("ReSharper", "NotAccessedField.Global")]
+// Must be of type MonoBehaviour for Editor UI binding functionality
 public class EditorUIFerStats : Singleton<EditorUIFerStats>
 {
     // Time of the last REST POST request

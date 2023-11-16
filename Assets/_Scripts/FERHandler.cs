@@ -18,7 +18,7 @@ public class FerHandler : MonoBehaviour
     // Reference to the WebcamManager component, used for capturing images for FER.
     [FormerlySerializedAs("Webcam")] [SerializeField] private WebcamManager WebcamManager;
     
-    [SerializeField] private FaceExpressionLogger FaceExpressionLogger;
+    private FaceExpressionHandler _faceExpressionHandler;
     
     /// <summary>Flag to determine if facial emotion recognition should be done periodically.</summary>
     // If true, images are sent for FER processing at regular intervals. If false, images are sent on specific events.
@@ -29,6 +29,7 @@ public class FerHandler : MonoBehaviour
 
     private void Start()
     {
+        _faceExpressionHandler = new FaceExpressionHandler();
         EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
     }
 
@@ -104,7 +105,7 @@ public class FerHandler : MonoBehaviour
             EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
             EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            FaceExpressions = FaceExpressionLogger.GetFaceExpressionsAsJson()
+            FaceExpressions = _faceExpressionHandler.GetFaceExpressionsAsJson()
         };
         
         // Convert the captured image to base64 format.

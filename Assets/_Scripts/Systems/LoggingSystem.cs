@@ -123,7 +123,7 @@ namespace Systems
                 // Write each FaceExpression to a json file.
                 try
                 {
-                    if (logData.FaceExpressions != "")
+                    if (logData.FaceExpressions != null)
                         WriteFaceExpressionJson(logData);
                 }
                 catch (Exception ex)

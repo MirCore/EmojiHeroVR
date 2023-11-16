@@ -49,6 +49,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
   RequestedCameraWidth: 1280
   RequestedCameraHeight: 720
+  TargetSnapshotFPS: 30
 --- !u!1 &2531051017718116015
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23d4246d7dfcdcd4fbbe168f1aac7c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LogTrainingLevel: 0
 --- !u!114 &3395366893480398949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +156,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WebcamManager: {fileID: 1076769572553907979}
-  FaceExpressionLogger: {fileID: 2090196790098961963}
   PeriodicalFerMode: 1
 --- !u!114 &1630000183954767945
 MonoBehaviour:
@@ -172,6 +173,7 @@ MonoBehaviour:
   TotalPosts: 0
   CurrentTimeBetweenPosts: 0
   CurrentPostsFPS: 0
+  SnapshotFPS: 0
 --- !u!1 &3900504359128329765
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,6 +224,8 @@ MonoBehaviour:
   SuccessSound: {fileID: 8300000, guid: 28e6e4e5f18efc84cb8d75c76f8606a6, type: 3}
   LevelStartSound: {fileID: 8300000, guid: ded92363fa5850545b516a9d468d041c, type: 3}
   LevelStoppedSound: {fileID: 8300000, guid: ed3992a02cd409e4d907a9582ebc63be, type: 3}
+  MusicClips: []
+  PlayMusicClips: 0
 --- !u!1 &6020644305432894672
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,8 +273,6 @@ MonoBehaviour:
   PreparingUI: {fileID: 0}
   LevelPlayingUI: {fileID: 0}
   LevelEndScreenUI: {fileID: 0}
-  LevelUI: {fileID: 0}
-  LevelPrefab: {fileID: 2235702434093064232, guid: 1f1174da510489a4caf50c8391613e2d, type: 3}
   LevelNameField:
   - {fileID: 0}
   - {fileID: 0}
@@ -281,6 +283,8 @@ MonoBehaviour:
   ScoreField:
   - {fileID: 0}
   - {fileID: 0}
+  DetailedEmojiScoreField: {fileID: 0}
+  DetailedTimeScoreField: {fileID: 0}
 --- !u!1 &6049302487403350158
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,52 +361,7 @@ Transform:
   - {fileID: 4526790046406843153}
   - {fileID: 4167353075214403249}
   - {fileID: 8241465673698539333}
-  - {fileID: 5664225375910694061}
   - {fileID: 6758178698428389844}
   - {fileID: 567764710821786383}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &9051759366678697350
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5664225375910694061}
-  - component: {fileID: 2090196790098961963}
-  m_Layer: 0
-  m_Name: OVRFaceExpression
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5664225375910694061
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9051759366678697350}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 420253182343510322}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2090196790098961963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9051759366678697350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b867ff1448cc43e098b92b8db9da2c91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
