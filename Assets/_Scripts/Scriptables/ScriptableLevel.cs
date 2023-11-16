@@ -15,7 +15,7 @@ namespace Scriptables
     public class ScriptableLevel : ScriptableObject
     {
         // The struct holding all necessary data to configure a level.
-        public LevelStruct LevelStruct;
+        public LevelStruct LevelStruct = new();
         
         // Flag to determine whether to generate a new level file.
         public bool GenerateNewLevelFile = true;
@@ -28,9 +28,6 @@ namespace Scriptables
         /// </summary>
         private void OnEnable()
         {
-            // Combine directory, subdirectory, and file name to create the complete file path.
-            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
-            
             // Check whether to generate a new level file or load an existing one.
             if (GenerateNewLevelFile)
                 GenerateNewLevelSaveFile();
@@ -52,6 +49,9 @@ namespace Scriptables
         /// </summary>
         private void LoadLevel()
         {
+            // Combine directory, subdirectory, and file name to create the complete file path.
+            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
+            
             // Check if the level file exists, log a message and generate a new one if it does not.
             if (!File.Exists(_filePath))
             {
@@ -77,6 +77,9 @@ namespace Scriptables
         /// </summary>
         private void GenerateNewLevelSaveFile()
         {
+            // Combine directory, subdirectory, and file name to create the complete file path.
+            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
+            
             // Set the flag to false as we are generating a new level file.
             GenerateNewLevelFile = false;
             

@@ -23,13 +23,13 @@ namespace States.Emojis
             // Set the Emoji's Rigidbody to be kinematic and reset its rotation.
             emojiManager.Rigidbody.isKinematic = true;
             emojiManager.transform.rotation = Quaternion.identity;
-            
+
             // Determine and set the current Emoji's emotion.
             GetEmote(emojiManager);
-            
+
             // Set the Emoji's title text based on its emotion.
             emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
-            
+
             // Initialize the Emoji's visual elements.
             SetEmojiTextures(emojiManager);
         }
@@ -42,27 +42,18 @@ namespace States.Emojis
         {
             LevelStruct level = GameManager.Instance.Level;
 
-            if (level.LevelMode != ELevelMode.Predefined && level.EmoteArray.Length == 0)
-            {
-                // get random Emote if level is not of type Predefined
-                emojiManager.Emote = (EEmote)Random.Range(1, Enum.GetValues(typeof(EEmote)).Length - 1);
-            }
+            int emoteIndex = level.EmoteArray.Length > 0
+                    // Get the next emotion from the predefined list, based on already spawned emojis.
+                    ? level.EmoteArray[GameManager.Instance.LevelProgress.SpawnedEmotesCount % level.EmoteArray.Length]
+                    // get random Emote if no predefined list exists. -2 to compensate default enum.
+                    : Random.Range(0, Enum.GetValues(typeof(EEmote)).Length - 2);
+
+            if (level.Emotes.Any())
+                // If a custom Emote list is set, use it.
+                emojiManager.Emote = level.Emotes[emoteIndex % level.Emotes.Count];
             else
-            {
-                // Get the emotion from the predefined list or enum.
-                int emoteIndex = level.EmoteArray[GameManager.Instance.LevelProgress.SpawnedEmotesCount % level.EmoteArray.Length];
-                
-                if (level.Emotes.Any())
-                {
-                    // If a custom Emote list is set, use it.
-                    emojiManager.Emote = level.Emotes[emoteIndex];
-                }
-                else
-                {
-                    // Otherwise, use the EEmote enum.
-                    emojiManager.Emote = (EEmote)(emoteIndex + 1);
-                }
-            }
+                // Otherwise, use the EEmote enum. + 1 to compensate default enum.
+                emojiManager.Emote = (EEmote)(emoteIndex + 1);
         }
 
         public override void Update(EmojiManager emojiManager)
@@ -105,7 +96,7 @@ namespace States.Emojis
         {
             // Get the texture for the current Emoji's emotion.
             Texture texture = ResourceSystem.EmojiTextures[emojiManager.Emote];
-            
+
             // Set the Emoji's material properties.
             emojiManager.EmojiMaterial.SetTexture(emojiManager.Sprite, texture);
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0);

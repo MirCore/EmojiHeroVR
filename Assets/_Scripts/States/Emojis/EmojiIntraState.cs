@@ -31,7 +31,7 @@ namespace States.Emojis
 
         public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
-            Debug.Log("NotImplementedException");
+            // Not needed for this state.
         }
 
         public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
