@@ -16,7 +16,7 @@ MonoBehaviour:
     LevelName: Level 1
     LevelMode: 2
     MovementSpeed: 0.3
-    SpawnInterval: 2.5
+    SpawnInterval: 3
     Count: 0
     Emotes: 050000000200000006000000
     EmoteRepeatAmount: 3
