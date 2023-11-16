@@ -54,6 +54,7 @@ namespace Manager
             
             EventManager.OnEmoteEnteredWebcamArea += EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea += EmoteExitedWebcamAreaCallback;
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
         }
 
         private void OnDestroy()
@@ -67,6 +68,13 @@ namespace Manager
             
             EventManager.OnEmoteEnteredWebcamArea -= EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea -= EmoteExitedWebcamAreaCallback;
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+        }
+
+        private void OnLevelStoppedCallback()
+        {
+            _emotesInWebcamArea.Clear();
+            StopCoroutine(_coroutine);
         }
 
         private void EmoteEnteredWebcamAreaCallback(EEmote emote)

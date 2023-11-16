@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1028143883227370422}
-  m_IndirectSpecularColor: {r: 0.284865, g: 0.5428333, b: 0.7179513, a: 1}
+  m_IndirectSpecularColor: {r: 0.2848603, g: 0.5428256, b: 0.7179429, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
   RequestedCameraWidth: 1280
   RequestedCameraHeight: 720
-  TargetSnapshotFPS: 30
+  TargetSnapshotFPS: 10
 --- !u!1001 &4788709425719443576
 PrefabInstance:
   m_ObjectHideFlags: 0

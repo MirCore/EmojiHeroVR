@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Training-Neutral
   m_EditorClassIdentifier: 
   LevelStruct:
-    LevelName: 
-    LevelMode: 0
+    LevelName: Training (Neutral)
+    LevelMode: 1
     MovementSpeed: 0
     SpawnInterval: 0
     Count: 0
-    Emotes: 
+    Emotes: 01000000
     EmoteRepeatAmount: 0
     EmoteArray: 
-  GenerateNewLevelFile: 1
+  GenerateNewLevelFile: 0
