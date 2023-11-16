@@ -54,7 +54,7 @@ namespace Manager
             
             EventManager.OnEmoteEnteredWebcamArea += EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea += EmoteExitedWebcamAreaCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
         }
 
         private void OnDestroy()
@@ -68,10 +68,10 @@ namespace Manager
             
             EventManager.OnEmoteEnteredWebcamArea -= EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea -= EmoteExitedWebcamAreaCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         }
 
-        private void OnLevelStoppedCallback()
+        private void OnLevelFinishedCallback()
         {
             _emotesInWebcamArea.Clear();
 
@@ -89,7 +89,9 @@ namespace Manager
         }
 
         private void EmoteEnteredWebcamAreaCallback(EEmote emote)
-        {            
+        {      
+            if (!GameManager.Instance.IsPlayingLevel)
+                return;
             // Add the emote to the tracking list and start the snapshot coroutine if not already running.
             _emotesInWebcamArea.Add(emote);
             _coroutine ??= StartCoroutine(TakeSnapshotCoroutine());
@@ -97,6 +99,8 @@ namespace Manager
 
         private void EmoteExitedWebcamAreaCallback(EEmote emote)
         {
+            if (!GameManager.Instance.IsPlayingLevel)
+                return;
             // Remove the emote from the tracking list.
             _emotesInWebcamArea.Remove(emote);
         }

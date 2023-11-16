@@ -79,7 +79,10 @@ namespace EditorUI
 
         private static void OnStartStopButtonClicked(ClickEvent evt)
         {
-            GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+            if (!EditorApplication.isPlaying)
+                EditorApplication.EnterPlaymode();
+            else
+                GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
         }
         
         private static void OnRecenterXRButtonClicked(ClickEvent evt)

@@ -86,11 +86,10 @@ public class FerHandler : MonoBehaviour
     {
         Snapshot snapshot = WebcamManager.GetSnapshot();
         
-        while (snapshot?.Timestamp == null)
+        while (snapshot == null)
         {
             yield return null;
             snapshot = WebcamManager.GetSnapshot();
-            Debug.Log(snapshot?.Timestamp);
         }
         
         // Initialize log data for the current FER process.

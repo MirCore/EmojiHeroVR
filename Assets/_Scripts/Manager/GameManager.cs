@@ -39,7 +39,8 @@ namespace Manager
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
-        
+        public bool IsPlayingLevel => _gameState == PlayingLevelState;
+
         // Scoring
         internal const int BaseScoreForCompletion = 50;
         internal const int ScoreMultiplier = 10;
@@ -140,8 +141,9 @@ namespace Manager
         /// <param name="level">The new level to set.</param>
         public void SetNewLevel(ScriptableLevel level)
         {
-            _level = level;
-            EditorUI.EditorUI.Instance.SetNewLevel(level);
+            if (!IsPlayingLevel)
+                _level = level;
+            EditorUI.EditorUI.Instance.SetNewLevel(_level);
         }
         
         /// <summary>

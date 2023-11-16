@@ -59,7 +59,6 @@ namespace Systems
         {
             yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
             
-            
             Texture2D texture = new (WebcamManager.WebcamWidth, WebcamManager.WebcamHeight);
             
             // Continue until all snapshots is processed.
@@ -230,6 +229,11 @@ namespace Systems
                 _snapshots.Add(value);
                 EditorUI.EditorUI.Instance.UpdateImageBacklog(_snapshots.Count);
             }
+        }
+
+        public bool FinishedSaving()
+        {
+            return !_snapshots.Any();
         }
     }
 }
