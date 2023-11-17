@@ -195,6 +195,7 @@ namespace Manager
                 LevelID =  GameManager.Instance.Level.LevelName,
                 LevelMode = GameManager.Instance.Level.LevelMode,
                 EmoteEmoji = EmotesInWebcamArea.FirstOrDefault(),
+                EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
                 ImageTextures = new List<Color32[]>(),
             };
         

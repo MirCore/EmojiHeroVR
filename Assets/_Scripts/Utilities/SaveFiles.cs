@@ -97,5 +97,28 @@ namespace Utilities
             }
         }
 
+        public static void AppendLineToCsv(string dirPath, string fileName, string data)
+        {
+            // Combine the directory path and file name to get the full file path
+            string filePath = Path.Combine(dirPath, fileName);
+            
+            // Create the directory if it doesn't exist
+            if(!Directory.Exists(dirPath)) 
+                Directory.CreateDirectory(dirPath);
+            
+            try
+            {
+                // Create or append to the CSV file
+                using StreamWriter writer = new (filePath, true);
+                    
+                // Write the CSV line to the file
+                writer.WriteLine(data);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Failed to append data to CSV file {fileName}: {e}");
+                throw;
+            }
+        }
     }
 }

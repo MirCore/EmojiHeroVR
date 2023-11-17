@@ -75,7 +75,7 @@ namespace Systems
                 if (snapshot != null && (LogTrainingLevel || snapshot.LevelMode != ELevelMode.Training))
                 {
                     // Construct the path for saving the image
-                    string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, snapshot.EmoteEmoji.ToString());
+                    string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, $"{snapshot.EmoteID}-{snapshot.EmoteEmoji}");
 
                     for (int i = 0; i < snapshot.ImageTextures.Count; i++)
                     {
@@ -147,7 +147,7 @@ namespace Systems
             try
             {
                 // Append the data as a line to the log CSV file
-                SaveFiles.WriteFile(_dirPathWithUserID, FaceExpressionCsvFileName, faceExpressionCsvString);
+                SaveFiles.AppendLineToCsv(_dirPathWithUserID, FaceExpressionCsvFileName, faceExpressionCsvString);
             }
             catch (Exception ex)
             {
