@@ -29,7 +29,7 @@ namespace Manager
         [SerializeField] private int TargetSnapshotFPS = 30;
 
         // A list that tracks which emotes are currently in the webcam area.
-        private readonly List<EEmote> _emotesInWebcamArea = new();
+        private static readonly List<EEmote> _emotesInWebcamArea = new();
 
         // A texture for processing the webcam image.
         private static Texture2D _texture;
@@ -192,7 +192,7 @@ namespace Manager
                 Timestamp = LoggingSystem.GetUnixTimestamp(),
                 LevelID =  GameManager.Instance.Level.LevelName,
                 LevelMode = GameManager.Instance.Level.LevelMode,
-                EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
+                EmoteEmoji = _emotesInWebcamArea.FirstOrDefault(),
                 ImageTextures = new List<Color32[]>(),
             };
         
