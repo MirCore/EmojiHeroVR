@@ -29,7 +29,7 @@ namespace Manager
         [SerializeField] private int TargetSnapshotFPS = 30;
 
         // A list that tracks which emotes are currently in the webcam area.
-        private static readonly List<EEmote> _emotesInWebcamArea = new();
+        private static readonly List<EEmote> EmotesInWebcamArea = new();
 
         // A texture for processing the webcam image.
         private static Texture2D _texture;
@@ -37,8 +37,10 @@ namespace Manager
         // Accessors for webcam width and height.
         public static int WebcamWidth => Webcams[0].width;
         public static int WebcamHeight => Webcams[0].height;
-        
-        
+        public static EEmote EmoteInWebcamArea => EmotesInWebcamArea.FirstOrDefault();
+        public static bool EmoteIsInWebcamArea => EmotesInWebcamArea.Any();
+
+
         // A reference to the coroutine that takes continuous snapshots.
         private Coroutine _coroutine;
 
@@ -73,7 +75,7 @@ namespace Manager
 
         private void OnLevelFinishedCallback()
         {
-            _emotesInWebcamArea.Clear();
+            EmotesInWebcamArea.Clear();
 
             StopCoroutine();
 
@@ -93,7 +95,7 @@ namespace Manager
             if (!GameManager.Instance.IsPlayingLevel)
                 return;
             // Add the emote to the tracking list and start the snapshot coroutine if not already running.
-            _emotesInWebcamArea.Add(emote);
+            EmotesInWebcamArea.Add(emote);
             _coroutine ??= StartCoroutine(TakeSnapshotCoroutine());
         }
 
@@ -102,7 +104,7 @@ namespace Manager
             if (!GameManager.Instance.IsPlayingLevel)
                 return;
             // Remove the emote from the tracking list.
-            _emotesInWebcamArea.Remove(emote);
+            EmotesInWebcamArea.Remove(emote);
         }
 
         private void Update()
@@ -157,7 +159,7 @@ namespace Manager
 
             int count = 0;
             
-            while (_emotesInWebcamArea.Any())
+            while (EmotesInWebcamArea.Any())
             {
                 TakeSnapshots();
                 count++;
@@ -192,7 +194,7 @@ namespace Manager
                 Timestamp = LoggingSystem.GetUnixTimestamp(),
                 LevelID =  GameManager.Instance.Level.LevelName,
                 LevelMode = GameManager.Instance.Level.LevelMode,
-                EmoteEmoji = _emotesInWebcamArea.FirstOrDefault(),
+                EmoteEmoji = EmotesInWebcamArea.FirstOrDefault(),
                 ImageTextures = new List<Color32[]>(),
             };
         

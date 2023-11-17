@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using Enums;
-using UnityEngine;
 
 namespace Data
 {
-    /// <summary>
-    /// Represents the data to be logged for a single webcam snapshot.
-    /// </summary>
-    public class Snapshot
+    public class FaceExpression
     {
         /// <summary>
         /// Gets or sets the timestamp (same as timestamp.png)
@@ -20,9 +16,9 @@ namespace Data
         public string LevelID;
      
         /// <summary>
-        /// Gets or sets the level mode.
+        /// Gets or sets the ID of the Emote in the level sequence.
         /// </summary>
-        public ELevelMode LevelMode;
+        public int EmoteID;
      
         /// <summary>
         /// Gets or sets the emote to imitate.
@@ -32,6 +28,6 @@ namespace Data
         /// <summary>
         /// Gets or sets the webcam images.
         /// </summary>
-        public List<Color32[]> ImageTextures;
+        public string FaceExpressionJson;
     }
 }
