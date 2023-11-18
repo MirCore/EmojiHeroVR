@@ -28,7 +28,7 @@ namespace States.Emojis
             GetEmote(emojiManager);
 
             // Set the Emoji's title text based on its emotion.
-            emojiManager.EmoteTitle.text = emojiManager.Emote.ToString();
+            emojiManager.EmoteTitle.text = emojiManager.Emoji.Emote.ToString();
 
             // Initialize the Emoji's visual elements.
             SetEmojiTextures(emojiManager);
@@ -48,19 +48,12 @@ namespace States.Emojis
                     // get random Emote if no predefined list exists. -2 to compensate default enum.
                     : Random.Range(0, Enum.GetValues(typeof(EEmote)).Length - 2);
 
-            if (level.Emotes.Any())
-                // If a custom Emote list is set, use it.
-                emojiManager.Emote = level.Emotes[emoteIndex % level.Emotes.Count];
-            else
-                // Otherwise, use the EEmote enum. + 1 to compensate default enum.
-                emojiManager.Emote = (EEmote)(emoteIndex + 1);
-
             emojiManager.Emoji = new Emoji
             {
-                Emote = emojiManager.Emote,
+                // If a custom Emote list is set, use it. Otherwise, use the EEmote enum. + 1 to compensate default enum.
+                Emote = level.Emotes.Any() ? level.Emotes[emoteIndex % level.Emotes.Count] : emojiManager.Emoji.Emote = (EEmote)(emoteIndex + 1),
                 EmoteID = GameManager.Instance.LevelProgress.SpawnedEmotesCount
             };
-
         }
 
         public override void Update(EmojiManager emojiManager)
@@ -107,7 +100,7 @@ namespace States.Emojis
         private static void SetEmojiTextures(EmojiManager emojiManager)
         {
             // Get the texture for the current Emoji's emotion.
-            Texture texture = ResourceSystem.EmojiTextures[emojiManager.Emote];
+            Texture texture = ResourceSystem.EmojiTextures[emojiManager.Emoji.Emote];
 
             // Set the Emoji's material properties.
             emojiManager.EmojiMaterial.SetTexture(emojiManager.Sprite, texture);

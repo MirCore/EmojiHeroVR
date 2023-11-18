@@ -25,7 +25,6 @@ namespace Manager
         internal readonly EmojiLeavingState LeavingState = new();
     
         // Serialized fields for Unity inspector assignment.
-        [SerializeField] internal EEmote Emote;
         [SerializeField] private Renderer EmojiRenderer;
         [SerializeField] internal Animator EmojiAnimator;
         [SerializeField] internal TMP_Text EmoteTitle;
