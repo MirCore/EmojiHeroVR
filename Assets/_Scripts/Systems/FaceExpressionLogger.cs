@@ -50,7 +50,7 @@ namespace Systems
             
             while (GameManager.Instance.IsPlayingLevel)
             {
-                while (!WebcamManager.EmoteIsInWebcamArea)
+                while (!WebcamManager.EmojiIsInWebcamArea)
                 {
                     nextPostTime = Time.realtimeSinceStartup + interval;
                     yield return null;
@@ -60,8 +60,7 @@ namespace Systems
                 {
                     Timestamp = LoggingSystem.GetUnixTimestamp(),
                     LevelID = GameManager.Instance.Level.LevelName,
-                    EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
-                    EmoteEmoji = WebcamManager.EmoteInWebcamArea,
+                    Emoji = WebcamManager.EmojiInWebcamArea,
                     FaceExpressionJson = _faceExpressionHandler.GetFaceExpressionsAsJson()
                 };
 

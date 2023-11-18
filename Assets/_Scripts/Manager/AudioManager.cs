@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using UnityEngine;
+using Utilities;
 
 namespace Manager
 {
@@ -122,7 +123,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote is successfully fulfilled, plays the success sound.
         /// </summary>
-        private void OnEmoteFulfilledCallback(EEmote emote, float score)
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
         {
             // Play success sound
             PlaySoundEffect(SuccessSound);
@@ -131,7 +132,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote imitation fails, plays the fail sound.
         /// </summary>
-        private void OnEmoteFailedCallback(EEmote emote)
+        private void OnEmoteFailedCallback(Emoji emoji)
         {
             if (!_levelPlaying)
                 return;

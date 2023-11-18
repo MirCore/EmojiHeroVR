@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -70,12 +71,12 @@ public class EmoteSpawner : MonoBehaviour
     /// <summary>
     /// Spawn a new emote in Training mode when the previous one is failed.
     /// </summary>
-    private void OnEmoteFailedCallback(EEmote obj) => SpawnTrainingEmote();
+    private void OnEmoteFailedCallback(Emoji emoji) => SpawnTrainingEmote();
 
     /// <summary>
     /// Spawn a new emote in Training mode when the previous one is fulfilled.
     /// </summary>
-    private void OnEmoteFulfilledCallback(EEmote emote, float score) => SpawnTrainingEmote();
+    private void OnEmoteFulfilledCallback(Emoji emoji, float score) => SpawnTrainingEmote();
 
     private void SpawnTrainingEmote()
     {

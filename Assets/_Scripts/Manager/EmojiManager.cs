@@ -51,6 +51,8 @@ namespace Manager
         // Spawn time for Training level mode
         private DateTime _spawnTime;
 
+        internal Emoji Emoji;
+
 
         private void Awake()
         {

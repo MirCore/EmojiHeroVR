@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Enums;
 using UnityEngine;
+using Utilities;
 
 namespace Data
 {
@@ -23,16 +24,11 @@ namespace Data
         /// Gets or sets the level mode.
         /// </summary>
         public ELevelMode LevelMode;
-     
-        /// <summary>
-        /// Gets or sets the emote to imitate.
-        /// </summary>
-        public EEmote EmoteEmoji;
         
         /// <summary>
         /// Gets or sets the ID of the Emote in the level sequence.
         /// </summary>
-        public int EmoteID;
+        public Emoji Emoji;
      
         /// <summary>
         /// Gets or sets the webcam images.

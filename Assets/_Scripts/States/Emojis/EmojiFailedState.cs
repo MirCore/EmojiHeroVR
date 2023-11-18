@@ -1,6 +1,7 @@
 ﻿using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 namespace States.Emojis
 {
@@ -20,10 +21,10 @@ namespace States.Emojis
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0.5f);
             
             // Notify other systems that the Emoji has exited the Action Area.
-            EventManager.InvokeEmoteExitedActionArea(emojiManager.Emote);
+            EventManager.InvokeEmoteExitedActionArea(emojiManager.Emoji);
             
             // Notify other systems that the Emoji has failed to be matched.
-            EventManager.InvokeEmoteFailed(emojiManager.Emote);
+            EventManager.InvokeEmoteFailed(emojiManager.Emoji);
             
             // Play the failure animation.
             emojiManager.EmojiAnimator.Play("EmojiFail");

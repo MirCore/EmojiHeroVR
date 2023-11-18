@@ -1,6 +1,7 @@
 ﻿using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 namespace States.Emojis
 {
@@ -17,7 +18,7 @@ namespace States.Emojis
         public override void EnterState(EmojiManager emojiManager)
         {
             // Notify other systems, mainly the FER Handler that an Emoji has entered the Action Area.
-            EventManager.InvokeEmoteEnteredActionArea(emojiManager.Emote);
+            EventManager.InvokeEmoteEnteredActionArea(emojiManager.Emoji);
             
             // Calculate the time the Emoji has left in the Action Area based on the movement speed and area size. Used for the score.
             emojiManager.ActionAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.MovementSpeed;
@@ -32,7 +33,7 @@ namespace States.Emojis
         public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             if (collider.CompareTag("WebcamArea"))
-                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emote);
+                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emoji);
         }
 
         public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
@@ -41,13 +42,13 @@ namespace States.Emojis
                 // If the Emoji exits the Action Area without successful reenactment, switch to FailedState.
                 emojiManager.SwitchState(emojiManager.FailedState);
             else if (collider.CompareTag("WebcamArea"))
-                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emote);
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emoji);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
         {
             // If the detected emotion matches the Emoji's emotion, switch to FulfilledState.
-            if (emote == emojiManager.Emote)
+            if (emote == emojiManager.Emoji.Emote)
                 emojiManager.SwitchState(emojiManager.FulfilledState);
         }
 

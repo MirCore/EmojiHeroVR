@@ -17,7 +17,7 @@ namespace Systems
     public class LoggingSystem : Singleton<LoggingSystem>
     {
         [SerializeField] internal bool LogTrainingLevel;
-        
+
         private const string CsvFileName = "labels.csv"; // The name of the log file
         private const string FaceExpressionCsvFileName = "faceexpressions.csv"; // The name of the log file
         private string _dirPathWithUserID; // The full directory path where the log file will be stored
@@ -25,11 +25,12 @@ namespace Systems
         private readonly List<LogData> _logDataList = new(); // A list to store log data temporarily.
         private readonly List<Snapshot> _snapshots = new(); // A list to store log data temporarily.
         private readonly List<FaceExpression> _faceExpressions = new();
-        
+
         private void OnEnable()
         {
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
         }
+
         private void OnDisable()
         {
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
@@ -42,20 +43,20 @@ namespace Systems
             {
                 // Get the user ID from the EditorUI instance.
                 string userID = EditorUI.EditorUI.Instance.UserID;
-                
+
                 // Set the directory path where log files and images will be stored.
                 _dirPathWithUserID = Path.Combine(Application.dataPath + "/../SaveFiles/", userID);
 
                 // Create the CSV headers for the log file.
                 CreateCsvHeaders();
             }
-            
+
             // Write log data to the CSV file when a level is finished.
             WriteLog();
-            
+
             // Write FaceExpressions to a CSV file.
             WriteFaceExpressions();
-            
+
             // Start coroutine to write all images post play.
             StartCoroutine(WriteImages());
         }
@@ -63,22 +64,22 @@ namespace Systems
         private IEnumerator WriteImages()
         {
             yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
-            
-            Texture2D texture = new (WebcamManager.WebcamWidth, WebcamManager.WebcamHeight);
-            
+
+            Texture2D texture = new(WebcamManager.WebcamWidth, WebcamManager.WebcamHeight);
+
             // Continue until all snapshots is processed.
             while (_snapshots.Any())
             {
                 // Get the first snapshot from the list.
                 Snapshot snapshot = _snapshots.FirstOrDefault();
-                
+
                 if (snapshot != null && (LogTrainingLevel || snapshot.LevelMode != ELevelMode.Training))
                 {
                     // Construct the path for saving the image
-                    string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID, $"{snapshot.EmoteID}-{snapshot.EmoteEmoji}");
+                    string path = Path.Combine(_dirPathWithUserID, snapshot.LevelID,
+                        $"{snapshot.Emoji.EmoteID}-{snapshot.Emoji.Emote}");
 
                     for (int i = 0; i < snapshot.ImageTextures.Count; i++)
-                    {
                         try
                         {
                             // Convert Pixels to an image
@@ -98,42 +99,30 @@ namespace Systems
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogError($"Failed to save image for logData with LevelID: {snapshot.LevelID}. Exception: {ex}");
+                            Debug.LogError(
+                                $"Failed to save image for logData with LevelID: {snapshot.LevelID}. Exception: {ex}");
                         }
-                    }
                 }
-                
+
                 // Remove the processed snapshot from the list.
                 _snapshots.Remove(snapshot);
-                
+
                 yield return null; // Wait for the next frame.
             }
         }
 
         private void WriteLog()
         {
-            foreach (LogData logData in _logDataList)
-            {
-                // Write each log data to the CSV file.
-                try
-                {
-                    WriteLogLine(logData);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
-                }
+            string logDataCsvString = _logDataList.Aggregate("", (current, logData) => current + $"{GetLogDataString(logData)}\n");
 
-                // Write each FaceExpression to a json file.
-                try
-                {
-                    if (logData.FaceExpressions != null)
-                        WriteFaceExpressionJson(logData);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"Failed to write log for logData with LevelID: {logData.LevelID}. Exception: {ex}");
-                }
+            try
+            {
+                // Append the data as a line to the log CSV file
+                SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, logDataCsvString);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to write log for faceExpression. Exception: {ex}");
             }
 
             _logDataList.Clear();
@@ -141,7 +130,8 @@ namespace Systems
 
         private void WriteFaceExpressions()
         {
-            string faceExpressionCsvString = _faceExpressions.Aggregate("", (current, faceExpression) => current + $"{GetFaceExpressionString(faceExpression)}\n");
+            string faceExpressionCsvString = _faceExpressions.Aggregate("",
+                (current, faceExpression) => current + $"{GetFaceExpressionString(faceExpression)}\n");
 
             // Write to the CSV file.
             try
@@ -164,39 +154,28 @@ namespace Systems
             {
                 faceExpression.Timestamp,
                 faceExpression.LevelID,
-                faceExpression.EmoteID.ToString(),
-                faceExpression.EmoteEmoji.ToString(),
-                faceExpression.FaceExpressionJson,
+                faceExpression.Emoji.EmoteID.ToString(),
+                faceExpression.Emoji.Emote.ToString(),
+                faceExpression.FaceExpressionJson
             };
-            
+
             // Concatenate the data array into a CSV line using semicolons as separators
             return string.Join(";", data);
         }
 
-        private void WriteFaceExpressionJson(LogData logData)
-        {
-            // Construct the path for saving the image
-            string path = Path.Combine(_dirPathWithUserID, logData.LevelID, logData.EmoteEmoji.ToString());
-            
-            string filename = $"{logData.Timestamp}.json";
-            
-            // Write json file
-            SaveFiles.WriteFile(path, filename, logData.FaceExpressions);
-        }
-
         /// <summary>
-        /// Writes a single line of log data to the CSV file.
+        /// returns a single line of log data for the CSV file.
         /// </summary>
         /// <param name="logData">The log data to be written.</param>
-        private void WriteLogLine(LogData logData)
+        private string GetLogDataString(LogData logData)
         {
             // Prepare the data as an array of strings.
             string[] data =
             {
                 logData.Timestamp,
                 logData.LevelID,
-                logData.EmoteID.ToString(),
-                logData.EmoteEmoji.ToString(),
+                logData.Emoji.EmoteID.ToString(),
+                logData.Emoji.Emote.ToString(),
                 logData.EmoteFer.ToString(),
                 logData.FerProbabilities.anger.ToString("F2"),
                 logData.FerProbabilities.disgust.ToString("F2"),
@@ -206,11 +185,11 @@ namespace Systems
                 logData.FerProbabilities.sadness.ToString("F2"),
                 logData.FerProbabilities.surprise.ToString("F2"),
                 logData.UserID,
-                logData.FaceExpressions,
+                logData.FaceExpressions
             };
-            
-            // Append the data as a line to the log CSV file
-            SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, data);
+
+            // Concatenate the data array into a CSV line using semicolons as separators
+            return string.Join(";", data);
         }
 
         /// <summary>
@@ -236,18 +215,24 @@ namespace Systems
                 "User ID",
                 "OVR Face Expressions"
             };
-            
+
             // Write the header line to the CSV file.
             SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, data);
         }
-        
+
         /// <summary>
         /// Adds log data to the list for future processing.
         /// </summary>
         /// <param name="logData">The log data to be added.</param>
-        public void AddToLogDataList(LogData logData) => _logDataList.Add(logData);
+        public void AddToLogDataList(LogData logData)
+        {
+            _logDataList.Add(logData);
+        }
 
-        public static string GetUnixTimestamp() => ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
+        public static string GetUnixTimestamp()
+        {
+            return ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds().ToString();
+        }
 
         public Snapshot LatestSnapshot
         {
@@ -257,14 +242,21 @@ namespace Systems
                 // replace the Snapshots in Training mode
                 if (!LogTrainingLevel && value.LevelMode == ELevelMode.Training)
                     _snapshots.Clear();
-                
+
                 // Add Snapshot to List
                 _snapshots.Add(value);
                 EditorUI.EditorUI.Instance.UpdateImageBacklog(_snapshots.Count);
             }
         }
-        public void AddToFaceExpressionList(FaceExpression faceExpression) => _faceExpressions.Add(faceExpression);
 
-        public bool FinishedSaving() => !_snapshots.Any();
+        public void AddToFaceExpressionList(FaceExpression faceExpression)
+        {
+            _faceExpressions.Add(faceExpression);
+        }
+
+        public bool FinishedSaving()
+        {
+            return !_snapshots.Any();
+        }
     }
 }

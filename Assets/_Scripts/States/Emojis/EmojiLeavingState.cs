@@ -1,6 +1,7 @@
 ﻿using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 namespace States.Emojis
 {
@@ -33,7 +34,7 @@ namespace States.Emojis
         public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
             if (collider.CompareTag("WebcamArea"))
-                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emote);
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emoji);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)

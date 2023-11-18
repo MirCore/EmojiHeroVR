@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Enums;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Utilities
 {
@@ -70,5 +68,12 @@ namespace Utilities
         /// Gets or sets the array of emote IDs for the level.
         /// </summary>
         public int[] EmoteArray;
+    }
+
+    public struct Emoji
+    {
+        public EEmote Emote;
+
+        public int EmoteID;
     }
 }

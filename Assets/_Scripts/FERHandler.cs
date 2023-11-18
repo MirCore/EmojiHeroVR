@@ -35,7 +35,7 @@ public class FerHandler : MonoBehaviour
     }
     
     // Callback for when an emote enters the action area, triggers the facial emotion recognition
-    private void EmoteEnteredActionAreaCallback(EEmote emote) => SendRestImage();
+    private void EmoteEnteredActionAreaCallback(Emoji emoji) => SendRestImage();
 
     /// <summary>
     /// Initiates the sending of REST images for FER processing.
@@ -97,11 +97,13 @@ public class FerHandler : MonoBehaviour
         {
             Timestamp = snapshot.Timestamp,
             LevelID = GameManager.Instance.Level.LevelName,
-            EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
-            EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
+            Emoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
             FaceExpressions = GameManager.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
         };
+        
+        if (snapshot.Emoji.EmoteID != logData.Emoji.EmoteID)
+            Debug.Log("Different IDs");
         
         // Convert the captured image to base64 format.
         string image = WebcamManager.GetBase64(snapshot);

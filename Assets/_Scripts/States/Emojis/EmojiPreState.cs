@@ -54,6 +54,13 @@ namespace States.Emojis
             else
                 // Otherwise, use the EEmote enum. + 1 to compensate default enum.
                 emojiManager.Emote = (EEmote)(emoteIndex + 1);
+
+            emojiManager.Emoji = new Emoji
+            {
+                Emote = emojiManager.Emote,
+                EmoteID = GameManager.Instance.LevelProgress.SpawnedEmotesCount
+            };
+
         }
 
         public override void Update(EmojiManager emojiManager)
@@ -69,7 +76,7 @@ namespace States.Emojis
             if (collider.CompareTag("ActionArea"))
                 emojiManager.SwitchState(emojiManager.IntraState);
             else if (collider.CompareTag("WebcamArea"))
-                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emote);
+                EventManager.InvokeEmoteEnteredWebcamArea(emojiManager.Emoji);
         }
 
         /// <summary>

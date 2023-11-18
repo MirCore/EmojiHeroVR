@@ -2,6 +2,7 @@ using System.Collections;
 using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 /// <summary>
 /// Manages the Action Area Shader, adjusting properties when Emojis interact with the area.
@@ -60,7 +61,7 @@ public class ActionAreaShader : MonoBehaviour
     /// <summary>
     /// Callback for when an emoji enters the area.
     /// </summary>
-    private void EmoteEnteredActionAreaCallback(EEmote emote)
+    private void EmoteEnteredActionAreaCallback(Emoji emoji)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();
@@ -73,7 +74,7 @@ public class ActionAreaShader : MonoBehaviour
     /// <summary>
     /// Callback for when an emoji exits the area.
     /// </summary>
-    private void EmoteExitedActionAreaCallback(EEmote emote)
+    private void EmoteExitedActionAreaCallback(Emoji emoji)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();

@@ -4,6 +4,7 @@ using Enums;
 using Manager;
 using Scriptables;
 using UnityEngine;
+using Utilities;
 
 namespace States.Game
 {
@@ -65,17 +66,17 @@ namespace States.Game
         /// <summary>
         /// Handles the behavior when an emote enters the action area.
         /// </summary>
-        /// <param name="emote">The emote that entered.</param>
-        private void EmoteEnteredActionAreaCallback(EEmote emote) => LevelProgress.AddEmoteToActionArea(emote);
+        /// <param name="emoji">The emote that entered.</param>
+        private void EmoteEnteredActionAreaCallback(Emoji emoji) => LevelProgress.AddEmoteToActionArea(emoji);
 
         /// <summary>
         /// Handles the behavior when an emote exits the action area.
         /// </summary>
-        /// <param name="emote">The emote that exited.</param>
-        private void EmoteExitedActionAreaCallback(EEmote emote)
+        /// <param name="emoji">The emote that exited.</param>
+        private void EmoteExitedActionAreaCallback(Emoji emoji)
         {
-            if (!LevelProgress.RemoveEmoteFromActionArea(emote))
-                Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emote}");
+            if (!LevelProgress.RemoveEmoteFromActionArea(emoji))
+                Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emoji}");
             
             LevelProgress.FinishedEmoteCount++;
             if (GameManager.Instance.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
@@ -86,9 +87,9 @@ namespace States.Game
         /// Calculates and updates the level score when an emote is fulfilled.
         /// The score is calculated based on the base score for completion and a multiplier based on the time left.
         /// </summary>
-        /// <param name="emote">The emote that was fulfilled.</param>
+        /// <param name="emoji">The emote that was fulfilled.</param>
         /// <param name="score">The base score associated with the emote.</param>
-        private void OnEmoteFulfilledCallback(EEmote emote, float score)
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
         {
             LevelProgress.FulfilledEmoteCount++;
             LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)(score * GameManager.ScoreMultiplier) * 10;

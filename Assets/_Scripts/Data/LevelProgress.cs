@@ -2,6 +2,7 @@
 using System.Linq;
 using Enums;
 using UnityEngine;
+using Utilities;
 
 namespace Data
 {
@@ -20,7 +21,7 @@ namespace Data
         public int LevelScore { get; internal set; }
 
         /// <summary>Gets the list of emotes currently in the action area.</summary>
-        private readonly List<EEmote> _emojiInActionArea = new();
+        private readonly List<Emoji> _emojiInActionArea = new();
     
 
         ///<summary>
@@ -31,17 +32,17 @@ namespace Data
         /// <summary>
         /// Gets the first emote in the action area or the default value.
         /// </summary>
-        public EEmote GetEmojiInActionArea => _emojiInActionArea.LastOrDefault();
+        public Emoji GetEmojiInActionArea => _emojiInActionArea.LastOrDefault();
         
         /// <summary>
         /// Adds an emote to the action area.
         /// </summary>
-        public void AddEmoteToActionArea(EEmote emote) => _emojiInActionArea.Add(emote);
+        public void AddEmoteToActionArea(Emoji emoji) => _emojiInActionArea.Add(emoji);
 
         /// <summary>
         /// Removes an emote from the action area.
         /// </summary>
-        public bool RemoveEmoteFromActionArea(EEmote emote) => _emojiInActionArea.Remove(emote);
+        public bool RemoveEmoteFromActionArea(Emoji emoji) => _emojiInActionArea.Remove(emoji);
 
         public void ClearEmotesInActionAreaList() => _emojiInActionArea.Clear();
     }

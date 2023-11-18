@@ -60,12 +60,12 @@ namespace Manager
         /// <summary>
         /// Updates the score UI when an emote exits the action area.
         /// </summary>
-        private void EmoteExitedActionAreaCallback(EEmote emote) => StartCoroutine(UpdateScoreUI());
+        private void EmoteExitedActionAreaCallback(Emoji emoji) => StartCoroutine(UpdateScoreUI());
         
         /// <summary>
         /// Updates the score UI when an emote is fulfilled.
         /// </summary>
-        private void OnEmoteFulfilledCallback(EEmote emote, float score) => StartCoroutine(UpdateScoreUI());
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score) => StartCoroutine(UpdateScoreUI());
 
         /// <summary>
         /// Loads the UI for the end screen, displaying level name and score.

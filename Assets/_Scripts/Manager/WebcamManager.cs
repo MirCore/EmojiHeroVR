@@ -7,6 +7,7 @@ using Enums;
 using Systems;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Utilities;
 
 namespace Manager
 {
@@ -29,7 +30,7 @@ namespace Manager
         [SerializeField] private int TargetSnapshotFPS = 30;
 
         // A list that tracks which emotes are currently in the webcam area.
-        private static readonly List<EEmote> EmotesInWebcamArea = new();
+        private static readonly List<Emoji> EmojisInWebcamArea = new();
 
         // A texture for processing the webcam image.
         private static Texture2D _texture;
@@ -37,8 +38,8 @@ namespace Manager
         // Accessors for webcam width and height.
         public static int WebcamWidth => Webcams[0].width;
         public static int WebcamHeight => Webcams[0].height;
-        public static EEmote EmoteInWebcamArea => EmotesInWebcamArea.FirstOrDefault();
-        public static bool EmoteIsInWebcamArea => EmotesInWebcamArea.Any();
+        public static Emoji EmojiInWebcamArea => EmojisInWebcamArea.FirstOrDefault();
+        public static bool EmojiIsInWebcamArea => EmojisInWebcamArea.Any();
 
 
         // A reference to the coroutine that takes continuous snapshots.
@@ -75,7 +76,7 @@ namespace Manager
 
         private void OnLevelFinishedCallback()
         {
-            EmotesInWebcamArea.Clear();
+            EmojisInWebcamArea.Clear();
 
             StopCoroutine();
 
@@ -90,21 +91,21 @@ namespace Manager
             _coroutine = null;
         }
 
-        private void EmoteEnteredWebcamAreaCallback(EEmote emote)
+        private void EmoteEnteredWebcamAreaCallback(Emoji emoji)
         {      
             if (!GameManager.Instance.IsPlayingLevel)
                 return;
             // Add the emote to the tracking list and start the snapshot coroutine if not already running.
-            EmotesInWebcamArea.Add(emote);
+            EmojisInWebcamArea.Add(emoji);
             _coroutine ??= StartCoroutine(TakeSnapshotCoroutine());
         }
 
-        private void EmoteExitedWebcamAreaCallback(EEmote emote)
+        private void EmoteExitedWebcamAreaCallback(Emoji emoji)
         {
             if (!GameManager.Instance.IsPlayingLevel)
                 return;
             // Remove the emote from the tracking list.
-            EmotesInWebcamArea.Remove(emote);
+            EmojisInWebcamArea.Remove(emoji);
         }
 
         private void Update()
@@ -159,7 +160,7 @@ namespace Manager
 
             int count = 0;
             
-            while (EmotesInWebcamArea.Any())
+            while (EmojisInWebcamArea.Any())
             {
                 TakeSnapshots();
                 count++;
@@ -194,8 +195,7 @@ namespace Manager
                 Timestamp = LoggingSystem.GetUnixTimestamp(),
                 LevelID =  GameManager.Instance.Level.LevelName,
                 LevelMode = GameManager.Instance.Level.LevelMode,
-                EmoteEmoji = EmotesInWebcamArea.FirstOrDefault(),
-                EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
+                Emoji = EmojiInWebcamArea,
                 ImageTextures = new List<Color32[]>(),
             };
         

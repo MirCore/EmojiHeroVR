@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Enums;
+using Utilities;
 
 namespace Data
 {
@@ -16,14 +17,9 @@ namespace Data
         public string LevelID;
      
         /// <summary>
-        /// Gets or sets the ID of the Emote in the level sequence.
-        /// </summary>
-        public int EmoteID;
-     
-        /// <summary>
         /// Gets or sets the emote to imitate.
         /// </summary>
-        public EEmote EmoteEmoji;
+        public Emoji Emoji;
      
         /// <summary>
         /// Gets or sets the webcam images.

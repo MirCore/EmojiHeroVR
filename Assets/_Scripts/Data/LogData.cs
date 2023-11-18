@@ -17,16 +17,11 @@ namespace Data
         /// Gets or sets the level ID.
         /// </summary>
         public string LevelID;
-        
+
         /// <summary>
-        /// Gets or sets the ID of the Emote in the level sequence.
+        /// Gets or sets the Emoji struct of the Emote in the level sequence.
         /// </summary>
-        public int EmoteID;
-     
-        /// <summary>
-        /// Gets or sets the emote to imitate.
-        /// </summary>
-        public EEmote EmoteEmoji;
+        public Emoji Emoji;
      
         /// <summary>
         /// Gets or sets the emote with the highest probability from the facial expression recognition system.
