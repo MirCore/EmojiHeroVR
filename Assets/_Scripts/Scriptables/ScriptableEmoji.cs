@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Enums;
 using UnityEngine;
 
@@ -7,5 +8,6 @@ namespace Scriptables
     {
         public EEmote EEmote;
         public Texture Texture;
+        public List<Texture> Textures;
     }
 }

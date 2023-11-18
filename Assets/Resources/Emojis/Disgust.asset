@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EEmote: 3
   Texture: {fileID: 2800000, guid: 0db645599f01caa489fb329d1d9f8399, type: 3}
+  Textures:
+  - {fileID: 2800000, guid: 0db645599f01caa489fb329d1d9f8399, type: 3}
+  - {fileID: 2800000, guid: 34ac665024b2674459d0de794fcb3e74, type: 3}

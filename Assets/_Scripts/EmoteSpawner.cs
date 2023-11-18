@@ -123,9 +123,6 @@ public class EmoteSpawner : MonoBehaviour
         GameObject emote = _objectPool.GetPooledObject();
         emote.transform.position = position;
         emote.SetActive(true);
-        
-        // Notify the game manager that a new emote has been spawned.
-        GameManager.Instance.IncreaseSpawnedEmotesCount();
     }
 
     /// <summary>

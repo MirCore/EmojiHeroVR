@@ -102,9 +102,6 @@ public class FerHandler : MonoBehaviour
             FaceExpressions = GameManager.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
         };
         
-        if (snapshot.Emoji.EmoteID != logData.Emoji.EmoteID)
-            Debug.Log("Different IDs");
-        
         // Convert the captured image to base64 format.
         string image = WebcamManager.GetBase64(snapshot);
         yield return null;  // Wait until the next frame to reduce lag

@@ -130,6 +130,7 @@ namespace States.Game
         /// <summary>
         /// Increments the count of spawned emotes.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => LevelProgress.SpawnedEmotesCount++;
+        /// <param name="emoji"></param>
+        public void IncreaseSpawnedEmotesCount(Emoji emoji) => LevelProgress.SpawnedEmotes.Add(emoji);
     }
 }

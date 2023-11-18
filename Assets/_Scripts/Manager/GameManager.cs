@@ -151,11 +151,12 @@ namespace Manager
                 _level = level;
             EditorUI.EditorUI.Instance.SetNewLevel(_level);
         }
-        
+
         /// <summary>
         /// Increments the count of spawned emojis.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => PlayingLevelState.IncreaseSpawnedEmotesCount();
+        /// <param name="emoji"></param>
+        public void IncreaseSpawnedEmotesCount(Emoji emoji) => PlayingLevelState.IncreaseSpawnedEmotesCount(emoji);
 
         public int GetMaxScore() => PlayingLevelState.MaxScore;
 

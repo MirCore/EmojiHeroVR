@@ -31,12 +31,15 @@ namespace Systems
 
         private void OnLevelStartedCallback()
         {
-            _coroutine = StartCoroutine(LogFaceExpression());
+            if (GameManager.Instance.LogFaceExpressions)
+                _coroutine = StartCoroutine(LogFaceExpression());
         }
 
         private void OnLevelFinishedCallback()
         {
-            StopCoroutine(_coroutine);
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+            _coroutine = null;
         }
 
         private IEnumerator LogFaceExpression()

@@ -75,5 +75,7 @@ namespace Utilities
         public EEmote Emote;
 
         public int EmoteID;
+
+        public int Texture;
     }
 }
