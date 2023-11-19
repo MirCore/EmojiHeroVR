@@ -40,7 +40,7 @@ Material:
     - _HueOffset: 0
     - _Max: 1
     - _Min: 0
-    - _Origin: -0.7
+    - _Origin: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Spread: 0.5
