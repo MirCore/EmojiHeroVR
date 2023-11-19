@@ -16,3 +16,4 @@ MonoBehaviour:
   Texture: {fileID: 2800000, guid: c360b59d93c75ff468b1386c904cbae1, type: 3}
   Textures:
   - {fileID: 2800000, guid: c360b59d93c75ff468b1386c904cbae1, type: 3}
+  - {fileID: 2800000, guid: 43857623e24984c4f97e1c698da40aa8, type: 3}
