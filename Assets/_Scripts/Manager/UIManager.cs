@@ -114,9 +114,9 @@ namespace Manager
             {
                 t.text = _level.LevelMode switch
                 {
-                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount}",
-                    ELevelMode.Predefined => levelProgress.FulfilledEmoteCount + "/" + _level.EmoteArray.Length,
-                    _ => levelProgress.FulfilledEmoteCount + "/" + _level.Count
+                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount} / {GameManager.Instance.LevelProgress.SpawnedEmotesCount}",
+                    ELevelMode.Predefined => $"{levelProgress.FulfilledEmoteCount} / {_level.EmoteArray.Length} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)",
+                    _ => $"{levelProgress.FulfilledEmoteCount} / {_level.Count} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)"
                 };
             }
 
