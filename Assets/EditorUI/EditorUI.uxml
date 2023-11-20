@@ -51,8 +51,8 @@
         <ui:VisualElement style="flex-grow: 1;">
             <ui:Label tabindex="-1" text="Webcams" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-bottom: 4px;" />
             <ui:VisualElement style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;">
-                <ui:VisualElement name="WebcamTexture1" style="flex-grow: 0; background-image: url(&apos;project://database/Assets/Textures/WebcamTexture%201.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#WebcamTexture 1&apos;); background-color: rgba(0, 0, 0, 0); height: 150px; width: 200px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgba(0, 0, 0, 0.2); border-right-color: rgba(0, 0, 0, 0.2); border-top-color: rgba(0, 0, 0, 0.2); border-bottom-color: rgba(0, 0, 0, 0.2);" />
-                <ui:VisualElement name="WebcamTexture2" style="flex-grow: 0; background-image: url(&apos;project://database/Assets/Textures/WebcamTexture%202.renderTexture?fileID=8400000&amp;guid=b2512dd1d8eb9d749913b85d9f0060de&amp;type=2#WebcamTexture 2&apos;); background-color: rgba(0, 0, 0, 0); height: 150px; width: 200px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0.2); border-top-color: rgba(0, 0, 0, 0.2); border-bottom-color: rgba(0, 0, 0, 0.2);" />
+                <ui:VisualElement name="WebcamTexture1" class="webcam" style="background-image: url(&apos;project://database/Assets/Textures/WebcamTexture%201.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#WebcamTexture 1&apos;);" />
+                <ui:VisualElement name="WebcamTexture2" class="webcam" style="background-image: url(&apos;project://database/Assets/Textures/WebcamTexture%202.renderTexture?fileID=8400000&amp;guid=b2512dd1d8eb9d749913b85d9f0060de&amp;type=2#WebcamTexture 2&apos;);" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:ScrollView>

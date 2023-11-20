@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1028143883227370422}
-  m_IndirectSpecularColor: {r: 0.284865, g: 0.5428333, b: 0.7179513, a: 1}
+  m_IndirectSpecularColor: {r: 0.2848603, g: 0.5428256, b: 0.7179429, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1401,7 +1401,7 @@ MonoBehaviour:
   - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
   RequestedCameraWidth: 1280
   RequestedCameraHeight: 720
-  TargetSnapshotFPS: 10
+  TargetSnapshotFPS: 30
 --- !u!1001 &4788709425719443576
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2111,8 +2111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c6b0e41b38df6041b9ecaaab5642eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PreventGameStartWithoutUserID: 0
-  LogFaceExpressions: 0
+  PreventGameStartWithoutUserID: 1
+  LogFaceExpressions: 1
   XROrigin: {fileID: 2074340241}
   ActionArea: {fileID: 7366368310148965485}
 --- !u!82 &6789293080834746437
@@ -3384,7 +3384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ObjectToPool: {fileID: 8516293493071587995, guid: 6d4817cff0730d9498459bb94c94e4df, type: 3}
-  AmountToPool: 20
+  AmountToPool: 10
 --- !u!4 &8511545218435855166
 Transform:
   m_ObjectHideFlags: 0
