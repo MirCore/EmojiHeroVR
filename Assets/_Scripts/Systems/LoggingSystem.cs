@@ -96,6 +96,7 @@ namespace Systems
                             SaveFiles.SaveImageFile(path, filename, bytes);
 
                             EditorUI.EditorUI.Instance.UpdateImageProgress(_snapshots.Count);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -248,6 +249,8 @@ namespace Systems
                 EditorUI.EditorUI.Instance.UpdateImageBacklog(_snapshots.Count);
             }
         }
+
+        public int SnapshotCount => _snapshots.Count;
 
         public void AddToFaceExpressionList(FaceExpression faceExpression)
         {
