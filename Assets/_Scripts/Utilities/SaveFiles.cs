@@ -64,13 +64,7 @@ namespace Utilities
             }
         }
 
-        /// <summary>
-        /// Appends a line of data to a CSV file.
-        /// </summary>
-        /// <param name="dirPath">The directory path where the CSV file is located.</param>
-        /// <param name="fileName">The name of the CSV file (including the extension).</param>
-        /// <param name="data">An array of data to append as a CSV line.</param>
-        public static void AppendLineToCsv(string dirPath, string fileName, string[] data)
+        public static async void AppendLineToCsv(string dirPath, string fileName, string data)
         {
             // Combine the directory path and file name to get the full file path
             string filePath = Path.Combine(dirPath, fileName);
@@ -82,37 +76,12 @@ namespace Utilities
             try
             {
                 // Create or append to the CSV file
-                using StreamWriter writer = new (filePath, true);
+                await using StreamWriter writer = new (filePath, true);
+                    
+                // Write the CSV line to the file
+                await writer.WriteLineAsync(data);
                 
-                // Concatenate the data array into a CSV line using semicolons as separators
-                string csvLine = string.Join(";", data);
-                    
-                // Write the CSV line to the file
-                writer.WriteLine(csvLine);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Failed to append data to CSV file {fileName}: {e}");
-                throw;
-            }
-        }
-
-        public static void AppendLineToCsv(string dirPath, string fileName, string data)
-        {
-            // Combine the directory path and file name to get the full file path
-            string filePath = Path.Combine(dirPath, fileName);
-            
-            // Create the directory if it doesn't exist
-            if(!Directory.Exists(dirPath)) 
-                Directory.CreateDirectory(dirPath);
-            
-            try
-            {
-                // Create or append to the CSV file
-                using StreamWriter writer = new (filePath, true);
-                    
-                // Write the CSV line to the file
-                writer.WriteLine(data);
+                writer.Close();
             }
             catch (Exception e)
             {

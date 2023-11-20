@@ -123,7 +123,7 @@ namespace Systems
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to write log for faceExpression. Exception: {ex}");
+                Debug.LogError($"Failed to write log. Exception: {ex}");
             }
 
             _logDataList.Clear();
@@ -168,7 +168,7 @@ namespace Systems
         /// returns a single line of log data for the CSV file.
         /// </summary>
         /// <param name="logData">The log data to be written.</param>
-        private string GetLogDataString(LogData logData)
+        private static string GetLogDataString(LogData logData)
         {
             // Prepare the data as an array of strings.
             string[] data =
@@ -216,9 +216,12 @@ namespace Systems
                 "User ID",
                 "OVR Face Expressions"
             };
+            
+            // Concatenate the data array into a CSV line using semicolons as separators
+            string join = string.Join(";", data);
 
             // Write the header line to the CSV file.
-            SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, data);
+            SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, join);
         }
 
         /// <summary>
