@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Data;
 using Enums;
 using Manager;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Utilities;
 
 namespace Systems
@@ -51,11 +53,26 @@ namespace Systems
                 CreateCsvHeaders();
             }
 
+            StartCoroutine(WriteLogs());
+        }
+
+        private IEnumerator WriteLogs()
+        {
+            yield return null;
+            
+            Profiler.BeginSample("Log");
             // Write log data to the CSV file when a level is finished.
             WriteLog();
+            Profiler.EndSample();
 
+            yield return null;
+
+            Profiler.BeginSample("faceExpressionLog");
             // Write FaceExpressions to a CSV file.
             WriteFaceExpressions();
+            Profiler.EndSample();
+            
+            yield return null;
 
             // Start coroutine to write all images post play.
             StartCoroutine(WriteImages());
@@ -63,7 +80,7 @@ namespace Systems
 
         private IEnumerator WriteImages()
         {
-            yield return new WaitForSecondsRealtime(1); // Wait for a second to let all systems finish.
+            yield return null; // Wait for a second to let all systems finish.
 
             Texture2D texture = new(WebcamManager.WebcamWidth, WebcamManager.WebcamHeight);
 
@@ -114,12 +131,17 @@ namespace Systems
 
         private void WriteLog()
         {
-            string logDataCsvString = _logDataList.Aggregate("", (current, logData) => current + $"{GetLogDataString(logData)}\n");
+            StringBuilder stringBuilder = new();
+
+            foreach (LogData data in _logDataList)
+            {
+                stringBuilder.AppendLine(GetLogDataString(data));
+            };
 
             try
             {
                 // Append the data as a line to the log CSV file
-                SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, logDataCsvString);
+                SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, stringBuilder.ToString());
             }
             catch (Exception ex)
             {
@@ -131,14 +153,18 @@ namespace Systems
 
         private void WriteFaceExpressions()
         {
-            string faceExpressionCsvString = _faceExpressions.Aggregate("",
-                (current, faceExpression) => current + $"{GetFaceExpressionString(faceExpression)}\n");
+            StringBuilder stringBuilder = new();
+            
+            foreach (FaceExpression faceExpression in _faceExpressions)
+            {
+                stringBuilder.AppendLine(GetFaceExpressionString(faceExpression));
+            }
 
             // Write to the CSV file.
             try
             {
                 // Append the data as a line to the log CSV file
-                SaveFiles.AppendLineToCsv(_dirPathWithUserID, FaceExpressionCsvFileName, faceExpressionCsvString);
+                SaveFiles.AppendLineToCsv(_dirPathWithUserID, FaceExpressionCsvFileName, stringBuilder.ToString());
             }
             catch (Exception ex)
             {
@@ -148,20 +174,10 @@ namespace Systems
             _faceExpressions.Clear();
         }
 
-        private static string GetFaceExpressionString(FaceExpression faceExpression)
+        private static string GetFaceExpressionString(FaceExpression fe)
         {
-            // Prepare the data as an array of strings.
-            string[] data =
-            {
-                faceExpression.Timestamp,
-                faceExpression.LevelID,
-                faceExpression.Emoji.EmoteID.ToString(),
-                faceExpression.Emoji.Emote.ToString(),
-                faceExpression.FaceExpressionJson
-            };
-
-            // Concatenate the data array into a CSV line using semicolons as separators
-            return string.Join(";", data);
+            // Prepare the data and concatenate into a CSV line using semicolons as separators
+            return $"{fe.Timestamp};{fe.LevelID};{fe.Emoji.EmoteID};{fe.Emoji.Emote};{fe.FaceExpressionJson}";
         }
 
         /// <summary>
