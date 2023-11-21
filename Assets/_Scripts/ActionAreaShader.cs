@@ -17,17 +17,17 @@ public class ActionAreaShader : MonoBehaviour
     private int _bottomColorShaderID;
 
     [Header("Height of color ramp")] [SerializeField]
-    private float ShaderRampDuration = 0.2f;
+    private float ShaderRampDuration = 0.3f;
 
-    [SerializeField] private float LowGradientPosition = -0.3f;
-    [SerializeField] private float HighGradientPosition = 0f;
+    [SerializeField] private float LowGradientPosition = -0.6f;
+    [SerializeField] private float HighGradientPosition = -0.1f;
 
     [Header("Color of color ramp")] [SerializeField]
-    private float TimePressureColorRampDuration = 3;
+    private float TimePressureColorRampDuration = 1;
 
     [SerializeField] private float ResetColorRampDuration = 0.5f;
-    [SerializeField] private Color TimePressureColor = new(1f, 0.2f, 0f);
-    [SerializeField] private Color ResetColor = new(1f, 0.4f, 0f);
+    [SerializeField] private Color TimePressureColor = new(1f, 0.2f, 0f, 0.6f);
+    [SerializeField] private Color ResetColor = new(1f, 0.4f, 0f, 0.5f);
 
     /// <summary>
     /// Initialization function, sets up the material and shader property IDs.
@@ -101,6 +101,8 @@ public class ActionAreaShader : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        
+        _material.SetFloat(_originShaderID, end);
     }
 
     /// <summary>
@@ -120,5 +122,8 @@ public class ActionAreaShader : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        
+        _material.SetColor(_bottomColorShaderID, end);
     }
+    
 }
