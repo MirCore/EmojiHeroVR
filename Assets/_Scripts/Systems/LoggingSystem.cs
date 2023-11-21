@@ -136,12 +136,22 @@ namespace Systems
             foreach (LogData data in _logDataList)
             {
                 stringBuilder.AppendLine(GetLogDataString(data));
-            };
+            }
 
             try
             {
                 // Append the data as a line to the log CSV file
                 SaveFiles.AppendLineToCsv(_dirPathWithUserID, CsvFileName, stringBuilder.ToString());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to write log. Exception: {ex}");
+            }
+            
+            try
+            {
+                // Append the data as a line to the Backup CSV file
+                SaveFiles.AppendLineToCsv(Path.Combine(Application.dataPath + "/../SaveFiles/"), "backup.csv", stringBuilder.ToString());
             }
             catch (Exception ex)
             {
