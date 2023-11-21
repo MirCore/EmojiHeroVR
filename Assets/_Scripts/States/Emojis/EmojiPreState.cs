@@ -32,7 +32,7 @@ namespace States.Emojis
             GameManager.Instance.IncreaseSpawnedEmotesCount(emojiManager.Emoji);
 
             // Set the Emoji's title text based on its emotion.
-            emojiManager.EmoteTitle.text = emojiManager.Emoji.Emote.ToString();
+            SetEmojiName(emojiManager);
 
             // Initialize the Emoji's visual elements.
             SetEmojiTextures(emojiManager);
@@ -112,7 +112,7 @@ namespace States.Emojis
             // Get the texture for the current Emoji's emotion.
             //Texture texture = ResourceSystem.EmojiTextures[emojiManager.Emoji.Emote];
             
-            List<Texture> textures = ResourceSystem.EmojiTexturesList[emojiManager.Emoji.Emote];
+            List<Texture> textures = ResourceSystem.EmojiScriptables[emojiManager.Emoji.Emote].Textures;
 
             Texture texture = textures[emojiManager.Emoji.Texture % textures.Count];
 
@@ -121,6 +121,15 @@ namespace States.Emojis
             emojiManager.EmojiMaterial.SetFloat(emojiManager.FailedColorAmount, 0);
             emojiManager.EmojiMaterial.SetFloat(emojiManager.SuccessColorAmount, 0);
             emojiManager.EmojiMaterial.SetFloat(emojiManager.DissolveAmount, 0);
+        }
+
+        private static void SetEmojiName(EmojiManager emojiManager)
+        {
+            string name = GameManager.Instance.UseGermanEmoteNames 
+                ? ResourceSystem.EmojiScriptables[emojiManager.Emoji.Emote].GermanName 
+                : ResourceSystem.EmojiScriptables[emojiManager.Emoji.Emote].EnglishName;
+            
+            emojiManager.EmoteTitle.text = name;
         }
     }
 }

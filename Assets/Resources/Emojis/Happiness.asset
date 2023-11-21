@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Happiness
   m_EditorClassIdentifier: 
   EEmote: 5
-  Texture: {fileID: 2800000, guid: 8ef57a7e8897a1247b610d2f791bb83d, type: 3}
+  EnglishName: Happiness
+  GermanName: "Gl\xFCcklich"
   Textures:
   - {fileID: 2800000, guid: 8ef57a7e8897a1247b610d2f791bb83d, type: 3}
   - {fileID: 2800000, guid: 9411c7f63a266b042a995ec53c2c02d9, type: 3}

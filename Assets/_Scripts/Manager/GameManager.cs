@@ -17,10 +17,11 @@ namespace Manager
     public class GameManager : Singleton<GameManager>
     {
         // Configuration to prevent the game from starting if the UserID is not set
-        [Header("Prevent Game From Starting When UserID Is Missing")] [SerializeField]
+        [Header("Don't Start When UserID Is Missing")] [SerializeField]
         private bool PreventGameStartWithoutUserID;
-
-        [SerializeField] public bool LogFaceExpressions;
+        
+        // Whether German emote names should be used
+        [field: SerializeField] public bool UseGermanEmoteNames { get; private set; }
 
         // Game states
         private GameState _gameState;
@@ -40,6 +41,7 @@ namespace Manager
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
         public bool IsPlayingLevel => _gameState == PlayingLevelState;
+
         private Coroutine _timescaleCoroutine;
 
         // Scoring

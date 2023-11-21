@@ -31,7 +31,7 @@ namespace Systems
 
         private void OnLevelStartedCallback()
         {
-            if (GameManager.Instance.LogFaceExpressions)
+            if (LoggingSystem.Instance.LogFaceExpressions)
                 _coroutine = StartCoroutine(LogFaceExpression());
         }
 

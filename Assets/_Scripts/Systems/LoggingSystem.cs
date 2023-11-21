@@ -18,7 +18,9 @@ namespace Systems
     /// </summary>
     public class LoggingSystem : Singleton<LoggingSystem>
     {
-        [SerializeField] internal bool LogTrainingLevel;
+        // Whether FaceExpressions should be logged
+        [field: SerializeField] public bool LogFaceExpressions { get; private set; }
+        [field: SerializeField] internal bool LogTrainingLevel { get; private set; }
 
         private const string CsvFileName = "labels.csv"; // The name of the log file
         private const string FaceExpressionCsvFileName = "faceexpressions.csv"; // The name of the log file

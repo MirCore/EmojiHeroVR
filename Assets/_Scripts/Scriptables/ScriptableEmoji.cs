@@ -7,7 +7,8 @@ namespace Scriptables
     public class ScriptableEmoji : ScriptableObject
     {
         public EEmote EEmote;
-        public Texture Texture;
+        public string EnglishName;
+        public string GermanName;
         public List<Texture> Textures;
     }
 }

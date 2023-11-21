@@ -99,7 +99,7 @@ public class FerHandler : MonoBehaviour
             LevelID = GameManager.Instance.Level.LevelName,
             Emoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            FaceExpressions = GameManager.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
+            FaceExpressions = LoggingSystem.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
         };
         
         // Convert the captured image to base64 format.
