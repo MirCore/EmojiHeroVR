@@ -42,7 +42,7 @@ public class ActionAreaShader : MonoBehaviour
         _bottomColorShaderID = Shader.PropertyToID("_BottomColor");
 
         // Setting initial shader property values
-        _material.SetFloat(_originShaderID, -0.3f);
+        _material.SetFloat(_originShaderID, LowGradientPosition);
         _material.SetColor(_bottomColorShaderID, ResetColor);
     }
 
