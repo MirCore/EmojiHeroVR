@@ -19,6 +19,7 @@ public class FerHandler : MonoBehaviour
     /// <summary>Flag to determine if facial emotion recognition should be done periodically.</summary>
     // If true, images are sent for FER processing at regular intervals. If false, images are sent on specific events.
     [SerializeField] private bool PeriodicalFerMode = true;
+    [SerializeField] private int PeriodicalFPS = 5;
 
     // Coroutine for continuous facial emotion recognition
     private Coroutine _coroutine;
@@ -57,7 +58,7 @@ public class FerHandler : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // Interval between each image sent for FER processing.
-        const float interval = 0.3f;
+        float interval = 1f / PeriodicalFPS;
         float nextPostTime = Time.realtimeSinceStartup + interval;
         
         while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
