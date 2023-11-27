@@ -16,6 +16,9 @@ namespace Scriptables
     {
         // The struct holding all necessary data to configure a level.
         public LevelStruct LevelStruct = new();
+
+        [SerializeField] public List<HighScore> HighScores = new();
+        public List<float> EmojiHighScores = new();
         
         // Flag to determine whether to generate a new level file.
         public bool GenerateNewLevelFile = true;
@@ -115,6 +118,17 @@ namespace Scriptables
             int[] randomNumbers = repeatedNumbers.OrderBy(_ => random.Next()).ToArray();
 
             return randomNumbers;
+        }
+
+        public void AddHighScore(HighScore highScore)
+        {
+            HighScores.Add(highScore);
+            EmojiHighScores.Clear();
+            foreach (HighScore score in HighScores)
+            {
+                EmojiHighScores.Add((float)score.FulfilledEmotes / score.TotalEmotes * 100);
+            }
+            EmojiHighScores.Sort();
         }
     }
 }

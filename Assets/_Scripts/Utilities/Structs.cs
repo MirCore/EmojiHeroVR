@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Data;
 using Enums;
 using UnityEngine;
 
@@ -77,5 +78,20 @@ namespace Utilities
         public int EmoteID;
 
         public int Texture;
+    }
+
+    [Serializable]
+    public struct HighScore
+    {
+        /// <summary>Gets the count of fulfilled emotes.</summary>
+        public int FulfilledEmotes { get; internal set; }
+
+        /// <summary>Gets the count of spawned emotes.</summary>
+        public int TotalEmotes { get; internal set; }
+        
+        /// <summary>Gets the current level score.</summary>
+        public int LevelScore { get; internal set; }
+
+        public string UserID { get; internal set; }
     }
 }
