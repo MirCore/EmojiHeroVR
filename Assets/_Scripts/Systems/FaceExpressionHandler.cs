@@ -8,7 +8,7 @@ namespace Systems
     public class FaceExpressionHandler
     {
         // Use preprocessor directives to conditionally compile code based on whether the OVRPlugin supports the current platform.
-#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
+#if OVR_PLUGIN
         // Store the current face state retrieved from OVRPlugin.
         private OVRPlugin.FaceState _currentFaceState;
 #endif
@@ -18,7 +18,7 @@ namespace Systems
         /// </summary>
         public FaceExpressionHandler()
         {
-#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
+#if OVR_PLUGIN
             // Attempt to start face tracking and log a warning if it fails.
             if (!OVRPlugin.StartFaceTracking())
                 Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start face tracking.");
@@ -35,7 +35,7 @@ namespace Systems
         /// <returns>A JSON representation of the current face expressions if valid, otherwise returns null.</returns>
         public string GetFaceExpressionsAsJson()
         {
-#if !OVRPLUGIN_UNSUPPORTED_PLATFORM
+#if OVR_PLUGIN
             // Check if face state is available and valid, then serialize to JSON.
             if (OVRPlugin.GetFaceState(OVRPlugin.Step.Render, -1, ref _currentFaceState) &&
                 _currentFaceState.Status.IsValid)
@@ -48,5 +48,6 @@ namespace Systems
             // Return null if face expressions cannot be retrieved or if not supported.
             return null;
         }
+        
     }
 }
