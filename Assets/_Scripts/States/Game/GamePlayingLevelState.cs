@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Data;
 using Enums;
 using Manager;
@@ -14,46 +13,71 @@ namespace States.Game
     /// </summary>
     public class GamePlayingLevelState : GameState
     {
-        private const int BaseScoreForCompletion = 50;
-        private const int ScoreMultiplier = 10;
 
         public LevelProgress LevelProgress;
+        public int MaxScore { get; private set; }
 
         public override void EnterState()
         {
             LevelProgress = new LevelProgress();
+
+            CalculateMaxScore();
             
-            EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
+            EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             
             // Notify the game that a new level has started.
             EventManager.InvokeLevelStarted();
         }
 
+        private void CalculateMaxScore()
+        {
+            
+            int emojiCount = 0;
+            switch (GameManager.Instance.Level.LevelMode)
+            {
+                case ELevelMode.Predefined:
+                    emojiCount = GameManager.Instance.Level.EmoteArray.Length;
+                    break;
+                case ELevelMode.Count:
+                    emojiCount = GameManager.Instance.Level.Count;
+                    break;
+                case ELevelMode.Training:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            MaxScore =  emojiCount * (GameManager.BaseScoreForCompletion +
+                                      (int)(GameManager.Instance.ActionAreaSize * 0.9 / GameManager.Instance.Level.MovementSpeed * GameManager.ScoreMultiplier) * 10);
+        }
+
 
         public override void LeaveState()
         {
-            EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+            LevelProgress.ClearEmotesInActionAreaList();
+            
+            EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
+            EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         }
 
         /// <summary>
         /// Handles the behavior when an emote enters the action area.
         /// </summary>
-        /// <param name="emote">The emote that entered.</param>
-        private void OnEmoteEnteredAreaCallback(EEmote emote) => LevelProgress.AddEmoteToActionArea(emote);
+        /// <param name="emoji">The emote that entered.</param>
+        private void EmoteEnteredActionAreaCallback(Emoji emoji) => LevelProgress.AddEmoteToActionArea(emoji);
 
         /// <summary>
         /// Handles the behavior when an emote exits the action area.
         /// </summary>
-        /// <param name="emote">The emote that exited.</param>
-        private void OnEmoteExitedAreaCallback(EEmote emote)
+        /// <param name="emoji">The emote that exited.</param>
+        private void EmoteExitedActionAreaCallback(Emoji emoji)
         {
-            if (!LevelProgress.RemoveEmoteFromActionArea(emote))
-                Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emote}");
-
+            if (!LevelProgress.RemoveEmoteFromActionArea(emoji))
+                Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emoji}");
+            
             LevelProgress.FinishedEmoteCount++;
             if (GameManager.Instance.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
                 GameManager.Instance.SwitchState(GameManager.Instance.LevelFinishedState);
@@ -63,12 +87,12 @@ namespace States.Game
         /// Calculates and updates the level score when an emote is fulfilled.
         /// The score is calculated based on the base score for completion and a multiplier based on the time left.
         /// </summary>
-        /// <param name="emote">The emote that was fulfilled.</param>
+        /// <param name="emoji">The emote that was fulfilled.</param>
         /// <param name="score">The base score associated with the emote.</param>
-        private void OnEmoteFulfilledCallback(EEmote emote, float score)
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
         {
             LevelProgress.FulfilledEmoteCount++;
-            LevelProgress.LevelScore += BaseScoreForCompletion + (int)(score * ScoreMultiplier) * 10;
+            LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)(score * GameManager.ScoreMultiplier) * 10;
         }
 
         /// <summary>
@@ -106,6 +130,7 @@ namespace States.Game
         /// <summary>
         /// Increments the count of spawned emotes.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => LevelProgress.SpawnedEmotesCount++;
+        /// <param name="emoji"></param>
+        public void IncreaseSpawnedEmotesCount(Emoji emoji) => LevelProgress.SpawnedEmotes.Add(emoji);
     }
 }

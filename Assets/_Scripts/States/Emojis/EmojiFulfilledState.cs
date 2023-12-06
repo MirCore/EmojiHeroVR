@@ -1,6 +1,7 @@
 ﻿using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 namespace States.Emojis
 {
@@ -23,7 +24,7 @@ namespace States.Emojis
             emojiManager.EmojiAnimator.Play("EmojiSuccess");
             
             // Notify other systems, mainly the FER Handler, that the Emoji has been successfully matched.
-            EventManager.InvokeEmoteFulfilled(emojiManager.Emote, emojiManager.ActiveAreaLeft);
+            EventManager.InvokeEmoteFulfilled(emojiManager.Emoji, emojiManager.ActionAreaLeft);
             
             // If the game is in Training mode, immediately switch to the Leaving State.
             if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
@@ -35,7 +36,7 @@ namespace States.Emojis
             // Implementation not required for this state.
         }
 
-        public override void OnTriggerEnter(EmojiManager emojiManager)
+        public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
             Debug.Log("NotImplementedException");
         }
@@ -44,19 +45,32 @@ namespace States.Emojis
         /// This is called when the Emoji exits the Action Area.
         /// Switches the Emoji's state to LeavingState and triggers the event.
         /// </summary>
+        /// <param name="collider"></param>
         /// <param name="emojiManager">The manager controlling the Emoji.</param>
-        public override void OnTriggerExit(EmojiManager emojiManager)
+        public override void OnTriggerExit(Collider collider, EmojiManager emojiManager)
         {
-            // Switch to the Leaving State when the Emoji exits the Action Area.
-            emojiManager.SwitchState(emojiManager.LeavingState);
-            
-            // Notify other systems that the Emoji has exited the Action Area.
-            EventManager.InvokeEmoteExitedArea(emojiManager.Emote);
+            if (collider.CompareTag("ActionArea"))
+            {
+                // Switch to the Leaving State when the Emoji exits the Action Area.
+                emojiManager.SwitchState(emojiManager.LeavingState);
+                // Notify other systems that the Emoji has exited the Action Area.
+                EventManager.InvokeEmoteExitedActionArea(emojiManager.Emoji);
+            }
+            else if (collider.CompareTag("WebcamArea"))
+                EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emoji);
         }
 
         public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
         {
             // Implementation not required for this state.
+        }
+
+        public override void Despawn(EmojiManager emojiManager)
+        {
+            // Switch to the Leaving State when the Emoji exits the Action Area.
+            emojiManager.SwitchState(emojiManager.LeavingState);
+            // Notify other systems that the Emoji has exited the Action Area.
+            EventManager.InvokeEmoteExitedActionArea(emojiManager.Emoji);
         }
     }
 }

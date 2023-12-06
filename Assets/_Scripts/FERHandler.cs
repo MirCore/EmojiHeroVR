@@ -7,7 +7,6 @@ using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 
 /// <summary>
@@ -15,30 +14,29 @@ using Utilities;
 /// </summary>
 public class FerHandler : MonoBehaviour
 {
-    // Reference to the WebcamManager component, used for capturing images for FER.
-    [FormerlySerializedAs("Webcam")] [SerializeField] private WebcamManager WebcamManager;
-    
-    [SerializeField] private FaceExpressionLogger FaceExpressionLogger;
+    private FaceExpressionHandler _faceExpressionHandler;
     
     /// <summary>Flag to determine if facial emotion recognition should be done periodically.</summary>
     // If true, images are sent for FER processing at regular intervals. If false, images are sent on specific events.
     [SerializeField] private bool PeriodicalFerMode = true;
+    [SerializeField] private int PeriodicalFPS = 5;
 
     // Coroutine for continuous facial emotion recognition
     private Coroutine _coroutine;
 
     private void Start()
     {
-        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
+        _faceExpressionHandler = new FaceExpressionHandler();
+        EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
     }
 
     private void OnDestroy()
     {
-        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
+        EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
     }
     
     // Callback for when an emote enters the action area, triggers the facial emotion recognition
-    private void OnEmoteEnteredAreaCallback(EEmote emote) => SendRestImage();
+    private void EmoteEnteredActionAreaCallback(Emoji emoji) => SendRestImage();
 
     /// <summary>
     /// Initiates the sending of REST images for FER processing.
@@ -60,7 +58,7 @@ public class FerHandler : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         // Interval between each image sent for FER processing.
-        const float interval = 0.3f;
+        float interval = 1f / PeriodicalFPS;
         float nextPostTime = Time.realtimeSinceStartup + interval;
         
         while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
@@ -89,11 +87,10 @@ public class FerHandler : MonoBehaviour
     {
         Snapshot snapshot = WebcamManager.GetSnapshot();
         
-        while (snapshot.Timestamp == null)
+        while (snapshot == null)
         {
             yield return null;
             snapshot = WebcamManager.GetSnapshot();
-            Debug.Log(snapshot.Timestamp);
         }
         
         // Initialize log data for the current FER process.
@@ -101,10 +98,9 @@ public class FerHandler : MonoBehaviour
         {
             Timestamp = snapshot.Timestamp,
             LevelID = GameManager.Instance.Level.LevelName,
-            EmoteID = GameManager.Instance.LevelProgress.FinishedEmoteCount,
-            EmoteEmoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
+            Emoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
-            FaceExpressions = FaceExpressionLogger.GetFaceExpressionsAsJson()
+            FaceExpressions = LoggingSystem.Instance.LogFaceExpressions? _faceExpressionHandler.GetFaceExpressionsAsJson() : null
         };
         
         // Convert the captured image to base64 format.
@@ -150,8 +146,10 @@ public class FerHandler : MonoBehaviour
 
     private void HandleFerCompletion(LogData logData)
     {
-        // Log the FER results.
-        LoggingSystem.Instance.AddToLogDataList(logData);
+        // Log the FER results if it is not of type Training.
+        if (LoggingSystem.Instance.LogTrainingLevel || GameManager.Instance.Level.LevelMode != ELevelMode.Training)
+            LoggingSystem.Instance.AddToLogDataList(logData);
+        
         // Update the UI with the FER results.
         EditorUIFerStats.Instance.LogRestResponse(logData);
 

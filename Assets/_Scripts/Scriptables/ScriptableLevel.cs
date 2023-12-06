@@ -15,7 +15,10 @@ namespace Scriptables
     public class ScriptableLevel : ScriptableObject
     {
         // The struct holding all necessary data to configure a level.
-        public LevelStruct LevelStruct;
+        public LevelStruct LevelStruct = new();
+
+        [SerializeField] public List<HighScore> HighScores = new();
+        public List<float> EmojiHighScores = new();
         
         // Flag to determine whether to generate a new level file.
         public bool GenerateNewLevelFile = true;
@@ -28,9 +31,6 @@ namespace Scriptables
         /// </summary>
         private void OnEnable()
         {
-            // Combine directory, subdirectory, and file name to create the complete file path.
-            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
-            
             // Check whether to generate a new level file or load an existing one.
             if (GenerateNewLevelFile)
                 GenerateNewLevelSaveFile();
@@ -52,6 +52,9 @@ namespace Scriptables
         /// </summary>
         private void LoadLevel()
         {
+            // Combine directory, subdirectory, and file name to create the complete file path.
+            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
+            
             // Check if the level file exists, log a message and generate a new one if it does not.
             if (!File.Exists(_filePath))
             {
@@ -63,8 +66,13 @@ namespace Scriptables
             // Read the JSON content of the file.
             string json = File.ReadAllText(_filePath);
 
+            LevelStruct levelStruct = JsonUtility.FromJson<LevelStruct>(json);
+            
+            if (levelStruct.LevelName == "")
+                return;
+            
             // Deserialize the JSON content to populate the LevelStruct.
-            LevelStruct = JsonUtility.FromJson<LevelStruct>(json);
+            LevelStruct = levelStruct;
         }
 
         /// <summary>
@@ -72,6 +80,9 @@ namespace Scriptables
         /// </summary>
         private void GenerateNewLevelSaveFile()
         {
+            // Combine directory, subdirectory, and file name to create the complete file path.
+            _filePath = Path.Combine(Application.dataPath, "LevelJson", name + ".json");
+            
             // Set the flag to false as we are generating a new level file.
             GenerateNewLevelFile = false;
             
@@ -79,6 +90,9 @@ namespace Scriptables
             if (LevelStruct.LevelMode == ELevelMode.Predefined)
                 LevelStruct.EmoteArray = GenerateRandomOrder(LevelStruct.Emotes.Count);
         
+            if (LevelStruct.LevelName == "")
+                return;
+            
             // Serialize the LevelStruct to JSON and write it to the file.
             File.WriteAllText(_filePath, JsonUtility.ToJson(LevelStruct));
         }
@@ -104,6 +118,17 @@ namespace Scriptables
             int[] randomNumbers = repeatedNumbers.OrderBy(_ => random.Next()).ToArray();
 
             return randomNumbers;
+        }
+
+        public void AddHighScore(HighScore highScore)
+        {
+            HighScores.Add(highScore);
+            EmojiHighScores.Clear();
+            foreach (HighScore score in HighScores)
+            {
+                EmojiHighScores.Add((float)score.FulfilledEmotes / score.TotalEmotes * 100);
+            }
+            EmojiHighScores.Sort();
         }
     }
 }

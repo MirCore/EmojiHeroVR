@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using UnityEngine;
+using Utilities;
 
 namespace Manager
 {
@@ -31,7 +32,6 @@ namespace Manager
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
         }
@@ -41,7 +41,6 @@ namespace Manager
             // Unsubscribe from game event notifications
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
         }
@@ -105,8 +104,6 @@ namespace Manager
 
         private void OnLevelFinishedCallback() => LevelFinished();
 
-        private void OnLevelStoppedCallback() => LevelFinished();
-
         /// <summary>
         /// Callback for when the level stops, stops the music and plays the stop sound.
         /// </summary>
@@ -126,7 +123,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote is successfully fulfilled, plays the success sound.
         /// </summary>
-        private void OnEmoteFulfilledCallback(EEmote emote, float score)
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
         {
             // Play success sound
             PlaySoundEffect(SuccessSound);
@@ -135,7 +132,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote imitation fails, plays the fail sound.
         /// </summary>
-        private void OnEmoteFailedCallback(EEmote emote)
+        private void OnEmoteFailedCallback(Emoji emoji)
         {
             if (!_levelPlaying)
                 return;

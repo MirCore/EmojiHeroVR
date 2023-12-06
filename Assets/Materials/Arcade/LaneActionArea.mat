@@ -23,10 +23,11 @@ Material:
   m_Name: LaneActionArea
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 2100000, guid: a842f359adeed7c4db62f8ea3391669a, type: 2}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ModifiedSerializedProperties: 2
+  m_ValidKeywords:
+  - _EMISSION
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -38,8 +39,10 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _Smoothness: 0.325
     m_Colors:
     - _BaseColor: {r: 0.8588236, g: 0.26666668, b: 0.03137255, a: 1}
     - _Color: {r: 0.8588236, g: 0.26666665, b: 0.03137255, a: 1}
+    - _EmissionColor: {r: 0.17709401, g: 0.0144513585, b: 0.0018747579, a: 1}
   m_BuildTextureStacks: []

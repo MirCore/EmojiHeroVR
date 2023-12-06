@@ -2,6 +2,7 @@ using System.Collections;
 using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 
 /// <summary>
 /// Manages the Action Area Shader, adjusting properties when Emojis interact with the area.
@@ -16,17 +17,17 @@ public class ActionAreaShader : MonoBehaviour
     private int _bottomColorShaderID;
 
     [Header("Height of color ramp")] [SerializeField]
-    private float ShaderRampDuration = 0.2f;
+    private float ShaderRampDuration = 0.3f;
 
-    [SerializeField] private float LowGradientPosition = -0.3f;
-    [SerializeField] private float HighGradientPosition = 0f;
+    [SerializeField] private float LowGradientPosition = -0.6f;
+    [SerializeField] private float HighGradientPosition = -0.1f;
 
     [Header("Color of color ramp")] [SerializeField]
-    private float TimePressureColorRampDuration = 3;
+    private float TimePressureColorRampDuration = 1;
 
     [SerializeField] private float ResetColorRampDuration = 0.5f;
-    [SerializeField] private Color TimePressureColor = new(1f, 0.2f, 0f);
-    [SerializeField] private Color ResetColor = new(1f, 0.4f, 0f);
+    [SerializeField] private Color TimePressureColor = new(1f, 0.2f, 0f, 0.6f);
+    [SerializeField] private Color ResetColor = new(1f, 0.4f, 0f, 0.5f);
 
     /// <summary>
     /// Initialization function, sets up the material and shader property IDs.
@@ -41,26 +42,26 @@ public class ActionAreaShader : MonoBehaviour
         _bottomColorShaderID = Shader.PropertyToID("_BottomColor");
 
         // Setting initial shader property values
-        _material.SetFloat(_originShaderID, -0.3f);
+        _material.SetFloat(_originShaderID, LowGradientPosition);
         _material.SetColor(_bottomColorShaderID, ResetColor);
     }
 
     private void Awake()
     {
-        EventManager.OnEmoteEnteredArea += OnEmoteEnteredAreaCallback;
-        EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+        EventManager.OnEmoteEnteredActionArea += EmoteEnteredActionAreaCallback;
+        EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
     }
 
     private void OnDestroy()
     {
-        EventManager.OnEmoteEnteredArea -= OnEmoteEnteredAreaCallback;
-        EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+        EventManager.OnEmoteEnteredActionArea -= EmoteEnteredActionAreaCallback;
+        EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
     }
 
     /// <summary>
     /// Callback for when an emoji enters the area.
     /// </summary>
-    private void OnEmoteEnteredAreaCallback(EEmote emote)
+    private void EmoteEnteredActionAreaCallback(Emoji emoji)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();
@@ -73,7 +74,7 @@ public class ActionAreaShader : MonoBehaviour
     /// <summary>
     /// Callback for when an emoji exits the area.
     /// </summary>
-    private void OnEmoteExitedAreaCallback(EEmote emote)
+    private void EmoteExitedActionAreaCallback(Emoji emoji)
     {
         // Stopping all ongoing coroutines to prevent interference
         StopAllCoroutines();
@@ -100,6 +101,8 @@ public class ActionAreaShader : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        
+        _material.SetFloat(_originShaderID, end);
     }
 
     /// <summary>
@@ -119,5 +122,8 @@ public class ActionAreaShader : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        
+        _material.SetColor(_bottomColorShaderID, end);
     }
+    
 }

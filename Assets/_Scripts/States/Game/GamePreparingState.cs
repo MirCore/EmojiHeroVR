@@ -2,6 +2,7 @@
 using Enums;
 using Manager;
 using Scriptables;
+using Systems;
 using UnityEngine;
 
 namespace States.Game
@@ -16,7 +17,7 @@ namespace States.Game
         /// </summary>
         public override void EnterState()
         {
-            Time.timeScale = 1;
+            GameManager.Instance.RestartTimeScale();
             EventManager.InvokeLevelStopped();
         }
 
@@ -38,7 +39,10 @@ namespace States.Game
             {
                 case UIType.StartLevel:
                 case UIType.StartStopLevel:
-                    GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
+                    if (LoggingSystem.Instance.FinishedSaving())
+                        GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
+                    else
+                        Debug.Log("Still writing images");
                     break;
                 case UIType.StopLevel:
                 case UIType.PauseLevel:

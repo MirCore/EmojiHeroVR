@@ -45,7 +45,7 @@ Material:
     - _QueueOffset: 0
     - _Spread: 0.5
     m_Colors:
-    - _BottomColor: {r: 1, g: 0.40000004, b: 0, a: 0.5019608}
+    - _BottomColor: {r: 1, g: 0.4, b: 0, a: 0.19607843}
     - _TopColor: {r: 1, g: 0.40000004, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &9027059645522245206

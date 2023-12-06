@@ -13,4 +13,8 @@ MonoBehaviour:
   m_Name: Sadness
   m_EditorClassIdentifier: 
   EEmote: 6
-  Texture: {fileID: 2800000, guid: c82876605e997214295311a4879b702d, type: 3}
+  EnglishName: Sadness
+  GermanName: Traurig
+  Textures:
+  - {fileID: 2800000, guid: c82876605e997214295311a4879b702d, type: 3}
+  - {fileID: 2800000, guid: 43121c172fccf3b43a276015265df843, type: 3}

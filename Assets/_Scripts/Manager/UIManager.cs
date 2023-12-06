@@ -1,12 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Enums;
-using Scriptables;
 using Systems;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Utilities;
 
 namespace Manager
@@ -20,25 +19,28 @@ namespace Manager
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
         [SerializeField] private GameObject LevelEndScreenUI;
-        [SerializeField] private GameObject LevelUI;
         
-        [SerializeField] private GameObject LevelPrefab;
 
         [Header("Score UI")]
         [SerializeField] private List<TMP_Text> LevelNameField;
         [SerializeField] private TMP_Text ProgressField;
         [SerializeField] private List<TMP_Text> ResultField;
         [SerializeField] private List<TMP_Text> ScoreField;
+        [SerializeField] private TMP_Text DetailedEmojiScoreField;
+        [SerializeField] private TMP_Text DetailedTimeScoreField;
         
         // Holds the data for the current level.
         private LevelStruct _level;
+        
+        private int _maxScore;
 
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
-            EventManager.OnEmoteExitedArea += OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
+            EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
 
             // Load the UI elements for level selection.
             ResetScoreUI();
@@ -51,48 +53,27 @@ namespace Manager
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
-            EventManager.OnEmoteExitedArea -= OnEmoteExitedAreaCallback;
+            EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
+            EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         }
+
+        private void Update()
+        {
+            if (GameManager.Instance.IsPlayingLevel)
+                return;
+            ProgressField.text = $"{LoggingSystem.Instance.SnapshotCount}";
+        }
+
 
         /// <summary>
         /// Updates the score UI when an emote exits the action area.
         /// </summary>
-        private void OnEmoteExitedAreaCallback(EEmote emote) => StartCoroutine(UpdateScoreUI());
-
+        private void EmoteExitedActionAreaCallback(Emoji emoji) => StartCoroutine(UpdateScoreUI());
+        
         /// <summary>
-        /// Instantiates UI elements for each level based on the levels available in the ResourceSystem.
+        /// Updates the score UI when an emote is fulfilled.
         /// </summary>
-        private void LoadLevelUI()
-        {
-            int id = 0;
-            foreach (ScriptableLevel level in ResourceSystem.Instance.Levels)
-            {
-                GameObject ui = Instantiate(LevelPrefab, LevelUI.transform);
-                
-                TMP_Text[] texts = ui.GetComponentsInChildren<TMP_Text>();
-                Button button = ui.GetComponent<Button>();
-                button.onClick.AddListener(() => OnLevelButtonClicked(level));
-                
-                // Set UI text fields based on level properties.
-                texts[0].text = "#" + id;
-                texts[1].text = level.LevelStruct.LevelName;
-
-                texts[2].text = level.LevelStruct.LevelMode switch
-                {
-                    ELevelMode.Training => "<sprite index=1>",
-                    ELevelMode.Predefined => level.LevelStruct.EmoteArray.Length + "<sprite index=0>",
-                    _ => level.LevelStruct.Count + "<sprite index=0>"
-                };
-
-                texts[3].text = level.LevelStruct.LevelMode switch
-                {
-                    ELevelMode.Training => "<sprite index=2>",
-                    _ => 60 * level.LevelStruct.MovementSpeed + "<sprite index=0>/m"
-                };
-
-                id++;
-            }
-        }
+        private void OnEmoteFulfilledCallback(Emoji emoji, float score) => StartCoroutine(UpdateScoreUI());
 
         /// <summary>
         /// Loads the UI for the end screen, displaying level name and score.
@@ -124,25 +105,31 @@ namespace Manager
 
             ProgressField.text = _level.LevelMode switch
             {
-                ELevelMode.Training => $"{levelProgress.FinishedEmoteCount}",
-                ELevelMode.Predefined => levelProgress.FinishedEmoteCount + "/" + _level.EmoteArray.Length,
-                _ => levelProgress.FinishedEmoteCount + "/" + _level.Count
+                ELevelMode.Training => "",
+                ELevelMode.Predefined => $"{Math.Round((float)levelProgress.FinishedEmoteCount / _level.EmoteArray.Length * 100)}%",
+                _ => $"{Math.Round((float)levelProgress.FinishedEmoteCount / _level.Count * 100)}%"
             };
 
             foreach (TMP_Text t in ResultField)
             {
                 t.text = _level.LevelMode switch
                 {
-                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount}",
-                    ELevelMode.Predefined => levelProgress.FulfilledEmoteCount + "/" + _level.EmoteArray.Length,
-                    _ => levelProgress.FulfilledEmoteCount + "/" + _level.Count
+                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount} / {GameManager.Instance.LevelProgress.SpawnedEmotesCount}",
+                    ELevelMode.Predefined => $"{levelProgress.FulfilledEmoteCount} / {_level.EmoteArray.Length} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)",
+                    _ => $"{levelProgress.FulfilledEmoteCount} / {_level.Count} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)"
                 };
             }
 
             foreach (TMP_Text t in ScoreField)
             {
-                t.text = GameManager.Instance.LevelProgress.LevelScore.ToString();
+                string maxScoreText = "";
+                if (_maxScore > 0)
+                    maxScoreText = $" / {_maxScore}";
+                t.text = $"{levelProgress.LevelScore}{maxScoreText}";
             }
+
+            DetailedEmojiScoreField.text = $"Matched Emojis: {levelProgress.FulfilledEmoteCount}";
+            DetailedTimeScoreField.text = $"Time Bonus: {Math.Round((float)(levelProgress.LevelScore - levelProgress.FulfilledEmoteCount * GameManager.BaseScoreForCompletion) / GameManager.ScoreMultiplier / 10, 1)}";
         }
 
         /// <summary>
@@ -174,14 +161,16 @@ namespace Manager
         private void OnLevelStartedCallback()
         {
             _level = GameManager.Instance.Level;
-            
+
+            _maxScore = GameManager.Instance.GetMaxScore();
+
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
             
             LoadScoreUI();
         }
-        
+
         /// <summary>
         /// Updates the UI to reflect the level stopped state.
         /// </summary>
@@ -209,6 +198,5 @@ namespace Manager
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
         public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
-        private static void OnLevelButtonClicked(ScriptableLevel level) => GameManager.Instance.OnButtonPressed(level);
     }
 }

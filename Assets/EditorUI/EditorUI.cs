@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
@@ -6,13 +5,10 @@ using Enums;
 using Manager;
 using Scriptables;
 using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.PackageManager.Requests;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utilities;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 #if UNITY_EDITOR
 namespace EditorUI
@@ -21,6 +17,7 @@ namespace EditorUI
     {
         [SerializeField] private VisualTreeAsset VisualTreeAsset;
         private static VisualElement _root;
+        private ProgressBar _imageProgressBar;
 
         [SerializeField] public string SelectedWebcam;
         [SerializeField] public string SelectedSecondaryWebcam;
@@ -28,7 +25,6 @@ namespace EditorUI
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
         private List<ScriptableLevel> _levels;
-        private IBinding _binding;
 
 
         [MenuItem("Window/EmojiHero Editor Window")]
@@ -63,12 +59,14 @@ namespace EditorUI
             _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
 
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
+            _root.Q<Button>("RecenterXR").RegisterCallback<ClickEvent>(OnRecenterXRButtonClicked);
+            
+            _imageProgressBar = _root.Q<ProgressBar>("ImageSaveProgress");
 
             if (EditorUIFerStats.Instance != null)
             {
                 SerializedObject ferStats = new(EditorUIFerStats.Instance);
                 _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
-                _root.Q<Label>("TimeBetweenPosts").BindProperty(ferStats.FindProperty("CurrentTimeBetweenPosts"));
                 _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
                 _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
                 _root.Q<Label>("SnapshotFPS").BindProperty(ferStats.FindProperty("SnapshotFPS"));
@@ -81,7 +79,15 @@ namespace EditorUI
 
         private static void OnStartStopButtonClicked(ClickEvent evt)
         {
-            GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+            if (!EditorApplication.isPlaying)
+                EditorApplication.EnterPlaymode();
+            else
+                GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+        }
+        
+        private static void OnRecenterXRButtonClicked(ClickEvent evt)
+        {
+            GameManager.Instance.RecenterXR();
         }
 
         private void CreateLevelDropdown()
@@ -161,11 +167,17 @@ namespace EditorUI
             CreateLevelDropdown();
         }
 
-        public void SetWebcamTexture(WebCamTexture mainWebcam)
+        public void UpdateImageProgress(int value)
         {
-            VisualElement webcamUI = _root.Q<VisualElement>("WebcamTexture");
+            _imageProgressBar.value = _imageProgressBar.highValue - value + 1;
+            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
         }
-
+        public void UpdateImageBacklog(int value)
+        {
+            _imageProgressBar.value = 0;
+            _imageProgressBar.highValue = value;
+            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
+        }
     }
 }
 #endif

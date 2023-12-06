@@ -1,47 +1,86 @@
 ﻿using System;
+using System.Collections;
+using Data;
+using Manager;
 using UnityEngine;
 
 namespace Systems
 {
     public class FaceExpressionLogger : MonoBehaviour
     {
-#if OVR_IMPLEMENTED
-        private const OVRPermissionsRequester.Permission FaceTrackingPermission = OVRPermissionsRequester.Permission.FaceTracking;
-        
-        private OVRPlugin.FaceState _currentFaceState;
-#endif
-        private bool _validExpressions;
+        private FaceExpressionHandler _faceExpressionHandler;
+        [SerializeField] private int TargetFPS = 0;
+        private Coroutine _coroutine;
 
         private void Start()
         {
-#if OVR_IMPLEMENTED
-            if (!OVRPermissionsRequester.IsPermissionGranted(FaceTrackingPermission))
-                Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start face tracking.");
-            if (!OVRPlugin.StartFaceTracking()) 
-                Debug.LogWarning($"[{nameof(OVRFaceExpressions)}] Failed to start face tracking.");
-#endif
+            _faceExpressionHandler = new FaceExpressionHandler();
         }
 
-        public string GetFaceExpressionsAsJson()
+        private void OnEnable()
         {
-#if OVR_IMPLEMENTED      
-            if (!_validExpressions)
-                return JsonUtility.ToJson(_currentFaceState);
-#endif
-            return ""; 
+            EventManager.OnLevelStarted += OnLevelStartedCallback;
+            EventManager.OnLevelFinished += OnLevelFinishedCallback;
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-#if OVR_IMPLEMENTED
-            _validExpressions = OVRPlugin.GetFaceState(OVRPlugin.Step.Render, -1, ref _currentFaceState) && _currentFaceState.Status.IsValid;
-#endif
+            EventManager.OnLevelStarted -= OnLevelStartedCallback;
+            EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         }
 
-        private void CheckValidity()
+        private void OnLevelStartedCallback()
         {
-            if (!_validExpressions)
-                throw new InvalidOperationException($"Face expressions are not valid at this time. Use {nameof(_validExpressions)} to check for validity.");
+            if (LoggingSystem.Instance.LogFaceExpressions)
+                _coroutine = StartCoroutine(LogFaceExpression());
+        }
+
+        private void OnLevelFinishedCallback()
+        {
+            if (_coroutine != null)
+                StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
+
+        private IEnumerator LogFaceExpression()
+        {
+            
+            // Interval between each snapshot.
+            float interval = 0;
+            if (TargetFPS > 0)
+                interval = 1f / TargetFPS;
+            float nextPostTime = Time.realtimeSinceStartup + interval;
+            
+            while (GameManager.Instance.IsPlayingLevel)
+            {
+                while (!WebcamManager.EmojiIsInWebcamArea)
+                {
+                    nextPostTime = Time.realtimeSinceStartup + interval;
+                    yield return null;
+                }
+
+                FaceExpression faceExpression = new()
+                {
+                    Timestamp = LoggingSystem.GetUnixTimestamp(),
+                    LevelID = GameManager.Instance.Level.LevelName,
+                    Emoji = WebcamManager.EmojiInWebcamArea,
+                    FaceExpressionJson = _faceExpressionHandler.GetFaceExpressionsAsJson()
+                };
+
+                LoggingSystem.Instance.AddToFaceExpressionList(faceExpression);
+                
+                // Calculate time needed to wait to ensure periodic execution
+                float waitTime = Math.Max(nextPostTime - Time.realtimeSinceStartup, 0);
+                
+                // Wait at least a single frame, if the waitTime is 0
+                if (waitTime > 0)
+                    yield return new WaitForSecondsRealtime(waitTime);
+                else
+                    yield return null;
+
+                // iterate timer to next interval
+                nextPostTime += interval;
+            }
         }
     }
 }

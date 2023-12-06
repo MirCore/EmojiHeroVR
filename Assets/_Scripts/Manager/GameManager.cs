@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using Data;
 using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
+using Unity.XR.CoreUtils;
 using UnityEditor;
 using UnityEngine;
 using Utilities;
@@ -17,8 +17,11 @@ namespace Manager
     public class GameManager : Singleton<GameManager>
     {
         // Configuration to prevent the game from starting if the UserID is not set
-        [Header("Prevent Game From Starting When UserID Is Missing")] [SerializeField]
+        [Header("Don't Start When UserID Is Missing")] [SerializeField]
         private bool PreventGameStartWithoutUserID;
+        
+        // Whether German emote names should be used
+        [field: SerializeField] public bool UseGermanEmoteNames { get; private set; }
 
         // Game states
         private GameState _gameState;
@@ -26,8 +29,7 @@ namespace Manager
         internal readonly GamePlayingLevelState PlayingLevelState = new();
         internal readonly GameLevelFinishedState LevelFinishedState = new();
 
-        [field: Header("Level Setup GameObjects")]
-        [field: SerializeField] public Transform EmojiSpawnPosition { get; private set; }
+        [SerializeField] private XROrigin XROrigin;
         [SerializeField] private GameObject ActionArea;
         public float ActionAreaSize { get; private set; }
         
@@ -38,6 +40,13 @@ namespace Manager
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
+        public bool IsPlayingLevel => _gameState == PlayingLevelState;
+
+        private Coroutine _timescaleCoroutine;
+
+        // Scoring
+        internal const int BaseScoreForCompletion = 50;
+        internal const int ScoreMultiplier = 10;
 
 
         private void OnEnable()
@@ -47,10 +56,13 @@ namespace Manager
             {
                 Debug.LogWarning("No UserID Set");
                 if (PreventGameStartWithoutUserID)
-                    UnityEditor.EditorApplication.isPlaying = false;
+                    EditorApplication.isPlaying = false;
                 else
                     EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
             }
+            
+            // Create an instance of the ResourceSystem
+            ResourceSystem unused = new ();
 
             // Fetching the action area size and setting the selected level
             ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;
@@ -74,8 +86,8 @@ namespace Manager
                 OnButtonPressed(UIType.StartStopLevel);
             
             // Stop game with escape
-            else if (Input.GetButtonDown("Cancel"))
-                EditorApplication.ExitPlaymode();
+            //else if (Input.GetButtonDown("Cancel"))
+            //    EditorApplication.ExitPlaymode();
         }
 
         /// <summary>
@@ -122,15 +134,14 @@ namespace Manager
         public void OnButtonPressed(UIType uiType) => _gameState.HandleUIInput(uiType);
 
         /// <summary>
-        /// Handles button presses when selecting a level in the UI
-        /// </summary>
-        /// <param name="level">The selected level.</param>
-        public void OnButtonPressed(ScriptableLevel level) => _gameState.HandleUIInput(level);
-
-        /// <summary>
         /// Stops the game's time scale, effectively pausing in-game action.
         /// </summary>
-        public void StopTimeScale() => StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 1f));
+        public void StopTimeScale()
+        {
+            if (_timescaleCoroutine != null)
+                StopCoroutine(_timescaleCoroutine);
+            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 2f));
+        }
 
         /// <summary>
         /// Sets a new level for the game and the EditorUI.
@@ -138,14 +149,30 @@ namespace Manager
         /// <param name="level">The new level to set.</param>
         public void SetNewLevel(ScriptableLevel level)
         {
-            _level = level;
-            EditorUI.EditorUI.Instance.SetNewLevel(level);
+            if (!IsPlayingLevel)
+                _level = level;
+            EditorUI.EditorUI.Instance.SetNewLevel(_level);
         }
-        
+
         /// <summary>
         /// Increments the count of spawned emojis.
         /// </summary>
-        public void IncreaseSpawnedEmotesCount() => PlayingLevelState.IncreaseSpawnedEmotesCount();
+        /// <param name="emoji"></param>
+        public void IncreaseSpawnedEmotesCount(Emoji emoji) => PlayingLevelState.IncreaseSpawnedEmotesCount(emoji);
 
+        public int GetMaxScore() => PlayingLevelState.MaxScore;
+
+        public void RecenterXR()
+        {
+            XROrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
+            XROrigin.MoveCameraToWorldLocation(new Vector3(0, XROrigin.CameraInOriginSpaceHeight, 0));
+        }
+
+        public void RestartTimeScale()
+        {
+            if (_timescaleCoroutine != null)
+                StopCoroutine(_timescaleCoroutine);
+            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(0, 1, 1f));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Enums;
 using Manager;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -10,6 +11,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EmoteSpawner : MonoBehaviour
 {
+    [SerializeField] private Transform EmojiSpawnPosition; // The GameObject indicating the spawn position
     [SerializeField] private float XWidth = 0.5f; // The width between lanes for emote spawning.
     [SerializeField] private int Lanes = 4; // The number of lanes where emotes can be spawned.
 
@@ -18,25 +20,33 @@ public class EmoteSpawner : MonoBehaviour
     private readonly List<Vector3> _spawnLocations = new(); // List of possible locations for emote spawning.
     private Vector3 _actionAreaSpawnLocation; // Specific location to spawn emotes during Training mode.
 
+    private static ObjectPool _objectPool;
+
 
     private void OnEnable()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
+        EventManager.OnLevelFinished += OnLevelFinishedCallback;
         EventManager.OnLevelStopped += OnLevelStoppedCallback;
         EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
+        EventManager.OnEmoteFailed += OnEmoteFailedCallback;
     }
 
     private void OnDisable()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
+        EventManager.OnLevelFinished -= OnLevelFinishedCallback;
         EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
+        EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
     }
 
     private void Start()
     {
+        _objectPool = GetComponent<ObjectPool>();
+        
         // Calculate and store possible emote spawn locations based on lanes and width.
-        Vector3 spawnDistance = GameManager.Instance.EmojiSpawnPosition.position;
+        Vector3 spawnDistance = EmojiSpawnPosition.position;
         for (int lane = 0; lane < Lanes; lane++)
         {
             float offset = (Lanes - 1) / 2f;
@@ -55,22 +65,28 @@ public class EmoteSpawner : MonoBehaviour
         _spawnActive = true;
         
         // Determine the spawning behavior based on the level mode.
-        if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 0));
-        else
-            StartCoroutine(SpawnEmoteAtSpawnLocation());
+        StartCoroutine(GameManager.Instance.Level.LevelMode == ELevelMode.Training
+            ? SpawnEmoteInActionArea(waitBeforeSpawn: 0)
+            : SpawnEmoteAtSpawnLocation());
     }
+
+    /// <summary>
+    /// Spawn a new emote in Training mode when the previous one is failed.
+    /// </summary>
+    private void OnEmoteFailedCallback(Emoji emoji) => SpawnTrainingEmote();
 
     /// <summary>
     /// Spawn a new emote in Training mode when the previous one is fulfilled.
     /// </summary>
-    private void OnEmoteFulfilledCallback(EEmote emote, float score)
+    private void OnEmoteFulfilledCallback(Emoji emoji, float score) => SpawnTrainingEmote();
+
+    private void SpawnTrainingEmote()
     {
         // In Training mode, spawn a new emote when the previous one is fulfilled.
         if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
-            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1));
+            StartCoroutine(SpawnEmoteInActionArea(waitBeforeSpawn: 1.1f));
     }
-    
+
     /// <summary>
     /// Coroutine to handle spawning of emotes at the start of the lane.
     /// </summary>
@@ -94,7 +110,8 @@ public class EmoteSpawner : MonoBehaviour
     private IEnumerator SpawnEmoteInActionArea(float waitBeforeSpawn)
     {
         yield return new WaitForSeconds(waitBeforeSpawn);
-        
+        if (!_spawnActive) 
+            yield break;
         ActivatePooledEmote(_actionAreaSpawnLocation);
         CheckLevelEndConditions();
     }
@@ -106,12 +123,9 @@ public class EmoteSpawner : MonoBehaviour
     private static void ActivatePooledEmote(Vector3 position)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
-        GameObject emote = ObjectPool.Instance.GetPooledObject();
+        GameObject emote = _objectPool.GetPooledObject();
         emote.transform.position = position;
         emote.SetActive(true);
-        
-        // Notify the game manager that a new emote has been spawned.
-        GameManager.Instance.IncreaseSpawnedEmotesCount();
     }
 
     /// <summary>
@@ -126,6 +140,7 @@ public class EmoteSpawner : MonoBehaviour
     /// <summary>
     /// Stop spawning emotes when the level stops.
     /// </summary>
+    private void OnLevelFinishedCallback() => StopSpawning();
     private void OnLevelStoppedCallback() => StopSpawning();
     
     /// <summary>
