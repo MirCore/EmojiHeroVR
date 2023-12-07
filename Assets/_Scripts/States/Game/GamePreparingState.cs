@@ -39,10 +39,7 @@ namespace States.Game
             {
                 case UIType.StartLevel:
                 case UIType.StartStopLevel:
-                    if (LoggingSystem.Instance.FinishedSaving())
-                        GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
-                    else
-                        Debug.Log("Still writing images");
+                    GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
                     break;
                 case UIType.StopLevel:
                 case UIType.PauseLevel:

@@ -5,7 +5,6 @@ using System.Linq;
 using Data;
 using Enums;
 using Manager;
-using Systems;
 using UnityEngine;
 using Utilities;
 
@@ -82,7 +81,7 @@ public class FerHandler : MonoBehaviour
     /// </summary>
     private IEnumerator PostRestImage()
     {
-        Snapshot snapshot = WebcamManager.GetSnapshot();
+        Color32[] snapshot = WebcamManager.GetSnapshot();
         
         while (snapshot == null)
         {
@@ -93,7 +92,6 @@ public class FerHandler : MonoBehaviour
         // Initialize log data for the current FER process.
         LogData logData = new()
         {
-            Timestamp = snapshot.Timestamp,
             LevelID = GameManager.Instance.Level.LevelName,
             Emoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
             UserID = EditorUI.EditorUI.Instance.UserID,
@@ -143,10 +141,6 @@ public class FerHandler : MonoBehaviour
 
     private void HandleFerCompletion(LogData logData)
     {
-        // Log the FER results if it is not of type Training.
-        if (LoggingSystem.Instance.LogTrainingLevel || GameManager.Instance.Level.LevelMode != ELevelMode.Training)
-            LoggingSystem.Instance.AddToLogDataList(logData);
-        
         // Update the UI with the FER results.
         EditorUIFerStats.Instance.LogRestResponse(logData);
 

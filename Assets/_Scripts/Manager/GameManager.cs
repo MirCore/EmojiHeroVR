@@ -49,16 +49,6 @@ namespace Manager
 
         private void OnEnable()
         {
-            // Check if a user ID is set. Generate a Unix timestamp user ID if none is set
-            if (EditorUI.EditorUI.Instance.UserID == "")
-            {
-                Debug.LogWarning("No UserID Set");
-                if (PreventGameStartWithoutUserID)
-                    EditorApplication.isPlaying = false;
-                else
-                    EditorUI.EditorUI.Instance.UserID = LoggingSystem.GetUnixTimestamp();
-            }
-            
             // Create an instance of the ResourceSystem
             ResourceSystem unused = new ();
 

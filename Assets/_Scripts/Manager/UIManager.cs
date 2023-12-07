@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Enums;
-using Systems;
 using TMPro;
 using UnityEngine;
 using Utilities;
@@ -56,14 +55,6 @@ namespace Manager
             EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         }
-
-        private void Update()
-        {
-            if (GameManager.Instance.IsPlayingLevel)
-                return;
-            ProgressField.text = $"{LoggingSystem.Instance.SnapshotCount}";
-        }
-
 
         /// <summary>
         /// Updates the score UI when an emote exits the action area.

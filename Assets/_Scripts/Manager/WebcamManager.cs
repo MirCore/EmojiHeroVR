@@ -17,7 +17,7 @@ namespace Manager
     public class WebcamManager : MonoBehaviour
     {
         // List to store references to the active webcams.
-        private static readonly List<WebCamTexture> Webcams = new();
+        private static WebCamTexture Webcam;
         
         // List of RenderTextures that are set up to display the webcam feeds.
         [SerializeField] private List<RenderTexture> RenderTextures = new();
@@ -34,12 +34,8 @@ namespace Manager
 
         // A texture for processing the webcam image.
         private static Texture2D _texture;
-        
-        // Accessors for webcam width and height.
-        public static int WebcamWidth => Webcams[0].width;
-        public static int WebcamHeight => Webcams[0].height;
-        public static Emoji EmojiInWebcamArea => EmojisInWebcamArea.FirstOrDefault();
-        public static bool EmojiIsInWebcamArea => EmojisInWebcamArea.Any();
+
+        private static Color32[] _pixels;
 
 
         // A reference to the coroutine that takes continuous snapshots.
@@ -53,7 +49,7 @@ namespace Manager
             
             // Set up the webcams and create a texture for image processing.
             InitializeWebcams(mainWebcamName, secondaryWebcamName);
-            _texture = new Texture2D(Webcams[0].width, Webcams[0].height);
+            _texture = new Texture2D(Webcam.width, Webcam.height);
             
             EventManager.OnEmoteEnteredWebcamArea += EmoteEnteredWebcamAreaCallback;
             EventManager.OnEmoteExitedWebcamArea += EmoteExitedWebcamAreaCallback;
@@ -62,9 +58,8 @@ namespace Manager
 
         private void OnDestroy()
         {
-            // Clean up webcams and textures, and unsubscribe from events on destruction.
-            foreach (WebCamTexture webcam in Webcams) 
-                webcam.Stop();
+            // Clean up webcam and texture, and unsubscribe from events on destruction.
+            Webcam.Stop();
         
             foreach (RenderTexture texture in RenderTextures) 
                 texture.Release();
@@ -111,9 +106,8 @@ namespace Manager
         private void Update()
         {
             // On each frame, update the RenderTextures with the latest webcam image if it has updated.
-            for (int i = 0; i < Webcams.Count; i++)
-                if (Webcams[i].didUpdateThisFrame)
-                    Blit(i);
+            if (Webcam.didUpdateThisFrame)
+                Blit();
         }
 
         /// <summary>
@@ -121,26 +115,19 @@ namespace Manager
         /// </summary>
         private void InitializeWebcams(string mainWebcamName, string secondaryWebcamName)
         {
-            Webcams.Add(new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight));
-            
-            if (secondaryWebcamName != "-" && secondaryWebcamName != "" && secondaryWebcamName != mainWebcamName)
-                Webcams.Add(new WebCamTexture(secondaryWebcamName, RequestedCameraWidth, RequestedCameraHeight));
+            Webcam = new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight);
 
-            for (int i = 0; i < Webcams.Count; i++)
-            {
-                Webcams[i].Play();
-                Blit(i);
-            }
+            Webcam.Play();
         }
 
         /// <summary>
         /// Blit the webcam feed to the corresponding RenderTexture.
         /// </summary>
         /// <param name="webcamIndex"></param>
-        private void Blit(int webcamIndex)
+        private void Blit()
         {          
-            if (RenderTextures.Count > webcamIndex)
-                Graphics.Blit(Webcams[webcamIndex], RenderTextures[webcamIndex]);
+            if (RenderTextures.Count > 0)
+                Graphics.Blit(Webcam, RenderTextures[0]);
         }
 
 
@@ -189,63 +176,23 @@ namespace Manager
         {
             Profiler.BeginSample("TakeSnapshots");
             
-            // Initialize a new Snapshot
-            Snapshot snapshot = new()
-            {
-                Timestamp = LoggingSystem.GetUnixTimestamp(),
-                LevelID =  GameManager.Instance.Level.LevelName,
-                LevelMode = GameManager.Instance.Level.LevelMode,
-                Emoji = EmojiInWebcamArea,
-                ImageTextures = new List<Color32[]>(),
-            };
-        
             // Capture a single frame for each webcam
-            foreach (WebCamTexture webcam in Webcams)
-            {
-                Profiler.BeginSample("GetPixels");
-                Color32[] pixels = webcam.GetPixels32();
-                snapshot.ImageTextures.Add(pixels);
-                Profiler.EndSample();
-            }
             
-            // Add the Snapshot to the List of Snapshots in the LoggingSystem
-            LoggingSystem.Instance.LatestSnapshot = snapshot;
+            Profiler.BeginSample("GetPixels");
+            _pixels = Webcam.GetPixels32();
+            Profiler.EndSample();
+            
 
             Profiler.EndSample();
         }
 
-        public static Snapshot GetSnapshot() => LoggingSystem.Instance.LatestSnapshot;
+        public static Color32[] GetSnapshot() => _pixels;
 
-        /// <summary>
-        /// Convert the snapshot to a base64 string for network transmission.
-        /// </summary>
-        public static string GetBase64(Snapshot snapshot)
+        public static Texture2D GetImage(Color32[] snapshot)
         {
             Profiler.BeginSample("SetPixels");
             // Convert pixels to a texture
-            _texture.SetPixels32(snapshot.ImageTextures[0]);
-            _texture.Apply();
-            Profiler.EndSample();
-                
-            Profiler.BeginSample("EncodeToJPG");
-            // Encode frame as JPG
-            byte[] image = _texture.EncodeToJPG();
-            Profiler.EndSample();
-
-            Profiler.BeginSample("ToBase64String");
-            // Convert to frame to base64
-            string base64 = Convert.ToBase64String(image);
-            Profiler.EndSample();
-
-            // Return the base64-encoded image
-            return base64;
-        }
-
-        public static Texture2D GetImage(Snapshot snapshot)
-        {
-            Profiler.BeginSample("SetPixels");
-            // Convert pixels to a texture
-            _texture.SetPixels32(snapshot.ImageTextures[0]);
+            _texture.SetPixels32(snapshot);
             _texture.Apply();
             Profiler.EndSample();
                 
