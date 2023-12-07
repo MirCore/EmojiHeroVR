@@ -104,14 +104,12 @@ public class FerHandler : MonoBehaviour
         };
         
         // Convert the captured image to base64 format.
-        //string image = WebcamManager.GetBase64(snapshot);
         Texture2D image = WebcamManager.GetImage(snapshot);
         yield return null;  // Wait until the next frame to reduce lag
 
-        // Send the base64 image for FER processing.
+        // Send the image for FER processing.
         Texture2D face = FaceDetection.Instance.DetectFace(image);
         EmotionRecognition.Instance.DetectEmotion(face, logData, this);
-        //Rest.PostBase64(image, logData, this);
     }
     
     /// <summary>
