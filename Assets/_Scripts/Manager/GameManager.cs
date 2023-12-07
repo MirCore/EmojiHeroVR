@@ -4,7 +4,6 @@ using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
-using Unity.XR.CoreUtils;
 using UnityEditor;
 using UnityEngine;
 using Utilities;
@@ -29,7 +28,6 @@ namespace Manager
         internal readonly GamePlayingLevelState PlayingLevelState = new();
         internal readonly GameLevelFinishedState LevelFinishedState = new();
 
-        [SerializeField] private XROrigin XROrigin;
         [SerializeField] private GameObject ActionArea;
         public float ActionAreaSize { get; private set; }
         
@@ -161,12 +159,6 @@ namespace Manager
         public void IncreaseSpawnedEmotesCount(Emoji emoji) => PlayingLevelState.IncreaseSpawnedEmotesCount(emoji);
 
         public int GetMaxScore() => PlayingLevelState.MaxScore;
-
-        public void RecenterXR()
-        {
-            XROrigin.MatchOriginUpCameraForward(Vector3.up, Vector3.forward);
-            XROrigin.MoveCameraToWorldLocation(new Vector3(0, XROrigin.CameraInOriginSpaceHeight, 0));
-        }
 
         public void RestartTimeScale()
         {
