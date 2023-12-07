@@ -81,21 +81,7 @@ public class FerHandler : MonoBehaviour
     /// </summary>
     private IEnumerator PostRestImage()
     {
-        Color32[] snapshot = WebcamManager.GetSnapshot();
-        
-        while (snapshot == null)
-        {
-            yield return null;
-            snapshot = WebcamManager.GetSnapshot();
-        }
-        
-        // Initialize log data for the current FER process.
-        LogData logData = new()
-        {
-            LevelID = GameManager.Instance.Level.LevelName,
-            Emoji = GameManager.Instance.LevelProgress.GetEmojiInActionArea,
-            UserID = EditorUI.EditorUI.Instance.UserID,
-        };
+        Color32[] snapshot = WebcamManager.TakeSnapshots();
         
         // Convert the captured image to base64 format.
         Texture2D image = WebcamManager.GetImage(snapshot);
@@ -103,46 +89,40 @@ public class FerHandler : MonoBehaviour
 
         // Send the image for FER processing.
         Texture2D face = FaceDetection.Instance.DetectFace(image);
-        EmotionRecognition.Instance.DetectEmotion(face, logData, this);
+        EmotionRecognition.Instance.DetectEmotion(face, this);
     }
     
     /// <summary>
-    /// Processes the REST response from the FER API.
+    /// Processes the REST probabilities from the FER API.
     /// </summary>
-    /// <param name="response">The JSON response from the FER service.</param>
-    /// <param name="logData">The log data associated with the current FER process.</param>
-    public void ProcessRestResponse(string response, LogData logData)
+    /// <param name="probabilities">The JSON probabilities from the FER service.</param>
+
+    public void ProcessFerResponse(Probabilities probabilities)
     {
-        // Parse the JSON response to get FER probabilities.
-        logData.FerProbabilities = JsonUtility.FromJson<Probabilities>(response);
         // Determine the emotion with the highest probability.
-        logData.EmoteFer = GetEmoteWithHighestProbability(logData.FerProbabilities);
+        EEmote emoteFer = GetEmoteWithHighestProbability(probabilities);
         // Trigger an event for the detected emotion.
-        EventManager.InvokeEmotionDetected(logData.EmoteFer);
+        EventManager.InvokeEmotionDetected(emoteFer);
         
-        HandleFerCompletion(logData);
+        HandleFerCompletion(probabilities);
     }
 
     /// <summary>
     /// Handles errors that occur during the REST call for FER processing.
     /// </summary>
     /// <param name="error">The exception thrown during the REST call.</param>
-    /// <param name="logData">The log data associated with the current FER process.</param>
-    public void ProcessRestError(Exception error, LogData logData)
+    public void ProcessFerError(Exception error)
     {
         // Log the error message.
         Debug.LogWarning("REST Error: " + error.Message);
         
-        // Set FER probabilities to default (zero) values.
-        logData.FerProbabilities = new Probabilities();
-        
-        HandleFerCompletion(logData);
+        HandleFerCompletion(new Probabilities());
     }
 
-    private void HandleFerCompletion(LogData logData)
+    private void HandleFerCompletion(Probabilities probabilities)
     {
         // Update the UI with the FER results.
-        EditorUIFerStats.Instance.LogRestResponse(logData);
+        EditorUIFerStats.Instance.LogRestResponse(probabilities);
 
         // If emojis are still in the action area, continue the FER process.
         if (GameManager.Instance.LevelProgress.EmojisAreInActionArea)
@@ -170,18 +150,6 @@ public class FerHandler : MonoBehaviour
 
         // Return the emotion with the highest probability.
         return result.OrderByDescending(kv => kv.Value).First().Key;
-    }
-
-    public void ProcessRestResponse(Probabilities response, LogData logData)
-    {
-        // Parse the JSON response to get FER probabilities.
-        logData.FerProbabilities = response;
-        // Determine the emotion with the highest probability.
-        logData.EmoteFer = GetEmoteWithHighestProbability(logData.FerProbabilities);
-        // Trigger an event for the detected emotion.
-        EventManager.InvokeEmotionDetected(logData.EmoteFer);
-        
-        HandleFerCompletion(logData);
     }
 }
 

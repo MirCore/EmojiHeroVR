@@ -20,7 +20,6 @@ namespace EditorUI
         private ProgressBar _imageProgressBar;
 
         [SerializeField] public string SelectedWebcam;
-        [SerializeField] public string SelectedSecondaryWebcam;
         [SerializeField] public string SelectedLevel;
         [SerializeField] public string RestBasePath;
         [SerializeField] public string UserID;
@@ -72,7 +71,6 @@ namespace EditorUI
             }
             
             CreateWebcamDropdown();
-            CreateSecondaryWebcamDropdown();
             CreateLevelDropdown();
         }
 
@@ -114,24 +112,8 @@ namespace EditorUI
             });
         }
 
-        private void CreateSecondaryWebcamDropdown()
+        public static void SetRestResponseData(Probabilities probabilities)
         {
-            List<string> webCamDevices = WebCamTexture.devices.Select(device => device.name).ToList();
-            webCamDevices.Insert(0, "-");
-
-            DropdownField dropdown = _root.Q<DropdownField>("SecondaryWebcamDropdown");
-            dropdown.choices = webCamDevices;
-            dropdown.index = webCamDevices.IndexOf(SelectedSecondaryWebcam);
-            dropdown.RegisterValueChangedCallback(evt =>
-            {
-                SelectedSecondaryWebcam = evt.newValue;
-            });
-        }
-
-        public static void SetRestResponseData(LogData logData)
-        {
-            Probabilities probabilities = logData.FerProbabilities;
-
             _root.Q<ProgressBar>("Anger").value = probabilities.anger;
             _root.Q<ProgressBar>("Disgust").value = probabilities.disgust;
             _root.Q<ProgressBar>("Fear").value = probabilities.fear;
@@ -142,7 +124,6 @@ namespace EditorUI
         }
 
         public string GetMainWebcam() => SelectedWebcam;
-        public string GetSecondaryWebcam() => SelectedSecondaryWebcam;
 
         public void ResetUserID()
         {

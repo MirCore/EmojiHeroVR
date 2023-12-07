@@ -3044,12 +3044,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eac8b1cd0c46cd489aabc4749f11039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RenderTextures:
-  - {fileID: 8400000, guid: 61408ff309c53d9448e4cb6b4a8f6433, type: 2}
-  - {fileID: 8400000, guid: b2512dd1d8eb9d749913b85d9f0060de, type: 2}
+  RenderTexture: {fileID: 8400000, guid: 61408ff309c53d9448e4cb6b4a8f6433, type: 2}
   RequestedCameraWidth: 1280
   RequestedCameraHeight: 720
-  TargetSnapshotFPS: 30
 --- !u!1001 &4788709425719443576
 PrefabInstance:
   m_ObjectHideFlags: 0
