@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1028143883227370422}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.2848603, g: 0.5428256, b: 0.7179429, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 1cef6790d35965d4bbfaaebd55241562, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 2ddb49f4b1737904b80153047e216730, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -791,7 +791,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 85.7
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -4417,9 +4417,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c6b0e41b38df6041b9ecaaab5642eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PreventGameStartWithoutUserID: 1
+  PreventGameStartWithoutUserID: 0
   <UseGermanEmoteNames>k__BackingField: 1
-  XROrigin: {fileID: 0}
   ActionArea: {fileID: 7366368310148965485}
 --- !u!224 &6756076918500792989
 RectTransform:

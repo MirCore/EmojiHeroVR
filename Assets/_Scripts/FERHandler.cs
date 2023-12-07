@@ -104,11 +104,14 @@ public class FerHandler : MonoBehaviour
         };
         
         // Convert the captured image to base64 format.
-        string image = WebcamManager.GetBase64(snapshot);
+        //string image = WebcamManager.GetBase64(snapshot);
+        Texture2D image = WebcamManager.GetImage(snapshot);
         yield return null;  // Wait until the next frame to reduce lag
 
         // Send the base64 image for FER processing.
-        Rest.PostBase64(image, logData, this);
+        Texture2D face = FaceDetection.Instance.DetectFace(image);
+        EmotionRecognition.Instance.DetectEmotion(face, logData, this);
+        //Rest.PostBase64(image, logData, this);
     }
     
     /// <summary>
@@ -179,6 +182,18 @@ public class FerHandler : MonoBehaviour
 
         // Return the emotion with the highest probability.
         return result.OrderByDescending(kv => kv.Value).First().Key;
+    }
+
+    public void ProcessRestResponse(Probabilities response, LogData logData)
+    {
+        // Parse the JSON response to get FER probabilities.
+        logData.FerProbabilities = response;
+        // Determine the emotion with the highest probability.
+        logData.EmoteFer = GetEmoteWithHighestProbability(logData.FerProbabilities);
+        // Trigger an event for the detected emotion.
+        EventManager.InvokeEmotionDetected(logData.EmoteFer);
+        
+        HandleFerCompletion(logData);
     }
 }
 

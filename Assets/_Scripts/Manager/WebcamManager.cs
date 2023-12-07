@@ -240,5 +240,17 @@ namespace Manager
             // Return the base64-encoded image
             return base64;
         }
+
+        public static Texture2D GetImage(Snapshot snapshot)
+        {
+            Profiler.BeginSample("SetPixels");
+            // Convert pixels to a texture
+            _texture.SetPixels32(snapshot.ImageTextures[0]);
+            _texture.Apply();
+            Profiler.EndSample();
+                
+            // Return the base64-encoded image
+            return _texture;
+        }
     }
 }
