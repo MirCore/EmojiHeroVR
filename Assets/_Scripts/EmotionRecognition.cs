@@ -1,6 +1,3 @@
-using System;
-using Data;
-using Enums;
 using Unity.Sentis;
 using UnityEngine;
 using Utilities;
@@ -46,7 +43,7 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         // and that the output tensor shape is [1, number_of_emotions]
         int numEmotions = probabilities.shape[1]; 
 
-        Probabilities probs = new();
+        Probabilities ferProbabilities = new();
         for (int i = 0; i < numEmotions; i++)
         {
             float probability = probabilities[0, i]; // Access the probability for each emotion
@@ -55,30 +52,30 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
             switch (i)
             {
                 case 0:
-                    probs.anger = probability;
+                    ferProbabilities.anger = probability;
                     break;
                 case 1:
-                    probs.disgust = probability;
+                    ferProbabilities.disgust = probability;
                     break;
                 case 2:
-                    probs.fear = probability;
+                    ferProbabilities.fear = probability;
                     break;
                 case 3:
-                    probs.happiness = probability;
+                    ferProbabilities.happiness = probability;
                     break;
                 case 4:
-                    probs.neutral = probability;
+                    ferProbabilities.neutral = probability;
                     break;
                 case 5:
-                    probs.sadness = probability;
+                    ferProbabilities.sadness = probability;
                     break;
                 case 6:
-                    probs.surprise = probability;
+                    ferProbabilities.surprise = probability;
                     break;
             }
         }
 
-        return probs;
+        return ferProbabilities;
     }
    
     // Clean up all our resources at the end of the session so we don't leave anything on the GPU or in memory:

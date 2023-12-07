@@ -1,13 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Data;
-using Enums;
-using Systems;
 using UnityEngine;
 using UnityEngine.Profiling;
-using Utilities;
 
 namespace Manager
 {
@@ -17,7 +9,7 @@ namespace Manager
     public class WebcamManager : MonoBehaviour
     {
         // List to store references to the active webcams.
-        private static WebCamTexture Webcam;
+        private static WebCamTexture _webcam;
         
         // List of RenderTextures that are set up to display the webcam feeds.
         [SerializeField] private RenderTexture RenderTexture;
@@ -38,10 +30,10 @@ namespace Manager
             string mainWebcamName = EditorUI.EditorUI.Instance.GetMainWebcam();
             
             // Set up the webcam.
-            Webcam = new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight);
-            Webcam.Play();
+            _webcam = new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight);
+            _webcam.Play();
             
-            _texture = new Texture2D(Webcam.width, Webcam.height);
+            _texture = new Texture2D(_webcam.width, _webcam.height);
             
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
         }
@@ -49,7 +41,7 @@ namespace Manager
         private void OnDestroy()
         {
             // Clean up webcam and texture, and unsubscribe from events on destruction.
-            Webcam.Stop();
+            _webcam.Stop();
         
             RenderTexture.Release();
             
@@ -64,8 +56,8 @@ namespace Manager
         private void Update()
         {
             // On each frame, update the RenderTextures with the latest webcam image if it has updated.
-            if (Webcam.didUpdateThisFrame)
-                Graphics.Blit(Webcam, RenderTexture);
+            if (_webcam.didUpdateThisFrame)
+                Graphics.Blit(_webcam, RenderTexture);
         }
 
         /// <summary>
@@ -74,7 +66,7 @@ namespace Manager
         public static Color32[] TakeSnapshots()
         {
             Profiler.BeginSample("GetPixels");
-            _pixels = Webcam.GetPixels32();
+            _pixels = _webcam.GetPixels32();
             Profiler.EndSample();
             
             // Return the image

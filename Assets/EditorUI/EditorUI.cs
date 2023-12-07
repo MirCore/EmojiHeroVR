@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Data;
 using Enums;
 using Manager;
 using Scriptables;
@@ -17,12 +16,8 @@ namespace EditorUI
     {
         [SerializeField] private VisualTreeAsset VisualTreeAsset;
         private static VisualElement _root;
-        private ProgressBar _imageProgressBar;
-
         [SerializeField] public string SelectedWebcam;
         [SerializeField] public string SelectedLevel;
-        [SerializeField] public string RestBasePath;
-        [SerializeField] public string UserID;
         private List<ScriptableLevel> _levels;
 
 
@@ -49,18 +44,8 @@ namespace EditorUI
             VisualElement labelFromUxml = VisualTreeAsset.Instantiate();
             _root.Add(labelFromUxml);
 
-            if (RestBasePath == "")
-                RestBasePath = _root.Q<TextField>("RestBasePath").value;
-            _root.Q<TextField>("RestBasePath").value = RestBasePath;
-            _root.Q<TextField>("RestBasePath").RegisterValueChangedCallback(evt => RestBasePath = evt.newValue);
-            
-            _root.Q<TextField>("UserID").value = UserID;
-            _root.Q<TextField>("UserID").RegisterValueChangedCallback(evt => UserID = evt.newValue);
-
             _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
             
-            _imageProgressBar = _root.Q<ProgressBar>("ImageSaveProgress");
-
             if (EditorUIFerStats.Instance != null)
             {
                 SerializedObject ferStats = new(EditorUIFerStats.Instance);
@@ -112,7 +97,7 @@ namespace EditorUI
             });
         }
 
-        public static void SetRestResponseData(Probabilities probabilities)
+        public static void SetFerResponseData(Probabilities probabilities)
         {
             _root.Q<ProgressBar>("Anger").value = probabilities.anger;
             _root.Q<ProgressBar>("Disgust").value = probabilities.disgust;
@@ -125,12 +110,6 @@ namespace EditorUI
 
         public string GetMainWebcam() => SelectedWebcam;
 
-        public void ResetUserID()
-        {
-            _root.Q<TextField>("UserID").value = "";
-            UserID = null;
-        }
-
         public ScriptableLevel GetSelectedLevel()
         {
             return _levels.FirstOrDefault(l => l.name == SelectedLevel);
@@ -140,18 +119,6 @@ namespace EditorUI
         {
             SelectedLevel = level.name;
             CreateLevelDropdown();
-        }
-
-        public void UpdateImageProgress(int value)
-        {
-            _imageProgressBar.value = _imageProgressBar.highValue - value + 1;
-            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
-        }
-        public void UpdateImageBacklog(int value)
-        {
-            _imageProgressBar.value = 0;
-            _imageProgressBar.highValue = value;
-            _imageProgressBar.title = $"{_imageProgressBar.value} / {_imageProgressBar.highValue}";
         }
     }
 }

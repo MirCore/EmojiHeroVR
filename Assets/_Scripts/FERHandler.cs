@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Data;
 using Enums;
 using Manager;
 using UnityEngine;
@@ -59,9 +58,6 @@ public class FerHandler : MonoBehaviour
         
         while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
         {
-            // Log a new FER request.
-            EditorUIFerStats.Instance.LogNewRestRequest();
-            
             // Send an image for FER processing.
             StartCoroutine(PostRestImage());
 
@@ -81,6 +77,9 @@ public class FerHandler : MonoBehaviour
     /// </summary>
     private IEnumerator PostRestImage()
     {
+        // Log a new FER request.
+        EditorUIFerStats.Instance.LogNewRestRequest();
+        
         Color32[] snapshot = WebcamManager.TakeSnapshots();
         
         // Convert the captured image to base64 format.
@@ -88,8 +87,10 @@ public class FerHandler : MonoBehaviour
         yield return null;  // Wait until the next frame to reduce lag
 
         // Send the image for FER processing.
-        Texture2D face = FaceDetection.Instance.DetectFace(image);
-        EmotionRecognition.Instance.DetectEmotion(face, this);
+        Texture2D face = FaceDetection.Instance.DetectFace(image, this);
+        yield return null;  // Wait until the next frame to reduce lag
+        if (face != null)
+            EmotionRecognition.Instance.DetectEmotion(face, this);
     }
     
     /// <summary>

@@ -15,10 +15,6 @@ namespace Manager
     /// </summary>
     public class GameManager : Singleton<GameManager>
     {
-        // Configuration to prevent the game from starting if the UserID is not set
-        [Header("Don't Start When UserID Is Missing")] [SerializeField]
-        private bool PreventGameStartWithoutUserID;
-        
         // Whether German emote names should be used
         [field: SerializeField] public bool UseGermanEmoteNames { get; private set; }
 
@@ -38,14 +34,13 @@ namespace Manager
         public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => _level.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
-        public bool IsPlayingLevel => _gameState == PlayingLevelState;
+        private bool IsPlayingLevel => _gameState == PlayingLevelState;
 
         private Coroutine _timescaleCoroutine;
 
         // Scoring
         internal const int BaseScoreForCompletion = 50;
         internal const int ScoreMultiplier = 10;
-
 
         private void OnEnable()
         {
@@ -60,13 +55,6 @@ namespace Manager
             SwitchState(_gameState = PreparingState);
         }
 
-        private void OnDestroy()
-        {
-            // Reset the user ID once the game ends
-            EditorUI.EditorUI.Instance.ResetUserID();
-        }
-
-
         private void Update()
         {
             // Start Level with space bar
@@ -74,8 +62,8 @@ namespace Manager
                 OnButtonPressed(UIType.StartStopLevel);
             
             // Stop game with escape
-            //else if (Input.GetButtonDown("Cancel"))
-            //    EditorApplication.ExitPlaymode();
+            else if (Input.GetButtonDown("Cancel"))
+                EditorApplication.ExitPlaymode();
         }
 
         /// <summary>

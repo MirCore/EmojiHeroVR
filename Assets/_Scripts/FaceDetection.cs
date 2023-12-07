@@ -1,3 +1,4 @@
+using System;
 using Unity.Sentis;
 using UnityEngine;
 using Utilities;
@@ -81,7 +82,17 @@ public class FaceDetection : Singleton<FaceDetection>
         tempTexture.Apply();
 
         return tempTexture;
+    }
 
+    public Texture2D DetectFace(Texture2D image, FerHandler ferHandler)
+    {
+        Texture2D result = ExecuteModel(image);
+
+        if (result != null)
+            return result;
+        
+        ferHandler.ProcessFerError(new Exception("FaceDetection Error"));
+        return null;
     }
    
     // Clean up all our resources at the end of the session so we don't leave anything on the GPU or in memory:
@@ -90,10 +101,5 @@ public class FaceDetection : Singleton<FaceDetection>
         _inputTensor?.Dispose();
         _engine?.Dispose();
         _ops?.Dispose();
-    }
-
-    public Texture2D DetectFace(Texture2D image)
-    {
-        return ExecuteModel(image);
     }
 }

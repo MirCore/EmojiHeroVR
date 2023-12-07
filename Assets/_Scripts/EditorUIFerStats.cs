@@ -35,10 +35,9 @@ public class EditorUIFerStats : Singleton<EditorUIFerStats>
     /// <summary>
     /// Called when a REST response is received. Updates the UI with the response data and decrements the active post counter.
     /// </summary>
-    /// <param name="logData">The log data associated with the REST response.</param>
     internal void LogRestResponse(Probabilities probabilities)
     {
-        EditorUI.EditorUI.SetRestResponseData(probabilities);
+        EditorUI.EditorUI.SetFerResponseData(probabilities);
         CurrentActiveRestPosts--;
     }
 
