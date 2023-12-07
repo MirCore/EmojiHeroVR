@@ -37,10 +37,5 @@ namespace Data
         /// Gets or sets the user ID.
         /// </summary>
         public string UserID;
-     
-        /// <summary>
-        /// Gets or sets the Face Expression data
-        /// </summary>
-        public string FaceExpressions;
     }
 }

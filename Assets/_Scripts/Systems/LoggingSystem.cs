@@ -19,16 +19,13 @@ namespace Systems
     public class LoggingSystem : Singleton<LoggingSystem>
     {
         // Whether FaceExpressions should be logged
-        [field: SerializeField] public bool LogFaceExpressions { get; private set; }
         [field: SerializeField] internal bool LogTrainingLevel { get; private set; }
 
         private const string CsvFileName = "labels.csv"; // The name of the log file
-        private const string FaceExpressionCsvFileName = "faceexpressions.csv"; // The name of the log file
         private string _dirPathWithUserID; // The full directory path where the log file will be stored
 
         private readonly List<LogData> _logDataList = new(); // A list to store log data temporarily.
         private readonly List<Snapshot> _snapshots = new(); // A list to store log data temporarily.
-        private readonly List<FaceExpression> _faceExpressions = new();
 
         private void OnEnable()
         {
@@ -71,7 +68,6 @@ namespace Systems
 
             Profiler.BeginSample("faceExpressionLog");
             // Write FaceExpressions to a CSV file.
-            WriteFaceExpressions();
             Profiler.EndSample();
             
             yield return null;
@@ -163,29 +159,6 @@ namespace Systems
             _logDataList.Clear();
         }
 
-        private void WriteFaceExpressions()
-        {
-            StringBuilder stringBuilder = new();
-            
-            foreach (FaceExpression faceExpression in _faceExpressions)
-            {
-                stringBuilder.AppendLine(GetFaceExpressionString(faceExpression));
-            }
-
-            // Write to the CSV file.
-            try
-            {
-                // Append the data as a line to the log CSV file
-                SaveFiles.AppendLineToCsv(_dirPathWithUserID, FaceExpressionCsvFileName, stringBuilder.ToString());
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Failed to write log for faceExpression. Exception: {ex}");
-            }
-
-            _faceExpressions.Clear();
-        }
-
         private static string GetFaceExpressionString(FaceExpression fe)
         {
             // Prepare the data and concatenate into a CSV line using semicolons as separators
@@ -213,8 +186,7 @@ namespace Systems
                 logData.FerProbabilities.neutral.ToString("F2"),
                 logData.FerProbabilities.sadness.ToString("F2"),
                 logData.FerProbabilities.surprise.ToString("F2"),
-                logData.UserID,
-                logData.FaceExpressions
+                logData.UserID
             };
 
             // Concatenate the data array into a CSV line using semicolons as separators
@@ -282,11 +254,6 @@ namespace Systems
         }
 
         public int SnapshotCount => _snapshots.Count;
-
-        public void AddToFaceExpressionList(FaceExpression faceExpression)
-        {
-            _faceExpressions.Add(faceExpression);
-        }
 
         public bool FinishedSaving()
         {
