@@ -11,13 +11,10 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EmoteSpawner : MonoBehaviour
 {
-    [SerializeField] private Transform EmojiSpawnPosition; // The GameObject indicating the spawn position
-    [SerializeField] private float XWidth = 0.5f; // The width between lanes for emote spawning.
-    [SerializeField] private int Lanes = 4; // The number of lanes where emotes can be spawned.
+    [SerializeField] private List<Transform> SpawnPositions; // The GameObject indicating the spawn position
 
     private bool _spawnActive; // Flag to control whether emotes should be spawned.
 
-    private readonly List<Vector3> _spawnLocations = new(); // List of possible locations for emote spawning.
     private Vector3 _actionAreaSpawnLocation; // Specific location to spawn emotes during Training mode.
 
     private static ObjectPool _objectPool;
@@ -44,14 +41,6 @@ public class EmoteSpawner : MonoBehaviour
     private void Start()
     {
         _objectPool = GetComponent<ObjectPool>();
-        
-        // Calculate and store possible emote spawn locations based on lanes and width.
-        Vector3 spawnDistance = EmojiSpawnPosition.position;
-        for (int lane = 0; lane < Lanes; lane++)
-        {
-            float offset = (Lanes - 1) / 2f;
-            _spawnLocations.Add(spawnDistance + new Vector3((lane - offset) * XWidth, 0, 0));
-        }
         
         // Define a specific spawn location for the Training mode.
         _actionAreaSpawnLocation = GameManager.Instance.ActionAreaTransform.position + GameManager.Instance.ActionAreaTransform.up * 0.15f;
@@ -94,7 +83,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         while (_spawnActive)
         {
-            Vector3 position = _spawnLocations[Random.Range(0, _spawnLocations.Count)];
+            Vector3 position = SpawnPositions[Random.Range(0, SpawnPositions.Count)].position;
             
             ActivatePooledEmote(position);
             CheckLevelEndConditions();
