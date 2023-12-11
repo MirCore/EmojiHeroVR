@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Manager
 {
@@ -123,7 +125,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote is successfully fulfilled, plays the success sound.
         /// </summary>
-        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
+        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time)
         {
             // Play success sound
             PlaySoundEffect(SuccessSound);

@@ -22,9 +22,8 @@ namespace States.Emojis
         /// <param name="emojiManager">The manager controlling the Emoji.</param>
         public override void EnterState(EmojiManager emojiManager)
         {
-            // Set the Emoji's Rigidbody to be kinematic and reset its rotation.
-            emojiManager.Rigidbody.isKinematic = true;
-            emojiManager.transform.rotation = Quaternion.identity;
+            // Set the Emoji's RigidBody to be kinematic and reset its rotation.
+            emojiManager.RigidBody.isKinematic = true;
 
             // Determine and set the current Emoji's emotion.
             GetEmote(emojiManager);

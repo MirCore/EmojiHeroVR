@@ -52,8 +52,7 @@ namespace States.Game
                     throw new ArgumentOutOfRangeException();
             }
 
-            MaxScore =  emojiCount * (GameManager.BaseScoreForCompletion +
-                                      (int)(GameManager.Instance.ActionAreaSize * 0.9 / GameManager.Instance.Level.MovementSpeed * GameManager.ScoreMultiplier) * 10);
+            MaxScore =  emojiCount * (GameManager.BaseScoreForCompletion + (int)(2 * GameManager.ScoreMultiplier) * 10);
         }
 
 
@@ -91,11 +90,11 @@ namespace States.Game
         /// The score is calculated based on the base score for completion and a multiplier based on the time left.
         /// </summary>
         /// <param name="emoji">The emote that was fulfilled.</param>
-        /// <param name="score">The base score associated with the emote.</param>
-        private void OnEmoteFulfilledCallback(Emoji emoji, float score)
+        /// <param name="time">The base score associated with the emote.</param>
+        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time)
         {
             LevelProgress.FulfilledEmoteCount++;
-            LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)(score * GameManager.ScoreMultiplier) * 10;
+            LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)((2 - (float)time.Milliseconds / 1000) * GameManager.ScoreMultiplier) * 10;
         }
 
         /// <summary>

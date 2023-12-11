@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enums;
@@ -12,13 +13,11 @@ using Random = UnityEngine.Random;
 public class EmoteSpawner : MonoBehaviour
 {
     [SerializeField] private List<Transform> SpawnPositions; // The GameObject indicating the spawn position
+    [SerializeField] private Transform TrainingSpawnPosition; // The GameObject indicating the spawn position
 
     private bool _spawnActive; // Flag to control whether emotes should be spawned.
 
-    private Vector3 _actionAreaSpawnLocation; // Specific location to spawn emotes during Training mode.
-
     private static ObjectPool _objectPool;
-
 
     private void OnEnable()
     {
@@ -41,9 +40,6 @@ public class EmoteSpawner : MonoBehaviour
     private void Start()
     {
         _objectPool = GetComponent<ObjectPool>();
-        
-        // Define a specific spawn location for the Training mode.
-        _actionAreaSpawnLocation = GameManager.Instance.ActionAreaTransform.position + GameManager.Instance.ActionAreaTransform.up * 0.15f;
     }
 
     /// <summary>
@@ -67,7 +63,7 @@ public class EmoteSpawner : MonoBehaviour
     /// <summary>
     /// Spawn a new emote in Training mode when the previous one is fulfilled.
     /// </summary>
-    private void OnEmoteFulfilledCallback(Emoji emoji, float score) => SpawnTrainingEmote();
+    private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time) => SpawnTrainingEmote();
 
     private void SpawnTrainingEmote()
     {
@@ -83,7 +79,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         while (_spawnActive)
         {
-            Vector3 position = SpawnPositions[Random.Range(0, SpawnPositions.Count)].position;
+            Transform position = SpawnPositions[Random.Range(0, SpawnPositions.Count)];
             
             ActivatePooledEmote(position);
             CheckLevelEndConditions();
@@ -101,7 +97,7 @@ public class EmoteSpawner : MonoBehaviour
         yield return new WaitForSeconds(waitBeforeSpawn);
         if (!_spawnActive) 
             yield break;
-        ActivatePooledEmote(_actionAreaSpawnLocation);
+        ActivatePooledEmote(TrainingSpawnPosition);
         CheckLevelEndConditions();
     }
     
@@ -109,12 +105,12 @@ public class EmoteSpawner : MonoBehaviour
     /// Activate an emote from the object pool and set its position.
     /// </summary>
     /// <param name="position">The position to spawn the emote at.</param>
-    private static void ActivatePooledEmote(Vector3 position)
+    private static void ActivatePooledEmote(Transform position)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
-        GameObject emote = _objectPool.GetPooledObject();
-        emote.transform.position = position;
-        emote.SetActive(true);
+        EmojiManager emojiManager = _objectPool.GetPooledObject();
+        emojiManager.SetPosition(position);
+        emojiManager.gameObject.SetActive(true);
     }
 
     /// <summary>

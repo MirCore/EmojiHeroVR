@@ -1,7 +1,7 @@
-﻿using Enums;
+﻿using System;
+using Enums;
 using Manager;
 using UnityEngine;
-using Utilities;
 
 namespace States.Emojis
 {
@@ -21,13 +21,12 @@ namespace States.Emojis
             EventManager.InvokeEmoteEnteredActionArea(emojiManager.Emoji);
             
             // Calculate the time the Emoji has left in the Action Area based on the movement speed and area size. Used for the score.
-            emojiManager.ActionAreaLeft = emojiManager.ActionAreaSize/GameManager.Instance.Level.MovementSpeed;
+            emojiManager.SpawnTime = DateTime.Now;
         }
 
         public override void Update(EmojiManager emojiManager)
         {
-            // Decrease the time left for the Emoji in the Action Area, ensuring it doesn't go below 0.
-            emojiManager.ActionAreaLeft = Mathf.Max(emojiManager.ActionAreaLeft - Time.deltaTime, 0);
+            
         }
 
         public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)

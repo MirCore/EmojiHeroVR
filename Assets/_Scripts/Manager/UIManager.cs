@@ -64,7 +64,7 @@ namespace Manager
         /// <summary>
         /// Updates the score UI when an emote is fulfilled.
         /// </summary>
-        private void OnEmoteFulfilledCallback(Emoji emoji, float score) => StartCoroutine(UpdateScoreUI());
+        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time) => StartCoroutine(UpdateScoreUI());
 
         /// <summary>
         /// Loads the UI for the end screen, displaying level name and score.

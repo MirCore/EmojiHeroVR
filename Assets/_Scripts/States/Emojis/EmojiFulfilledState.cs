@@ -1,4 +1,5 @@
-﻿using Enums;
+﻿using System;
+using Enums;
 using Manager;
 using UnityEngine;
 using Utilities;
@@ -24,7 +25,7 @@ namespace States.Emojis
             emojiManager.EmojiAnimator.Play("EmojiSuccess");
             
             // Notify other systems, mainly the FER Handler, that the Emoji has been successfully matched.
-            EventManager.InvokeEmoteFulfilled(emojiManager.Emoji, emojiManager.ActionAreaLeft);
+            EventManager.InvokeEmoteFulfilled(emojiManager.Emoji, DateTime.Now - emojiManager.SpawnTime);
             
             // If the game is in Training mode, immediately switch to the Leaving State.
             if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)

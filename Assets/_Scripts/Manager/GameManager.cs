@@ -24,14 +24,11 @@ namespace Manager
         internal readonly GamePlayingLevelState PlayingLevelState = new();
         internal readonly GameLevelFinishedState LevelFinishedState = new();
 
-        [SerializeField] private GameObject ActionArea;
-        public float ActionAreaSize { get; private set; }
         
         // Current selected/playing level
         internal ScriptableLevel ScriptableLevel;
 
         // Properties for accessing game data
-        public Transform ActionAreaTransform => ActionArea.transform;
         public LevelStruct Level => ScriptableLevel.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
         private bool IsPlayingLevel => _gameState == PlayingLevelState;
@@ -46,10 +43,6 @@ namespace Manager
         {
             // Create an instance of the ResourceSystem
             ResourceSystem unused = new ();
-
-            // Fetching the action area size and setting the selected level
-            if (ActionArea != null)
-                ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;
 
             // Switch to the initial preparing state
             SwitchState(_gameState = PreparingState);

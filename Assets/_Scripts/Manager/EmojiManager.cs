@@ -36,13 +36,11 @@ namespace Manager
         internal readonly int FailedColorAmount = Shader.PropertyToID("_FailedColorAmount");
         internal readonly int SuccessColorAmount = Shader.PropertyToID("_SuccessColorAmount");
         
-        // Time left for Emoji to stay in the active area and the size of the action area.
-        // Used for score calculations
-        internal float ActionAreaLeft;
-        internal float ActionAreaSize;
+        // Time when the Emoji entered the ActionAre. Used for score calculations
+        internal DateTime SpawnTime;
         
-        // Rigidbody component for physics interactions.
-        internal Rigidbody Rigidbody;
+        // RigidBody component for physics interactions.
+        internal Rigidbody RigidBody;
         
         // Movement for the current level
         private Vector3 _movementSpeed;
@@ -56,19 +54,15 @@ namespace Manager
         private void Awake()
         {
             // Get components and calculate values needed later.
-            Rigidbody = GetComponent<Rigidbody>();
+            RigidBody = GetComponent<Rigidbody>();
             // create a copy of the material
             EmojiMaterial = EmojiRenderer.material;
-            ActionAreaSize = GameManager.Instance.ActionAreaSize;
         }
 
         private void OnEnable()
         {
             // Initialize the Emoji in the pre state and subscribe to events.
             SwitchState(_preState);
-        
-            // Calculate movement based on Action Area direction and movement speed
-            _movementSpeed = GameManager.Instance.ActionAreaTransform.forward * GameManager.Instance.Level.MovementSpeed;
 
             // Start the despawn timer if in Training mode
             if (GameManager.Instance.Level.LevelMode == ELevelMode.Training)
@@ -144,10 +138,10 @@ namespace Manager
             }
             else
             {
-                Rigidbody.isKinematic = false;
+                RigidBody.isKinematic = false;
                 
                 // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
-                Rigidbody.velocity = - _movementSpeed + GameManager.Instance.ActionAreaTransform.right * Random.Range(-0.05f, 0.05f);
+                RigidBody.velocity = - _movementSpeed + transform.right * Random.Range(-0.05f, 0.05f);
                 
                 yield return StartCoroutine(MathHelper.SLerp(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             }
@@ -158,6 +152,14 @@ namespace Manager
         private void DeactivateEmoji()
         {
             gameObject.SetActive(false);
+        }
+
+        public void SetPosition(Transform position)
+        {
+            transform.rotation = Quaternion.identity;
+            transform.position = position.position;
+            // Calculate movement based on Action Area direction and movement speed
+            _movementSpeed = position.forward * GameManager.Instance.Level.MovementSpeed;
         }
     }
 }
