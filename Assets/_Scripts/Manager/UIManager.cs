@@ -7,7 +7,6 @@ using Enums;
 using Scriptables;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Utilities;
 
 namespace Manager
@@ -68,11 +67,16 @@ namespace Manager
 
         private void CreateWebcamDropdown()
         {
+            if (WebCamTexture.devices.Length == 0) {
+                Debug.Log("No webcam devices found.");
+                return;
+            }
+            
             // Clear any existing options
             WebcamDropdown.options.Clear();
     
             foreach(WebCamDevice device in WebCamTexture.devices) {
-                WebcamDropdown.options.Add(new TMP_Dropdown.OptionData (device.name));
+                WebcamDropdown.options.Add(new TMP_Dropdown.OptionData(device.name));
             }
 
             WebcamDropdown.RefreshShownValue();
@@ -89,6 +93,8 @@ namespace Manager
             {
                 LevelDropdown.options.Add(new TMP_Dropdown.OptionData(level.name));
             }
+            
+            LevelDropdown.RefreshShownValue();
         }
 
         /// <summary>
