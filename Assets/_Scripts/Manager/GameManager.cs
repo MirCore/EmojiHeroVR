@@ -1,4 +1,3 @@
-using System;
 using Data;
 using Enums;
 using Scriptables;
@@ -6,6 +5,7 @@ using States.Game;
 using Systems;
 using UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utilities;
 
 namespace Manager
@@ -26,11 +26,11 @@ namespace Manager
 
         
         // Current selected/playing level
-        internal ScriptableLevel ScriptableLevel;
+        [SerializeField] private ScriptableLevel ScriptableLevel;
 
         // Properties for accessing game data
         public LevelStruct Level => ScriptableLevel.LevelStruct;
-        public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
+        public static LevelProgress LevelProgress => LevelManager.Instance.PlayingState.LevelProgress;
         private bool IsPlayingLevel => _gameState == PlayingLevelState;
 
         private Coroutine _timescaleCoroutine;
@@ -41,6 +41,8 @@ namespace Manager
 
         private void OnEnable()
         {
+            DontDestroyOnLoad(gameObject);
+            
             // Create an instance of the ResourceSystem
             ResourceSystem unused = new ();
 
@@ -71,32 +73,6 @@ namespace Manager
         }
 
         /// <summary>
-        /// Checks if the current level's end conditions have been met.
-        /// </summary>
-        /// <param name="count">The current count of spawned or processed emojis.</param>
-        /// <returns>True if the end conditions are met, false otherwise.</returns>
-        public bool CheckLevelEndConditions(int count)
-        {
-            switch (Level.LevelMode)
-            {
-                case ELevelMode.Count:
-                    if (count >= Level.Count) // Check if Emoji count is reached
-                        return true;
-                    break;
-                case ELevelMode.Predefined:
-                    if (count >= Level.EmoteArray.Length) // Check if all predefined Emojis have been spawned
-                        return true;
-                    break;
-                case ELevelMode.Training: // TODO: implement training end conditions
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Handles button presses related to general UI interactions.
         /// </summary>
         /// <param name="uiType">Type of UI action.</param>
@@ -123,13 +99,8 @@ namespace Manager
             MainUI.Instance.SetNewLevel(ScriptableLevel);
         }
 
-        /// <summary>
-        /// Increments the count of spawned emojis.
-        /// </summary>
-        /// <param name="emoji"></param>
-        public void IncreaseSpawnedEmotesCount(Emoji emoji) => PlayingLevelState.IncreaseSpawnedEmotesCount(emoji);
 
-        public int GetMaxScore() => PlayingLevelState.MaxScore;
+        public static int GetMaxScore() => LevelManager.Instance.PlayingState.MaxScore;
 
         public void RestartTimeScale()
         {

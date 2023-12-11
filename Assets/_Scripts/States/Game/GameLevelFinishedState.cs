@@ -1,8 +1,7 @@
 ﻿using System;
 using Enums;
 using Manager;
-using Scriptables;
-using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace States.Game
 {
@@ -16,15 +15,18 @@ namespace States.Game
         /// </summary>
         public override void EnterState()
         {
-            // Notify other parts of the game that the level has finished.
-            EventManager.InvokeLevelFinished();
-            
-            // Pause the game's time scale, effectively pausing the game.
-            GameManager.Instance.StopTimeScale();
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
         }
 
         public override void LeaveState()
         {
+            SceneManager.LoadScene("UI");
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+        }
+
+        private void OnLevelStoppedCallback()
+        {
+            GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
         }
 
         /// <summary>
@@ -47,15 +49,6 @@ namespace States.Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
             }
-        }
-
-        /// <summary>
-        /// Handle a new level selection.
-        /// </summary>
-        /// <param name="level">The ScriptableLevel representing the new level.</param>
-        public override void HandleUIInput(ScriptableLevel level)
-        {
-            Debug.LogWarning("Level input is not expected during the playing state.");
         }
     }
 }

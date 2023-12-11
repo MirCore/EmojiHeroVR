@@ -31,7 +31,7 @@ namespace UI
 
         private static void OnStartStopButtonClicked(ClickEvent evt)
         {
-            GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
+            SceneManager.LoadScene("ArcadeScene");
         }
         
         private void CreateLevelDropdown()

@@ -1,9 +1,6 @@
 ﻿using System;
 using Enums;
 using Manager;
-using Scriptables;
-using Systems;
-using UnityEngine;
 
 namespace States.Game
 {
@@ -17,8 +14,7 @@ namespace States.Game
         /// </summary>
         public override void EnterState()
         {
-            GameManager.Instance.RestartTimeScale();
-            EventManager.InvokeLevelStopped();
+            EventManager.OnLevelStarted += OnLevelStartedCallback;
         }
 
         /// <summary>
@@ -26,6 +22,12 @@ namespace States.Game
         /// </summary>
         public override void LeaveState()
         {
+            EventManager.OnLevelStarted -= OnLevelStartedCallback;
+        }
+
+        private void OnLevelStartedCallback()
+        {
+            GameManager.Instance.SwitchState(GameManager.Instance.PlayingLevelState);
         }
 
         /// <summary>
@@ -48,15 +50,6 @@ namespace States.Game
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
             }
-        }
-
-        /// <summary>
-        /// Handle a new level selection.
-        /// </summary>
-        /// <param name="level">The ScriptableLevel representing the new level.</param>
-        public override void HandleUIInput(ScriptableLevel level)
-        {
-            GameManager.Instance.SetNewLevel(level);
         }
     }
 }

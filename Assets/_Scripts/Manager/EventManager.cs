@@ -7,6 +7,12 @@ namespace Manager
 {
     public class EventManager : MonoBehaviour
     {
+        /// <summary>Triggered when an emote is spawned.</summary>
+        public static event Action<Emoji> OnEmoteSpawned;
+        /// <summary>Invokes the OnEmoteEnteredActionArea event.</summary>
+        /// <param name="emoji">The emote that entered the area.</param>
+        public static void InvokeEmoteSpawned(Emoji emoji) => OnEmoteSpawned?.Invoke(emoji);
+        
         /// <summary>Triggered when an emote enters the ActionArea.</summary>
         public static event Action<Emoji> OnEmoteEnteredActionArea;
         /// <summary>Invokes the OnEmoteEnteredActionArea event.</summary>

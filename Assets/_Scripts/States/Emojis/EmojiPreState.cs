@@ -28,7 +28,7 @@ namespace States.Emojis
             // Determine and set the current Emoji's emotion.
             GetEmote(emojiManager);
             
-            GameManager.Instance.IncreaseSpawnedEmotesCount(emojiManager.Emoji);
+            EventManager.InvokeEmoteSpawned(emojiManager.Emoji);
 
             // Set the Emoji's title text based on its emotion.
             SetEmojiName(emojiManager);
@@ -44,7 +44,7 @@ namespace States.Emojis
         private static void GetEmote(EmojiManager emojiManager)
         {
             LevelStruct level = GameManager.Instance.Level;
-            LevelProgress levelProgress = GameManager.Instance.LevelProgress;
+            LevelProgress levelProgress = GameManager.LevelProgress;
 
             int emoteIndex = level.EmoteArray.Length > 0
                 // Get the next emotion from the predefined list, based on already spawned emojis.

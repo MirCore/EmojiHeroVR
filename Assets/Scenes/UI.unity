@@ -972,8 +972,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8149298011488972446}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5493643303836334104
@@ -1186,7 +1185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <UseGermanEmoteNames>k__BackingField: 1
-  ActionArea: {fileID: 0}
+  ScriptableLevel: {fileID: 11400000, guid: 292d149c9e8bc654f92bc716e20b308e, type: 2}
 --- !u!82 &6789293080834746437
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1380,7 +1379,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5341118282672737469}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &8537638163931390728
 Transform:
@@ -1456,6 +1455,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 5341118282672737469}
+  - {fileID: 8149298011488972446}
   - {fileID: 1756076346}
   - {fileID: 8537638163931390728}
   - {fileID: 753703674}

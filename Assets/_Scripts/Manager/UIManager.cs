@@ -92,7 +92,7 @@ namespace Manager
             // Wait to the end of the frame to ensure LevelProgress has been properly updated
             yield return new WaitForEndOfFrame();
             
-            LevelProgress levelProgress = GameManager.Instance.LevelProgress;
+            LevelProgress levelProgress = GameManager.LevelProgress;
 
             ProgressField.text = _level.LevelMode switch
             {
@@ -105,7 +105,7 @@ namespace Manager
             {
                 t.text = _level.LevelMode switch
                 {
-                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount} / {GameManager.Instance.LevelProgress.SpawnedEmotesCount}",
+                    ELevelMode.Training => $"{levelProgress.FulfilledEmoteCount} / {GameManager.LevelProgress.SpawnedEmotesCount}",
                     ELevelMode.Predefined => $"{levelProgress.FulfilledEmoteCount} / {_level.EmoteArray.Length} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)",
                     _ => $"{levelProgress.FulfilledEmoteCount} / {_level.Count} ({Math.Round((float)levelProgress.FulfilledEmoteCount / _level.EmoteArray.Length * 100 , 1)}%)"
                 };
@@ -153,7 +153,7 @@ namespace Manager
         {
             _level = GameManager.Instance.Level;
 
-            _maxScore = GameManager.Instance.GetMaxScore();
+            _maxScore = GameManager.GetMaxScore();
 
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);

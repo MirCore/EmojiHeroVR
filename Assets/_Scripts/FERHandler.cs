@@ -59,7 +59,7 @@ public class FerHandler : MonoBehaviour
         float interval = 1f / PeriodicalFPS;
         float nextPostTime = Time.realtimeSinceStartup + interval;
         
-        while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
+        while (PeriodicalFerMode && GameManager.LevelProgress.EmojisAreInActionArea)
         {
             // Send an image for FER processing.
             StartCoroutine(DetectEmotion());
@@ -143,7 +143,7 @@ public class FerHandler : MonoBehaviour
 #endif
 
         // If emojis are still in the action area, continue the FER process.
-        if (GameManager.Instance.LevelProgress.EmojisAreInActionArea)
+        if (GameManager.LevelProgress.EmojisAreInActionArea)
             StartCoroutine(SendRestImageNextFrame());
     }
 

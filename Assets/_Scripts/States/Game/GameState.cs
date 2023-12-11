@@ -24,11 +24,5 @@ namespace States.Game
         /// </summary>
         /// <param name="uiType">The type of UI input to handle.</param>
         public abstract void HandleUIInput(UIType uiType);
-
-        /// <summary>
-        /// Handles UI input of type <see cref="ScriptableLevel"/>.
-        /// </summary>
-        /// <param name="level">The scriptable level to handle.</param>
-        public abstract void HandleUIInput(ScriptableLevel level);
     }
 }
