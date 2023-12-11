@@ -12,6 +12,7 @@ namespace States.Game
         public override void EnterState()
         {
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
+            LevelManager.Instance.StartLevel();
         }
 
 

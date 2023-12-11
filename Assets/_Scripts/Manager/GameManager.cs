@@ -3,9 +3,7 @@ using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
-using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utilities;
 
 namespace Manager
@@ -20,6 +18,7 @@ namespace Manager
 
         // Game states
         private GameState _gameState;
+        internal readonly GameMenuState MenuState = new();
         internal readonly GamePreparingState PreparingState = new();
         internal readonly GamePlayingLevelState PlayingLevelState = new();
         internal readonly GameLevelFinishedState LevelFinishedState = new();
@@ -47,7 +46,7 @@ namespace Manager
             ResourceSystem unused = new ();
 
             // Switch to the initial preparing state
-            SwitchState(_gameState = PreparingState);
+            SwitchState(_gameState = MenuState);
         }
 
         private void Update()
@@ -85,7 +84,7 @@ namespace Manager
         {
             if (_timescaleCoroutine != null)
                 StopCoroutine(_timescaleCoroutine);
-            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(1, 0, 2f));
+            _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(1, 0, 2f));
         }
 
         /// <summary>
@@ -96,7 +95,6 @@ namespace Manager
         {
             if (!IsPlayingLevel)
                 ScriptableLevel = level;
-            MainUI.Instance.SetNewLevel(ScriptableLevel);
         }
 
 
@@ -106,7 +104,7 @@ namespace Manager
         {
             if (_timescaleCoroutine != null)
                 StopCoroutine(_timescaleCoroutine);
-            _timescaleCoroutine = StartCoroutine(MathHelper.SLerpTimeScale(0, 1, 1f));
+            _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(0, 1, 1f));
         }
     }
 }

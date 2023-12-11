@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Manager;
 using UnityEngine;
-using Utilities;
 
 public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private GameObject ObjectToPool; // The object template to pool
-    [SerializeField] private int AmountToPool = 20; // The initial amount of objects to pool
+    [SerializeField] private int AmountToPool = 5; // The initial amount of objects to pool
     
     private static readonly List<EmojiManager> PooledObjects = new(); // List to store the pooled objects
     
@@ -24,6 +24,11 @@ public class ObjectPool : MonoBehaviour
         {
             SpawnNewEmote();
         }
+    }
+
+    private void OnDestroy()
+    {
+        PooledObjects.Clear();
     }
 
     // ReSharper disable Unity.PerformanceAnalysis

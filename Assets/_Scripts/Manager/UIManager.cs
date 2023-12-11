@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using Enums;
+using Scriptables;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 namespace Manager
@@ -18,6 +21,10 @@ namespace Manager
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
         [SerializeField] private GameObject LevelEndScreenUI;
+        [SerializeField] private TMP_Dropdown LevelDropdown;
+        [SerializeField] private TMP_Dropdown WebcamDropdown;
+
+        private List<ScriptableLevel> _levels;
         
 
         [Header("Score UI")]
@@ -45,6 +52,9 @@ namespace Manager
             ResetScoreUI();
             // Initialize the UI state.
             OnLevelStoppedCallback();
+
+            CreateLevelDropdown();
+            CreateWebcamDropdown();
         }
 
         private void OnDisable()
@@ -54,6 +64,31 @@ namespace Manager
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
             EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
+        }
+
+        private void CreateWebcamDropdown()
+        {
+            // Clear any existing options
+            WebcamDropdown.options.Clear();
+    
+            foreach(WebCamDevice device in WebCamTexture.devices) {
+                WebcamDropdown.options.Add(new TMP_Dropdown.OptionData (device.name));
+            }
+
+            WebcamDropdown.RefreshShownValue();
+        }
+        
+        private void CreateLevelDropdown()
+        {
+            // Clear any existing options
+            LevelDropdown.options.Clear();
+            
+            _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
+    
+            foreach (ScriptableLevel level in _levels)
+            {
+                LevelDropdown.options.Add(new TMP_Dropdown.OptionData(level.name));
+            }
         }
 
         /// <summary>
@@ -189,5 +224,15 @@ namespace Manager
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
         public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
+
+        public void OnLevelSelected(TMP_Dropdown change)
+        {
+            GameManager.Instance.SetNewLevel(_levels[change.value]);
+        }
+        
+        public void OnWebcamSelected(TMP_Dropdown change)
+        {
+            WebcamManager.SetupWebcam(WebCamTexture.devices[change.value]);
+        }
     }
 }

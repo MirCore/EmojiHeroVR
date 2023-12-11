@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using Enums;
 using States.Level;
 using Utilities;
@@ -10,21 +9,15 @@ namespace Manager
     {
         // Level States
         private LevelState _levelState;
-        private readonly LevelPreparingState _preparingState = new();
+        internal readonly LevelPreparingState PreparingState = new();
         internal readonly LevelPlayingState PlayingState = new();
         internal readonly LevelFinishedState FinishedState = new();
 
         
         private void OnEnable()
         {
-            SwitchState(_levelState = _preparingState);
-            StartCoroutine(SwitchStateDelayed(PlayingState));
-        }
-
-        private IEnumerator SwitchStateDelayed(LevelState state)
-        {
-            yield return null;
-            SwitchState(state);
+            SwitchState(_levelState = PreparingState);
+            //StartCoroutine(SwitchStateDelayed(PlayingState));
         }
 
         internal void SwitchState(LevelState state)
@@ -58,6 +51,12 @@ namespace Manager
             }
 
             return false;
+        }
+
+        public void StartLevel()
+        {
+            if(_levelState == PreparingState)
+                SwitchState(PlayingState);
         }
     }
 }

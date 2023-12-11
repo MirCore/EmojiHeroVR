@@ -15,6 +15,7 @@ namespace States.Game
         public override void EnterState()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
+            EventManager.InvokeLevelPrepared();
         }
 
         /// <summary>

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Enums;
 using Manager;
 using UnityEngine;
@@ -14,13 +13,7 @@ using Utilities;
 /// </summary>
 public class FerHandler : MonoBehaviour
 {
-    /// <summary>Flag to determine if facial emotion recognition should be done periodically.</summary>
-    // If true, images are sent for FER processing at regular intervals. If false, images are sent on specific events.
-    [SerializeField] private bool PeriodicalFerMode = true;
-    [SerializeField] private int PeriodicalFPS = 5;
-
-    // Coroutine for continuous facial emotion recognition
-    private Coroutine _continuousCoroutine;
+    // Coroutine for facial emotion recognition
     private Coroutine _coroutine;
 
     private void Start()
@@ -40,39 +33,8 @@ public class FerHandler : MonoBehaviour
     /// Initiates the sending of REST images for FER processing.
     /// </summary>
     private void SendRestImage()
-    {        
-        if (!PeriodicalFerMode && _coroutine == null)
-            _coroutine = StartCoroutine(DetectEmotion());    // Send a single image for FER processing.
-        else if (_continuousCoroutine == null)
-            _continuousCoroutine = StartCoroutine(ContinuousDetection());     // Start the continuous image sending process.
-    }
-    
-    /// <summary>
-    /// Coroutine for continuously sending images at a specified interval for FER processing.
-    /// </summary>
-    private IEnumerator ContinuousDetection()
     {
-        // Wait until the end of frame to ensure all events are processed and EmojisAreInActionArea is true
-        yield return new WaitForEndOfFrame();
-
-        // Interval between each image sent for FER processing.
-        float interval = 1f / PeriodicalFPS;
-        float nextPostTime = Time.realtimeSinceStartup + interval;
-        
-        while (PeriodicalFerMode && GameManager.LevelProgress.EmojisAreInActionArea)
-        {
-            // Send an image for FER processing.
-            StartCoroutine(DetectEmotion());
-
-            // Calculate time needed to wait to ensure periodic execution
-            float waitTime = Math.Max(nextPostTime - Time.realtimeSinceStartup, 0);
-            yield return new WaitForSecondsRealtime(waitTime);
-
-            // iterate timer to next interval
-            nextPostTime += interval;
-        }
-        
-        _continuousCoroutine = null;
+        _coroutine ??= StartCoroutine(DetectEmotion());
     }
 
     /// <summary>

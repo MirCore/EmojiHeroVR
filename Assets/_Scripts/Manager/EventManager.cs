@@ -7,10 +7,20 @@ namespace Manager
 {
     public class EventManager : MonoBehaviour
     {
+        /// <summary>Triggered when the Main UI is opened.</summary>
+        public static event Action OnMenuOpened;
+        /// <summary>Invokes the OnMenuOpened event.</summary>
+        public static void InvokeMenuOpened() => OnMenuOpened?.Invoke();
+        
+        /// <summary>Triggered when the game is started.</summary>
+        public static event Action OnPreparedLevel;
+        /// <summary>Invokes the OnPreparedLevel event.</summary>
+        public static void InvokeLevelPrepared() => OnPreparedLevel?.Invoke();
+        
         /// <summary>Triggered when an emote is spawned.</summary>
         public static event Action<Emoji> OnEmoteSpawned;
-        /// <summary>Invokes the OnEmoteEnteredActionArea event.</summary>
-        /// <param name="emoji">The emote that entered the area.</param>
+        /// <summary>Invokes the OnEmoteSpawned event.</summary>
+        /// <param name="emoji">The emote that spawned.</param>
         public static void InvokeEmoteSpawned(Emoji emoji) => OnEmoteSpawned?.Invoke(emoji);
         
         /// <summary>Triggered when an emote enters the ActionArea.</summary>

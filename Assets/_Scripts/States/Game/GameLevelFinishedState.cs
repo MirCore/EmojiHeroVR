@@ -20,7 +20,6 @@ namespace States.Game
 
         public override void LeaveState()
         {
-            SceneManager.LoadScene("UI");
             EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         }
 
@@ -40,7 +39,7 @@ namespace States.Game
             {
                 case UIType.ContinueEndScreen:
                 case UIType.StartStopLevel:
-                    GameManager.Instance.SwitchState(GameManager.Instance.PreparingState);
+                    GameManager.Instance.SwitchState(GameManager.Instance.MenuState);
                     break;
                 case UIType.StartLevel:
                 case UIType.StopLevel:
