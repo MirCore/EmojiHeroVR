@@ -1,24 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using Enums;
-using Manager;
-using Scriptables;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utilities;
 
-#if UNITY_EDITOR
 namespace EditorUI
 {
     public class EditorUI : EditorWindow
     {
         [SerializeField] private VisualTreeAsset VisualTreeAsset;
         private static VisualElement _root;
-        [SerializeField] public string SelectedWebcam;
-        [SerializeField] public string SelectedLevel;
-        private List<ScriptableLevel> _levels;
 
 
         [MenuItem("Window/EmojiHero Editor Window")]
@@ -41,60 +33,17 @@ namespace EditorUI
             _root = rootVisualElement;
 
             // Instantiate UXML
-            VisualElement labelFromUxml = VisualTreeAsset.Instantiate();
-            _root.Add(labelFromUxml);
+            VisualElement visualElement = VisualTreeAsset.Instantiate();
+            _root.Add(visualElement);
 
-            _root.Q<Button>("StartStopButton").RegisterCallback<ClickEvent>(OnStartStopButtonClicked);
+            if (EditorUIFerStats.Instance == null)
+                return;
             
-            if (EditorUIFerStats.Instance != null)
-            {
-                SerializedObject ferStats = new(EditorUIFerStats.Instance);
-                _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
-                _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
-                _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
-                _root.Q<Label>("SnapshotFPS").BindProperty(ferStats.FindProperty("SnapshotFPS"));
-            }
-            
-            CreateWebcamDropdown();
-            CreateLevelDropdown();
-        }
-
-        private static void OnStartStopButtonClicked(ClickEvent evt)
-        {
-            if (!EditorApplication.isPlaying)
-                EditorApplication.EnterPlaymode();
-            else
-                GameManager.Instance.OnButtonPressed(UIType.StartStopLevel);
-        }
-        
-        private void CreateLevelDropdown()
-        {
-            _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
-
-            DropdownField dropdown = _root.Q<DropdownField>("LevelSelect");
-            foreach (ScriptableLevel level in _levels)
-            {
-                dropdown.choices.Add(level.name);
-            }
-            dropdown.index = _levels.IndexOf(_levels.FirstOrDefault(l => l.name == SelectedLevel));
-            dropdown.RegisterValueChangedCallback(evt =>
-            {
-                SelectedLevel = evt.newValue;
-                if (GameManager.Instance != null) GameManager.Instance.SetNewLevel(_levels.FirstOrDefault(l => l.name == SelectedLevel));
-            });
-        }
-
-        private void CreateWebcamDropdown()
-        {
-            List<string> webCamDevices = WebCamTexture.devices.Select(device => device.name).ToList();
-
-            DropdownField dropdown = _root.Q<DropdownField>("WebcamDropdown");
-            dropdown.choices = webCamDevices;
-            dropdown.index = webCamDevices.IndexOf(SelectedWebcam);
-            dropdown.RegisterValueChangedCallback(evt =>
-            {
-                SelectedWebcam = evt.newValue;
-            });
+            SerializedObject ferStats = new(EditorUIFerStats.Instance);
+            _root.Q<Label>("PendingRestResponses").BindProperty(ferStats.FindProperty("CurrentActiveRestPosts"));
+            _root.Q<Label>("PostsFPS").BindProperty(ferStats.FindProperty("CurrentPostsFPS"));
+            _root.Q<Label>("TotalRestCalls").BindProperty(ferStats.FindProperty("TotalPosts"));
+            _root.Q<Label>("SnapshotFPS").BindProperty(ferStats.FindProperty("SnapshotFPS"));
         }
 
         public static void SetFerResponseData(Probabilities probabilities)
@@ -106,19 +55,6 @@ namespace EditorUI
             _root.Q<ProgressBar>("Neutral").value = probabilities.neutral;
             _root.Q<ProgressBar>("Sadness").value = probabilities.sadness;
             _root.Q<ProgressBar>("Surprise").value = probabilities.surprise;
-        }
-
-        public string GetMainWebcam() => SelectedWebcam;
-
-        public ScriptableLevel GetSelectedLevel()
-        {
-            return _levels.FirstOrDefault(l => l.name == SelectedLevel);
-        }
-
-        public void SetNewLevel(ScriptableLevel level)
-        {
-            SelectedLevel = level.name;
-            CreateLevelDropdown();
         }
     }
 }

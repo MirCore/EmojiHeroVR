@@ -1,3 +1,4 @@
+using UI;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -27,7 +28,7 @@ namespace Manager
         private void Start()
         {
             // Get webcam names from the EditorUI
-            string mainWebcamName = EditorUI.EditorUI.Instance.GetMainWebcam();
+            string mainWebcamName = MainUI.Instance.GetMainWebcam();
             
             // Set up the webcam.
             _webcam = new WebCamTexture(mainWebcamName, RequestedCameraWidth, RequestedCameraHeight);
@@ -50,7 +51,9 @@ namespace Manager
 
         private void OnLevelFinishedCallback()
         {
+#if UNITY_EDITOR
             EditorUIFerStats.Instance.SnapshotFPS = $"0 ({EditorUIFerStats.Instance.SnapshotFPS})";
+#endif
         }
 
         private void Update()
@@ -65,9 +68,7 @@ namespace Manager
         /// </summary>
         public static Color32[] TakeSnapshots()
         {
-            Profiler.BeginSample("GetPixels");
             _pixels = _webcam.GetPixels32();
-            Profiler.EndSample();
             
             // Return the image
             return _pixels;
@@ -75,11 +76,9 @@ namespace Manager
 
         public static Texture2D GetImage(Color32[] snapshot)
         {
-            Profiler.BeginSample("SetPixels");
             // Convert pixels to a texture
             _texture.SetPixels32(snapshot);
             _texture.Apply();
-            Profiler.EndSample();
                 
             // Return the image
             return _texture;

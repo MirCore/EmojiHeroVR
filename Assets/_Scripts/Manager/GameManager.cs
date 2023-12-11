@@ -4,7 +4,7 @@ using Enums;
 using Scriptables;
 using States.Game;
 using Systems;
-using UnityEditor;
+using UI;
 using UnityEngine;
 using Utilities;
 
@@ -28,11 +28,11 @@ namespace Manager
         public float ActionAreaSize { get; private set; }
         
         // Current selected/playing level
-        private ScriptableLevel _level;
+        internal ScriptableLevel ScriptableLevel;
 
         // Properties for accessing game data
         public Transform ActionAreaTransform => ActionArea.transform;
-        public LevelStruct Level => _level.LevelStruct;
+        public LevelStruct Level => ScriptableLevel.LevelStruct;
         public LevelProgress LevelProgress => PlayingLevelState.LevelProgress;
         private bool IsPlayingLevel => _gameState == PlayingLevelState;
 
@@ -48,8 +48,8 @@ namespace Manager
             ResourceSystem unused = new ();
 
             // Fetching the action area size and setting the selected level
-            ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;
-            _level = EditorUI.EditorUI.Instance.GetSelectedLevel();
+            if (ActionArea != null)
+                ActionAreaSize = ActionArea.GetComponent<Renderer>().bounds.size.z;
 
             // Switch to the initial preparing state
             SwitchState(_gameState = PreparingState);
@@ -62,8 +62,8 @@ namespace Manager
                 OnButtonPressed(UIType.StartStopLevel);
             
             // Stop game with escape
-            else if (Input.GetButtonDown("Cancel"))
-                EditorApplication.ExitPlaymode();
+            //else if (Input.GetButtonDown("Cancel"))
+            //    EditorApplication.ExitPlaymode();
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace Manager
         public void SetNewLevel(ScriptableLevel level)
         {
             if (!IsPlayingLevel)
-                _level = level;
-            EditorUI.EditorUI.Instance.SetNewLevel(_level);
+                ScriptableLevel = level;
+            MainUI.Instance.SetNewLevel(ScriptableLevel);
         }
 
         /// <summary>

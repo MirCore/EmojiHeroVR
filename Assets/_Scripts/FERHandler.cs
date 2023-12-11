@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Enums;
 using Manager;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Utilities;
 
 /// <summary>
@@ -18,6 +20,7 @@ public class FerHandler : MonoBehaviour
     [SerializeField] private int PeriodicalFPS = 5;
 
     // Coroutine for continuous facial emotion recognition
+    private Coroutine _continuousCoroutine;
     private Coroutine _coroutine;
 
     private void Start()
@@ -38,16 +41,16 @@ public class FerHandler : MonoBehaviour
     /// </summary>
     private void SendRestImage()
     {        
-        if (!PeriodicalFerMode)
-            StartCoroutine(PostRestImage());    // Send a single image for FER processing.
-        else if (_coroutine == null)
-            _coroutine = StartCoroutine(SendRestImageContinuous());     // Start the continuous image sending process.
+        if (!PeriodicalFerMode && _coroutine == null)
+            _coroutine = StartCoroutine(DetectEmotion());    // Send a single image for FER processing.
+        else if (_continuousCoroutine == null)
+            _continuousCoroutine = StartCoroutine(ContinuousDetection());     // Start the continuous image sending process.
     }
     
     /// <summary>
     /// Coroutine for continuously sending images at a specified interval for FER processing.
     /// </summary>
-    private IEnumerator SendRestImageContinuous()
+    private IEnumerator ContinuousDetection()
     {
         // Wait until the end of frame to ensure all events are processed and EmojisAreInActionArea is true
         yield return new WaitForEndOfFrame();
@@ -59,7 +62,7 @@ public class FerHandler : MonoBehaviour
         while (PeriodicalFerMode && GameManager.Instance.LevelProgress.EmojisAreInActionArea)
         {
             // Send an image for FER processing.
-            StartCoroutine(PostRestImage());
+            StartCoroutine(DetectEmotion());
 
             // Calculate time needed to wait to ensure periodic execution
             float waitTime = Math.Max(nextPostTime - Time.realtimeSinceStartup, 0);
@@ -69,35 +72,45 @@ public class FerHandler : MonoBehaviour
             nextPostTime += interval;
         }
         
-        _coroutine = null;
+        _continuousCoroutine = null;
     }
 
     /// <summary>
     /// Captures a webcam frame, converts it to base64, and sends it for FER processing.
     /// </summary>
-    private IEnumerator PostRestImage()
+    private IEnumerator DetectEmotion()
     {
+#if UNITY_EDITOR
         // Log a new FER request.
         EditorUIFerStats.Instance.LogNewRestRequest();
+#endif
         
         Color32[] snapshot = WebcamManager.TakeSnapshots();
         
+        Profiler.BeginSample("GetImage");
         // Convert the captured image to base64 format.
         Texture2D image = WebcamManager.GetImage(snapshot);
+        Profiler.EndSample();
         yield return null;  // Wait until the next frame to reduce lag
 
+        Profiler.BeginSample("DetectFace");
         // Send the image for FER processing.
         Texture2D face = FaceDetection.Instance.DetectFace(image, this);
+        Profiler.EndSample();
         yield return null;  // Wait until the next frame to reduce lag
+        
+        Profiler.BeginSample("DetectEmotion");
         if (face != null)
+        {
             EmotionRecognition.Instance.DetectEmotion(face, this);
+        }
+        Profiler.EndSample();
     }
     
     /// <summary>
     /// Processes the REST probabilities from the FER API.
     /// </summary>
     /// <param name="probabilities">The JSON probabilities from the FER service.</param>
-
     public void ProcessFerResponse(Probabilities probabilities)
     {
         // Determine the emotion with the highest probability.
@@ -122,14 +135,24 @@ public class FerHandler : MonoBehaviour
 
     private void HandleFerCompletion(Probabilities probabilities)
     {
+        _coroutine = null;
+        
+#if UNITY_EDITOR
         // Update the UI with the FER results.
         EditorUIFerStats.Instance.LogRestResponse(probabilities);
+#endif
 
         // If emojis are still in the action area, continue the FER process.
         if (GameManager.Instance.LevelProgress.EmojisAreInActionArea)
-            SendRestImage();
+            StartCoroutine(SendRestImageNextFrame());
     }
-    
+
+    private IEnumerator SendRestImageNextFrame()
+    {
+        yield return null;  // Wait until the next frame to reduce lag
+        SendRestImage();
+    }
+
     /// <summary>
     /// Determines the emotion with the highest probability from the FER results.
     /// </summary>

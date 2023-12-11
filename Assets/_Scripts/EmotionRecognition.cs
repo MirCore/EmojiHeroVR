@@ -26,7 +26,7 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         _ops = WorkerFactory.CreateOps(BackendType, null);
     }
 
-    private Probabilities ExecuteModel(Texture2D drawableTexture)
+    private Probabilities ExecuteModel(Texture drawableTexture)
     {
         _inputTensor?.Dispose();
 

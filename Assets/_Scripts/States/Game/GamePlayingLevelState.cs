@@ -3,6 +3,7 @@ using Data;
 using Enums;
 using Manager;
 using Scriptables;
+using UI;
 using UnityEngine;
 using Utilities;
 
@@ -19,6 +20,8 @@ namespace States.Game
 
         public override void EnterState()
         {
+            GameManager.Instance.ScriptableLevel = MainUI.Instance.GetSelectedLevel();
+            
             LevelProgress = new LevelProgress();
 
             CalculateMaxScore();

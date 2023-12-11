@@ -1,11 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/EditorUI/EditorUI.uss?fileID=7433441132597879392&amp;guid=3c137b3a88b0e6a47ac3e24e36d730f0&amp;type=3#EditorUI" />
     <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="ScrollView" style="padding-left: 5px;">
-        <ui:VisualElement style="flex-grow: 1; padding-top: 10px;">
-            <ui:Button text="Start / Stop / Continue" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartStopButton" style="-unity-font-style: bold; padding-top: 10px; padding-bottom: 10px; font-size: 16px;" />
-            <ui:DropdownField label="Level Select" index="-1" name="LevelSelect" />
-        </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; padding-top: 10px;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; padding-top: 0;">
             <ui:Label tabindex="-1" text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold;" />
             <ui:ProgressBar value="0" title="Anger" name="Anger" high-value="1" />
             <ui:ProgressBar value="0" title="Disgust" name="Disgust" high-value="1" />
@@ -34,10 +30,6 @@
                     <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SnapshotFPS" style="min-width: 20px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; padding-top: 10px; padding-bottom: 5px;">
-            <ui:Label tabindex="-1" text="Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold;" />
-            <ui:DropdownField label="Webcam" index="0" name="WebcamDropdown" />
         </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 1;">
             <ui:Label tabindex="-1" text="Webcam" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-bottom: 4px;" />

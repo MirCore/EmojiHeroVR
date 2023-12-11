@@ -1,6 +1,6 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Diagnostics.CodeAnalysis;
-using Data;
 using Manager;
 using UnityEngine;
 using Utilities;
@@ -59,3 +59,4 @@ public class EditorUIFerStats : Singleton<EditorUIFerStats>
         EventManager.OnLevelStarted -= NewLevel;
     }
 }
+#endif
