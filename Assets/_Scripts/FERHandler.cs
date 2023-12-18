@@ -90,7 +90,7 @@ public class FerHandler : MonoBehaviour
     public void ProcessFerError(Exception error)
     {
         // Log the error message.
-        Debug.LogWarning("REST Error: " + error.Message);
+        Debug.LogWarning("FER Error: " + error.Message);
         
         HandleFerCompletion(new Probabilities());
     }

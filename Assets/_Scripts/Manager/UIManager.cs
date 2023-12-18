@@ -20,6 +20,8 @@ namespace Manager
         [SerializeField] private GameObject PreparingUI;
         [SerializeField] private GameObject LevelPlayingUI;
         [SerializeField] private GameObject LevelEndScreenUI;
+        [SerializeField] private GameObject MainUI;
+        [SerializeField] private GameObject GameUI;
         [SerializeField] private TMP_Dropdown LevelDropdown;
         [SerializeField] private TMP_Dropdown WebcamDropdown;
 
@@ -199,6 +201,8 @@ namespace Manager
             PreparingUI.SetActive(false);
             LevelPlayingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
+            MainUI.SetActive(false);
+            GameUI.SetActive(true);
             
             LoadScoreUI();
         }
@@ -212,6 +216,8 @@ namespace Manager
             LevelPlayingUI.SetActive(false);
             PreparingUI.SetActive(true);
             LevelEndScreenUI.SetActive(false);
+            MainUI.SetActive(true);
+            GameUI.SetActive(false);
         }
         
         /// <summary>
