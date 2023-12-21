@@ -17,11 +17,6 @@ namespace Manager
     public class UIManager : MonoBehaviour
     {
         [Header("UI GameObjects")]
-        [SerializeField] private GameObject PreparingUI;
-        [SerializeField] private GameObject LevelPlayingUI;
-        [SerializeField] private GameObject LevelEndScreenUI;
-        [SerializeField] private GameObject MainUI;
-        [SerializeField] private GameObject GameUI;
         [SerializeField] private TMP_Dropdown LevelDropdown;
         [SerializeField] private TMP_Dropdown WebcamDropdown;
 
@@ -197,12 +192,6 @@ namespace Manager
             _level = GameManager.Instance.Level;
 
             _maxScore = GameManager.GetMaxScore();
-
-            PreparingUI.SetActive(false);
-            LevelPlayingUI.SetActive(true);
-            LevelEndScreenUI.SetActive(false);
-            MainUI.SetActive(false);
-            GameUI.SetActive(true);
             
             LoadScoreUI();
         }
@@ -213,11 +202,6 @@ namespace Manager
         private void OnLevelStoppedCallback()
         {
             ResetScoreUI();
-            LevelPlayingUI.SetActive(false);
-            PreparingUI.SetActive(true);
-            LevelEndScreenUI.SetActive(false);
-            MainUI.SetActive(true);
-            GameUI.SetActive(false);
         }
         
         /// <summary>
@@ -225,9 +209,6 @@ namespace Manager
         /// </summary>
         private void OnLevelFinishedCallback()
         {
-            LevelPlayingUI.SetActive(false);
-            PreparingUI.SetActive(false);
-            LevelEndScreenUI.SetActive(true);
             LoadEndScreenUI();
         }
 
