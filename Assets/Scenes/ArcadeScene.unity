@@ -7970,8 +7970,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7366368310148965485}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.2275096, y: 0, z: 0, w: 0.97377586}
-  m_LocalPosition: {x: 0, y: 0.966, z: 0.363}
+  m_LocalRotation: {x: -0.2275096, y: -0, z: -0, w: 0.97377586}
+  m_LocalPosition: {x: 0, y: 0.966, z: 0.36299998}
   m_LocalScale: {x: 0.77, y: 0.3, z: 0.385}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9228,8 +9228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderRampDuration: 1
-  LowGradientPosition: -0.7
-  HighGradientPosition: -0.2
+  LowGradientPosition: -0.3
+  HighGradientPosition: 0
   TimePressureColorRampDuration: 1
   ResetColorRampDuration: 0.2
   TimePressureColor: {r: 1, g: 0.23529412, b: 0, a: 0.19607843}
