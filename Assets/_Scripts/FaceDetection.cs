@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Sentis;
 using UnityEngine;
 using Utilities;
@@ -40,7 +41,7 @@ public class FaceDetection : Singleton<FaceDetection>
         scores.MakeReadable();
         boxes.MakeReadable();
         
-        int numDetections = boxes.shape[1]; // Assuming second dimension is the number of detections
+        int numDetections = boxes.shape[1]; // Assuming second dimension of the model is the number of detections
         
         float highestScore = 0;
         float[] highestScoreBox = new float[4];
@@ -48,13 +49,14 @@ public class FaceDetection : Singleton<FaceDetection>
         for (int i = 0; i < numDetections; i++)
         {
             float score = scores[0, i, 1]; // Modify this based on how scores are laid out
-            if (score > highestScore)
+            
+            if (!(score > highestScore))
+                continue;
+            
+            highestScore = score;
+            for (int j = 0; j < 4; j++)
             {
-                highestScore = score;
-                for (int j = 0; j < 4; j++)
-                {
-                    highestScoreBox[j] = boxes[0, i, j]; // Extract each coordinate of the bounding box
-                }
+                highestScoreBox[j] = boxes[0, i, j]; // Extract each coordinate of the bounding box
             }
         }
 
@@ -74,6 +76,7 @@ public class FaceDetection : Singleton<FaceDetection>
         y = Mathf.Clamp(y, 0, texture.height);
         width = Mathf.Clamp(width, 0, texture.width - x);
         height = Mathf.Clamp(height, 0, texture.height - y);
+        
 
         // Create a temporary texture to hold the cropped image
         Texture2D tempTexture = new(width, height);
@@ -83,6 +86,74 @@ public class FaceDetection : Singleton<FaceDetection>
 
         return tempTexture;
     }
+    
+    private List<DetectedFace> ExecuteModel(Texture2D texture, float scoreThreshold)
+    {
+        _inputTensor?.Dispose();
+
+        _inputTensor = TextureConverter.ToTensor(texture, 640, 480, 3);
+
+        _engine.Execute(_inputTensor);
+        
+        // model has multiple output, so to know which output to get we need to specify which one we are referring to
+        TensorFloat scores = _engine.PeekOutput("scores") as TensorFloat;
+        TensorFloat boxes = _engine.PeekOutput("boxes") as TensorFloat;
+        scores.MakeReadable();
+        boxes.MakeReadable();
+        
+        int numDetections = boxes.shape[1]; // Assuming second dimension of the model is the number of detections
+
+        List<DetectedFace> detectedFaces = new();
+
+        for (int i = 0; i < numDetections; i++)
+        {
+            float score = scores[0, i, 1];
+
+            if (score < scoreThreshold)
+                continue;
+            
+            DetectedFace df = new()
+            {
+                score = score
+            };
+            for (int j = 0; j < 4; j++)
+            {
+                df.normalizedBox[j] = boxes[0, i, j]; // Extract each coordinate of the bounding box
+            }
+            
+            detectedFaces.Add(df);
+        }
+
+        return detectedFaces;
+    }
+    
+    private static void ConvertDetectedFaceCoordinates(DetectedFace face, int imageWidth, int imageHeight)
+    {
+        // Convert the bounding box to pixel coordinates
+        int x = Mathf.FloorToInt(face.normalizedBox[0] * imageWidth);
+        // Flip the y coordinate
+        int y = Mathf.FloorToInt((1 - face.normalizedBox[3]) * imageHeight);
+        int width = Mathf.FloorToInt(face.normalizedBox[2] * imageWidth) - x;
+        // Calculate the height based on the flipped y
+        int height = Mathf.FloorToInt((1 - face.normalizedBox[1]) * imageHeight) - y;
+
+        // Ensure that the coordinates and dimensions are within the texture bounds
+        face.x = Mathf.Clamp(x, 0, imageWidth);
+        face.y = Mathf.Clamp(y, 0, imageHeight);
+        face.width = Mathf.Clamp(width, 0, imageWidth - x);
+        face.height = Mathf.Clamp(height, 0, imageHeight - y);
+    }
+    
+    public void DetectFaces(Texture2D image, FaceExpressionData ferData, float scoreThreshold)
+    {
+        ferData.DetectedFaces = ExecuteModel(image, scoreThreshold);
+        
+        foreach (DetectedFace face in ferData.DetectedFaces)
+        {
+            ConvertDetectedFaceCoordinates(face, image.width, image.height);
+        }
+    }
+
 
     public Texture2D DetectFace(Texture2D image, FerHandler ferHandler)
     {

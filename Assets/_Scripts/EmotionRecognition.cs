@@ -86,6 +86,13 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         _ops?.Dispose();
     }
 
+    public Probabilities DetectEmotion(Texture2D face)
+    {
+        Probabilities result = ExecuteModel(face);
+        
+        return result;
+    }
+
     public void DetectEmotion(Texture2D face, FerHandler ferHandler)
     {
         Probabilities result = ExecuteModel(face);

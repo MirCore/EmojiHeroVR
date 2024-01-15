@@ -20,6 +20,22 @@ namespace Utilities
         public float sadness;
         public float surprise;
     }
+    
+    public struct DetectedFace
+    {
+        public float score;
+        public float[] normalizedBox;
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
+    
+    public struct FaceExpressionData
+    {
+        public List<DetectedFace> DetectedFaces;
+        public List<Probabilities> Probabilities;
+    }
 
     /// <summary>
     /// Represents the settings and data for a game level.
