@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Sentis;
 using UnityEngine;
 using Utilities;
@@ -102,7 +103,7 @@ public class FaceDetection : Singleton<FaceDetection>
         boxes.MakeReadable();
         
         int numDetections = boxes.shape[1]; // Assuming second dimension of the model is the number of detections
-
+        
         List<DetectedFace> detectedFaces = new();
 
         for (int i = 0; i < numDetections; i++)
@@ -114,44 +115,52 @@ public class FaceDetection : Singleton<FaceDetection>
             
             DetectedFace df = new()
             {
-                score = score
+                Score = score,
             };
+
+            float[] box = new float[4];
             for (int j = 0; j < 4; j++)
             {
-                df.normalizedBox[j] = boxes[0, i, j]; // Extract each coordinate of the bounding box
+                box[j] = boxes[0, i, j]; 
             }
+            
+            ConvertDetectedFaceCoordinates(df, box, texture.width, texture.height); // Extract each coordinate of the bounding box
             
             detectedFaces.Add(df);
         }
+        
+        // Sort the list by score in descending order
+        detectedFaces = detectedFaces.OrderByDescending(face => face.Score).ToList();
+
 
         return detectedFaces;
     }
     
-    private static void ConvertDetectedFaceCoordinates(DetectedFace face, int imageWidth, int imageHeight)
+    private static void ConvertDetectedFaceCoordinates(DetectedFace df, IReadOnlyList<float> box, int imageWidth, int imageHeight)
     {
+        df.RelativeX = Mathf.Clamp(box[0], 0, 1);
+        df.RelativeY = Mathf.Clamp(1 - box[3], 0, 1); // Flip the y coordinate
+        df.RelativeWidth = Mathf.Clamp(box[2] - df.RelativeX, 0, 1);
+        df.RelativeHeight = Mathf.Clamp((1 - box[1]) - df.RelativeY, 0, 1); // Flip the y coordinate
+        
         // Convert the bounding box to pixel coordinates
-        int x = Mathf.FloorToInt(face.normalizedBox[0] * imageWidth);
-        // Flip the y coordinate
-        int y = Mathf.FloorToInt((1 - face.normalizedBox[3]) * imageHeight);
-        int width = Mathf.FloorToInt(face.normalizedBox[2] * imageWidth) - x;
-        // Calculate the height based on the flipped y
-        int height = Mathf.FloorToInt((1 - face.normalizedBox[1]) * imageHeight) - y;
+        int x = (int)(df.RelativeX * imageWidth);
+        int y = (int)(df.RelativeY * imageHeight);
+        int width = (int)(df.RelativeWidth * imageWidth);
+        int height = (int)(df.RelativeHeight * imageHeight);
 
         // Ensure that the coordinates and dimensions are within the texture bounds
-        face.x = Mathf.Clamp(x, 0, imageWidth);
-        face.y = Mathf.Clamp(y, 0, imageHeight);
-        face.width = Mathf.Clamp(width, 0, imageWidth - x);
-        face.height = Mathf.Clamp(height, 0, imageHeight - y);
+        df.X = Mathf.Clamp(x, 0, imageWidth);
+        df.Y = Mathf.Clamp(y, 0, imageHeight);
+        df.Width = Mathf.Clamp(width, 0, imageWidth - x);
+        df.Height = Mathf.Clamp(height, 0, imageHeight - y);
     }
     
-    public void DetectFaces(Texture2D image, FaceExpressionData ferData, float scoreThreshold)
+    public List<DetectedFace> DetectFaces(Texture2D image, float scoreThreshold)
     {
-        ferData.DetectedFaces = ExecuteModel(image, scoreThreshold);
-        
-        foreach (DetectedFace face in ferData.DetectedFaces)
-        {
-            ConvertDetectedFaceCoordinates(face, image.width, image.height);
-        }
+        List<DetectedFace> detectedFaces = ExecuteModel(image, scoreThreshold);
+
+        return detectedFaces;
     }
 
 

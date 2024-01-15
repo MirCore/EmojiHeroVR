@@ -80,7 +80,7 @@ namespace Manager
         /// <summary>
         /// Capture and process a snapshot from the webcam.
         /// </summary>
-        public static Color32[] TakeSnapshots()
+        public static Color32[] TakeSnapshot()
         {
             _pixels = _webcam.GetPixels32();
             
@@ -88,7 +88,7 @@ namespace Manager
             return _pixels;
         }
 
-        public static Texture2D GetImage(Color32[] snapshot)
+        public static Texture2D ConvertColor32ToTexture2D(Color32[] snapshot)
         {
             // Convert pixels to a texture
             _texture.SetPixels32(snapshot);

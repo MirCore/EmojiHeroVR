@@ -21,19 +21,25 @@ namespace Utilities
         public float surprise;
     }
     
-    public struct DetectedFace
+    public class DetectedFace
     {
-        public float score;
-        public float[] normalizedBox;
-        public int x;
-        public int y;
-        public int width;
-        public int height;
+        public float Score;
+
+        public float RelativeX;
+        public float RelativeY;
+        public float RelativeWidth;
+        public float RelativeHeight;
+        
+        public int X;
+        public int Y;
+        public int Width;
+        public int Height;
     }
     
     public struct FaceExpressionData
     {
         public List<DetectedFace> DetectedFaces;
+        public List<DetectedFace> FilteredFaces;
         public List<Probabilities> Probabilities;
     }
 

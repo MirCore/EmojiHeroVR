@@ -47,11 +47,11 @@ public class FerHandler : MonoBehaviour
         EditorUIFerStats.Instance.LogNewRestRequest();
 #endif
         
-        Color32[] snapshot = WebcamManager.TakeSnapshots();
+        Color32[] snapshot = WebcamManager.TakeSnapshot();
         
-        Profiler.BeginSample("GetImage");
+        Profiler.BeginSample("ConvertColor32ToTexture2D");
         // Convert the captured image to base64 format.
-        Texture2D image = WebcamManager.GetImage(snapshot);
+        Texture2D image = WebcamManager.ConvertColor32ToTexture2D(snapshot);
         Profiler.EndSample();
         yield return null;  // Wait until the next frame to reduce lag
 
