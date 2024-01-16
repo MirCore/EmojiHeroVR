@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using Manager;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -7,13 +8,8 @@ using Utilities;
 
 public class FerService
 {
-    public FaceExpressionData AnalyzeImage(Color32[] image)
+    public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold)
     {
-        FaceExpressionData ferData = new()
-        {
-            Probabilities = new List<Probabilities>()
-        };
-
         Profiler.BeginSample("ConvertColor32ToTexture2D");
         // Convert the captured image to base64 format.
         Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
@@ -21,35 +17,37 @@ public class FerService
 
         Profiler.BeginSample("DetectFace");
         // Send the image for FER processing.
-        ferData.DetectedFaces = FaceDetection.Instance.DetectFaces(texture2D, 0.3f);
+        List<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
         Profiler.EndSample();
 
-        FilterResults(ferData);
+        List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
         
         Profiler.BeginSample("DetectEmotion");
-        if (ferData.FilteredFaces.Count > 0)
+        if (filteredFaces.Count > 0)
         {
-            foreach (Texture2D tempTexture in ferData.FilteredFaces.Select(face => CreateTempTexture(texture2D, face)))
+            foreach (DetectedFace face in filteredFaces)
             {
-                ferData.Probabilities.Add(EmotionRecognition.Instance.DetectEmotion(tempTexture));
+                Texture2D tempTexture = CreateTempTexture(texture2D, face);
+                Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+                face.Emote = GetEmoteWithHighestProbability(probabilities);
             }
         }
 
         Profiler.EndSample();
 
-        return ferData;
+        return filteredFaces;
     }
 
-    private void FilterResults(FaceExpressionData ferData)
+    private static List<DetectedFace> FilterResults(IEnumerable<DetectedFace> detectedFaces, float sizeThreshold)
     {
         List<DetectedFace> filteredFaces = new();
-        
-        foreach (DetectedFace face in ferData.DetectedFaces.Where(face => !filteredFaces.Any(otherFace => AreFacesOverlapping(face, otherFace))))
+
+        foreach (DetectedFace face in detectedFaces.Where(face => face.Width > sizeThreshold).Where(face => !filteredFaces.Any(otherFace => AreFacesOverlapping(face, otherFace))))
         {
             filteredFaces.Add(face);
         }
 
-        ferData.FilteredFaces = filteredFaces;
+        return filteredFaces;
     }
 
     private static bool AreFacesOverlapping(DetectedFace face1, DetectedFace face2)
@@ -64,8 +62,6 @@ public class FerService
         return true;
     }
     
-
-
     private static Texture2D CreateTempTexture(Texture2D texture2D, DetectedFace face)
     {
         // Create a temporary texture to hold the cropped image
@@ -75,4 +71,45 @@ public class FerService
         tempTexture.Apply();
         return tempTexture;
     }
+    
+    /// <summary>
+    /// Determines the emotion with the highest probability from the FER results.
+    /// </summary>
+    /// <param name="probabilities">The FER probabilities for each emotion.</param>
+    /// <returns>The emotion with the highest probability.</returns>
+    private static EEmote GetEmoteWithHighestProbability(Probabilities probabilities)
+    {
+        // Map each emotion to its probability.
+        Dictionary<EEmote, float> result = new()
+        {
+            { EEmote.Anger, probabilities.anger },
+            { EEmote.Disgust, probabilities.disgust },
+            { EEmote.Fear, probabilities.fear },
+            { EEmote.Happiness, probabilities.happiness },
+            { EEmote.Neutral, probabilities.neutral },
+            { EEmote.Sadness, probabilities.sadness },
+            { EEmote.Surprise, probabilities.surprise }
+        };
+
+        // Return the emotion with the highest probability.
+        return result.OrderByDescending(kv => kv.Value).First().Key;
+    }
+}
+
+    
+public class DetectedFace
+{
+    public float Score;
+
+    public float RelativeX;
+    public float RelativeY;
+    public float RelativeWidth;
+    public float RelativeHeight;
+        
+    public int X;
+    public int Y;
+    public int Width;
+    public int Height;
+    
+    public EEmote Emote;
 }

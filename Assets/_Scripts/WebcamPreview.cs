@@ -2,32 +2,75 @@
 using System.Collections.Generic;
 using System.Linq;
 using Manager;
+using Systems;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities;
+using Random = UnityEngine.Random;
 
 public class WebcamPreview : MonoBehaviour
 {
-    private FerService _ferService;
-
     [SerializeField] private RawImage WebcamTexture;
     [SerializeField] private GameObject Emoji;
+    private readonly List<MeshRenderer> _emojis = new();
+
+    [SerializeField] private float EmojiScaleFactor = 7f;
+
+    private float _rectWidth;
+    private float _rectHeight;
+    private float _emojiScaleFactor;
+
+    private readonly int _sprite = Shader.PropertyToID("_Sprite");
 
     private void Start()
     {
-        _ferService = new FerService();
+        Rect rect = WebcamTexture.rectTransform.rect;
+        _rectWidth = rect.width;
+        _rectHeight = rect.height;
+        _emojiScaleFactor = EmojiScaleFactor * _rectWidth;
     }
 
     private void Update()
     {
         Color32[] image = WebcamManager.TakeSnapshot();
-        FaceExpressionData ferData = _ferService.AnalyzeImage(image);
+        List<DetectedFace> detectedFaces = FerService.AnalyzeImage(image, 0.3f, 0.1f);
         
-        if (!ferData.FilteredFaces.Any())
+        if (!detectedFaces.Any())
             return;
         
-        DetectedFace detectedFace = ferData.FilteredFaces.First();
-        DrawBoundingBoxes.Instance.DrawBoundingBox(ferData);
-        Emoji.transform.localPosition = new Vector3(detectedFace.X, detectedFace.Y);
+        //DrawBoundingBoxes.Instance.DrawBoundingBox(detectedFaces);
+        
+        detectedFaces = detectedFaces.OrderBy(face => face.RelativeX).ToList();
+        PositionEmojis(detectedFaces);
+    }
+
+    private void PositionEmojis(IReadOnlyList<DetectedFace> detectedFaces)
+    {
+        for (int i = 0; i < detectedFaces.Count; i++)
+        {
+            if (_emojis.Count <= i)
+                SpawnEmoji();
+            float scale = _emojiScaleFactor * detectedFaces[i].RelativeWidth;
+            _emojis[i].transform.localScale = (_emojis[i].transform.localScale + new Vector3(scale, scale, scale)) / 2;
+            _emojis[i].transform.localPosition = (_emojis[i].transform.localPosition + new Vector3(
+                (detectedFaces[i].RelativeX + detectedFaces[i].RelativeWidth / 2) * _rectWidth - _rectWidth / 2,
+                (detectedFaces[i].RelativeY + detectedFaces[i].RelativeHeight / 2) * _rectHeight - _rectHeight / 2)) / 2;
+            
+            
+            Texture texture = ResourceSystem.EmojiScriptables[detectedFaces[i].Emote].Textures[0];
+            
+            _emojis[i].material.SetTexture(_sprite, texture);
+            _emojis[i].gameObject.SetActive(true);
+        }
+
+        for (int i = detectedFaces.Count; i < _emojis.Count; i++)
+        {
+            _emojis[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void SpawnEmoji()
+    {
+        GameObject emoji = Instantiate(Emoji, WebcamTexture.transform);
+        _emojis.Add(emoji.GetComponentInChildren<MeshRenderer>());
     }
 }

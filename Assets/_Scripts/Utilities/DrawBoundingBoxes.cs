@@ -1,4 +1,6 @@
 ﻿// Based of https://github.com/doughtmw/BoundingBoxUtils-Unity
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +14,6 @@ namespace Utilities
 
         [SerializeField] private RawImage RawImage;
 
-        // Start is called before the first frame update
         private void Start()
         {
             // Create a new texture instance with same size as the canvas.
@@ -27,18 +28,17 @@ namespace Utilities
             RawImage.texture = _texture;
         }
 
-        public void DrawBoundingBox(FaceExpressionData ferData)
+        public void DrawBoundingBox(List<DetectedFace> detectedFaces)
         {
             // Draw bounding box at specified coordinates.
             
             // reset Texture
             _texture.SetPixels(_fillPixels);
 
-            foreach (DetectedFace face in ferData.FilteredFaces)
+            foreach (DetectedFace face in detectedFaces)
             {
                 DrawBoundingBoxesOnCanvas(face);
             }
-
 
             // Apply and set main material texture;
             _texture.Apply();

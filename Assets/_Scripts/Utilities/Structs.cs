@@ -20,28 +20,6 @@ namespace Utilities
         public float sadness;
         public float surprise;
     }
-    
-    public class DetectedFace
-    {
-        public float Score;
-
-        public float RelativeX;
-        public float RelativeY;
-        public float RelativeWidth;
-        public float RelativeHeight;
-        
-        public int X;
-        public int Y;
-        public int Width;
-        public int Height;
-    }
-    
-    public struct FaceExpressionData
-    {
-        public List<DetectedFace> DetectedFaces;
-        public List<DetectedFace> FilteredFaces;
-        public List<Probabilities> Probabilities;
-    }
 
     /// <summary>
     /// Represents the settings and data for a game level.
