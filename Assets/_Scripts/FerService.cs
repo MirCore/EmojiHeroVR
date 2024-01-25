@@ -3,13 +3,17 @@ using System.Linq;
 using Enums;
 using Manager;
 using UnityEngine;
-using UnityEngine.Profiling;
 using Utilities;
 
 public static class FerService
 {
     public static EEmote GetEmotion(Color32[] image, float scoreThreshold, float sizeThreshold)
     {
+#if UNITY_EDITOR
+        // Log a new FER request.
+        EditorUIFerStats.Instance.LogNewFerCall();
+#endif
+        
         // Convert the captured image to base64 format.
         Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
         
@@ -20,16 +24,32 @@ public static class FerService
         DetectedFace face = detectedFaces.FirstOrDefault(face => face.Width > sizeThreshold);
 
         if (face == null)
+        {
+#if UNITY_EDITOR
+            // Update the UI with the FER results.
+            EditorUIFerStats.Instance.LogFerResult();
+#endif
             return EEmote.None;
+        }
         
         Texture2D tempTexture = CreateTempTexture(texture2D, face);
         Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+        
+#if UNITY_EDITOR
+        // Update the UI with the FER results.
+        EditorUIFerStats.Instance.LogFerResult(probabilities);
+#endif
         
         return GetEmoteWithHighestProbability(probabilities);
     }
 
     public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold, int facesLimit = -1)
     {
+#if UNITY_EDITOR
+        // Log a new FER request.
+        EditorUIFerStats.Instance.LogNewFerCall();
+#endif
+        
         // Convert the captured image to base64 format.
         Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
 
@@ -37,19 +57,26 @@ public static class FerService
         IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
 
         List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
-        
-        Profiler.BeginSample("DetectEmotion");
-        if (filteredFaces.Count > 0)
-        {
-            foreach (DetectedFace face in filteredFaces)
-            {
-                Texture2D tempTexture = CreateTempTexture(texture2D, face);
-                Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
-                face.Emote = GetEmoteWithHighestProbability(probabilities);
-            }
-        }
 
-        Profiler.EndSample();
+        if (filteredFaces.Count <= 0)
+        {
+#if UNITY_EDITOR
+            // Update the UI with the FER results.
+            EditorUIFerStats.Instance.LogFerResult();
+#endif
+            return filteredFaces;
+        }        
+        foreach (DetectedFace face in filteredFaces)
+        {
+            Texture2D tempTexture = CreateTempTexture(texture2D, face);
+            Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+            face.Emote = GetEmoteWithHighestProbability(probabilities);
+        }
+        
+#if UNITY_EDITOR
+        // Update the UI with the FER results.
+        EditorUIFerStats.Instance.LogFerResult(EmotionRecognition.Instance.DetectEmotion(CreateTempTexture(texture2D, filteredFaces.FirstOrDefault())));
+#endif
 
         return filteredFaces;
     }

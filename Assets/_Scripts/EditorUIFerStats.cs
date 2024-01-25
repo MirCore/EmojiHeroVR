@@ -1,7 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Manager;
 using UnityEngine;
 using Utilities;
 
@@ -21,7 +20,7 @@ public class EditorUIFerStats : Singleton<EditorUIFerStats>
     /// <summary>
     /// Called when a new REST POST request is made. Updates the time between posts, calculates the posts per second, and increments the active and total post counters.
     /// </summary>
-    internal void LogNewRestRequest()
+    internal void LogNewFerCall()
     {
         TimeSpan postTime = DateTime.Now - _postTime;  // Calculate time since last POST request
         if (postTime.TotalSeconds < 1)  // If less than one second has passed since the last POST request
@@ -35,28 +34,18 @@ public class EditorUIFerStats : Singleton<EditorUIFerStats>
     /// <summary>
     /// Called when a REST response is received. Updates the UI with the response data and decrements the active post counter.
     /// </summary>
-    internal void LogRestResponse(Probabilities probabilities)
+    internal void LogFerResult(Probabilities probabilities)
     {
         EditorUI.EditorUI.SetFerResponseData(probabilities);
         CurrentActiveRestPosts--;
     }
-
+    
     /// <summary>
-    /// Resets the total posts counter when a new level is started.
+    /// Called when a REST response is received. Updates the UI with the response data and decrements the active post counter.
     /// </summary>
-    private void NewLevel()
+    internal void LogFerResult()
     {
-        TotalPosts = 0;
-    }
-
-    private void OnEnable()
-    {
-        EventManager.OnLevelStarted += NewLevel;
-    }
-
-    private void OnDisable()
-    {
-        EventManager.OnLevelStarted -= NewLevel;
+        CurrentActiveRestPosts--;
     }
 }
 #endif

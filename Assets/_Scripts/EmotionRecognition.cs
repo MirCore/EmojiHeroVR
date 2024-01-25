@@ -1,5 +1,6 @@
 using Unity.Sentis;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Utilities;
 
 public class EmotionRecognition : Singleton<EmotionRecognition>
@@ -88,14 +89,12 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 
     public Probabilities DetectEmotion(Texture2D face)
     {
+        Profiler.BeginSample("DetectEmotion");
+        
         Probabilities result = ExecuteModel(face);
         
+        Profiler.EndSample();
+        
         return result;
-    }
-
-    public void DetectEmotion(Texture2D face, FerHandler ferHandler)
-    {
-        Probabilities result = ExecuteModel(face);
-        ferHandler.ProcessFerResponse(result);
     }
 }
