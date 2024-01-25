@@ -18,7 +18,7 @@ public class MenuHider : MonoBehaviour
     private void Awake()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
-        EventManager.OnLevelStopped += OnLevelStoppedCallback;
+        EventManager.OnGameStopped += GameStoppedCallback;
         EventManager.OnLevelFinished += OnLevelFinishedCallback;
 
         _ui = transform.GetChild(0).gameObject;
@@ -27,7 +27,7 @@ public class MenuHider : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
-        EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+        EventManager.OnGameStopped -= GameStoppedCallback;
         EventManager.OnLevelFinished -= OnLevelFinishedCallback;
     }
 
@@ -39,7 +39,7 @@ public class MenuHider : MonoBehaviour
             ShowMenu();
     }
 
-    private void OnLevelStoppedCallback()
+    private void GameStoppedCallback()
     {
         if (HideOnLevelStopped)
             HideMenu();

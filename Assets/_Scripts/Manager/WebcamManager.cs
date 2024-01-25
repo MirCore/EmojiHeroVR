@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Manager
 {
@@ -82,7 +83,11 @@ namespace Manager
         /// </summary>
         public static Color32[] TakeSnapshot()
         {
+            Profiler.BeginSample("GetPixels32");
+            
             _pixels = _webcam.GetPixels32();
+            
+            Profiler.EndSample();
             
             // Return the image
             return _pixels;
@@ -90,9 +95,13 @@ namespace Manager
 
         public static Texture2D ConvertColor32ToTexture2D(Color32[] snapshot)
         {
+            Profiler.BeginSample("ConvertColor32ToTexture2D");
+            
             // Convert pixels to a texture
             _texture.SetPixels32(snapshot);
             _texture.Apply();
+            
+            Profiler.EndSample();
                 
             // Return the image
             return _texture;

@@ -9,15 +9,16 @@ namespace Manager
     {
         // Level States
         private LevelState _levelState;
+        internal readonly LevelIdleState IdleState = new();
         internal readonly LevelPreparingState PreparingState = new();
         internal readonly LevelPlayingState PlayingState = new();
         internal readonly LevelFinishedState FinishedState = new();
+        public bool LevelIsPlaying => _levelState == PlayingState;
 
-        
+
         private void OnEnable()
         {
-            SwitchState(_levelState = PreparingState);
-            //StartCoroutine(SwitchStateDelayed(PlayingState));
+            SwitchState(_levelState = IdleState);
         }
 
         internal void SwitchState(LevelState state)
@@ -57,6 +58,12 @@ namespace Manager
         {
             if(_levelState == PreparingState)
                 SwitchState(PlayingState);
+        }
+
+        public void PrepareLevel()
+        {
+            if(_levelState == IdleState)
+                SwitchState(PreparingState);
         }
     }
 }

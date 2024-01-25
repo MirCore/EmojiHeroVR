@@ -8,17 +8,33 @@ using Utilities;
 
 public static class FerService
 {
-    public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold)
+    public static EEmote GetEmotion(Color32[] image, float scoreThreshold, float sizeThreshold)
     {
-        Profiler.BeginSample("ConvertColor32ToTexture2D");
         // Convert the captured image to base64 format.
         Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
-        Profiler.EndSample();
-
-        Profiler.BeginSample("DetectFace");
+        
         // Send the image for FER processing.
         IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
-        Profiler.EndSample();
+        
+        // Get face (width > sizeThreshold) with highest score
+        DetectedFace face = detectedFaces.FirstOrDefault(face => face.Width > sizeThreshold);
+
+        if (face == null)
+            return EEmote.None;
+        
+        Texture2D tempTexture = CreateTempTexture(texture2D, face);
+        Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+        
+        return GetEmoteWithHighestProbability(probabilities);
+    }
+
+    public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold, int facesLimit = -1)
+    {
+        // Convert the captured image to base64 format.
+        Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
+
+        // Send the image for FER processing.
+        IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
 
         List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
         

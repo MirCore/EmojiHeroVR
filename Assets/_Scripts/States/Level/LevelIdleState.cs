@@ -2,12 +2,11 @@
 
 namespace States.Level
 {
-    public class LevelPreparingState : LevelState
+    public class LevelIdleState : LevelState
     {
         public override void EnterState()
         {
-            GameManager.Instance.RestartTimeScale();
-            EventManager.InvokeGameStarted();
+            EventManager.InvokeGameStopped();
         }
 
         public override void LeaveState()

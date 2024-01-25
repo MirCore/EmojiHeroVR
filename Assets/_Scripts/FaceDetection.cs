@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Sentis;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Utilities;
 
 public class FaceDetection : Singleton<FaceDetection>
@@ -94,9 +95,17 @@ public class FaceDetection : Singleton<FaceDetection>
         df.Height = Mathf.Clamp(height, 0, imageHeight - y);
     }
     
+    /// <summary>
+    /// Detects Faces in an image.
+    /// </summary>
+    /// <param name="image">Image to be analyzed</param>
+    /// <param name="scoreThreshold">Score threshold for detection</param>
+    /// <returns>Returns a List of DetectedFaces, ordered by Score descending</returns>
     public IEnumerable<DetectedFace> DetectFaces(Texture2D image, float scoreThreshold)
     {
+        Profiler.BeginSample("DetectFace");
         IEnumerable<DetectedFace> detectedFaces = ExecuteModel(image, scoreThreshold);
+        Profiler.EndSample();
 
         return detectedFaces;
     }

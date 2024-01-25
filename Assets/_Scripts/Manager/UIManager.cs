@@ -39,7 +39,7 @@ namespace Manager
         private void Awake()
         {
             EventManager.OnLevelStarted += OnLevelStartedCallback;
-            EventManager.OnLevelStopped += OnLevelStoppedCallback;
+            EventManager.OnGameStopped += GameStoppedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
             EventManager.OnEmoteExitedActionArea += EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
@@ -47,7 +47,7 @@ namespace Manager
             // Load the UI elements for level selection.
             ResetScoreUI();
             // Initialize the UI state.
-            OnLevelStoppedCallback();
+            GameStoppedCallback();
 
             CreateLevelDropdown();
             CreateWebcamDropdown();
@@ -56,7 +56,7 @@ namespace Manager
         private void OnDisable()
         {
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
-            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
+            EventManager.OnGameStopped -= GameStoppedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
             EventManager.OnEmoteExitedActionArea -= EmoteExitedActionAreaCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
@@ -199,7 +199,7 @@ namespace Manager
         /// <summary>
         /// Updates the UI to reflect the level stopped state.
         /// </summary>
-        private void OnLevelStoppedCallback()
+        private void GameStoppedCallback()
         {
             ResetScoreUI();
         }
@@ -213,7 +213,8 @@ namespace Manager
         }
 
         // Methods to handle button presses, triggering corresponding actions in the GameManager.
-        public void OnStartButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
+        public void OnStartGameButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartGame);
+        public void OnStartLevelButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
         public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);

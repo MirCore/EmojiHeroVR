@@ -407,7 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EmojiRenderer: {fileID: 3447455077459418937}
   EmojiAnimator: {fileID: 4179499655590491511}
-  EmoteTitle: {fileID: 0}
+  EmoteTitle: {fileID: 3166400523628003304}
 --- !u!54 &7332248507154697826
 Rigidbody:
   m_ObjectHideFlags: 0

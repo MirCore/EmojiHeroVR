@@ -33,6 +33,11 @@
         /// <summary>
         /// Indicates a toggle request to start or stop the level.
         /// </summary>
-        StartStopLevel
+        StartStopLevel,
+
+        /// <summary>
+        /// Indicates a toggle request to start or stop the level.
+        /// </summary>
+        StartGame
     }
 }
