@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using Utilities;
 
-public class FerService
+public static class FerService
 {
     public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold)
     {
@@ -17,7 +17,7 @@ public class FerService
 
         Profiler.BeginSample("DetectFace");
         // Send the image for FER processing.
-        List<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
+        IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
         Profiler.EndSample();
 
         List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);

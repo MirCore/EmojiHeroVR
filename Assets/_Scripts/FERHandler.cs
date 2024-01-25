@@ -57,14 +57,14 @@ public class FerHandler : MonoBehaviour
 
         Profiler.BeginSample("DetectFace");
         // Send the image for FER processing.
-        Texture2D face = FaceDetection.Instance.DetectFace(image, this);
+        //Texture2D face = FaceDetection.Instance.DetectFace(image, this);
         Profiler.EndSample();
         yield return null;  // Wait until the next frame to reduce lag
         
         Profiler.BeginSample("DetectEmotion");
-        if (face != null)
+        //if (face != null)
         {
-            EmotionRecognition.Instance.DetectEmotion(face, this);
+        //    EmotionRecognition.Instance.DetectEmotion(face, this);
         }
         Profiler.EndSample();
     }

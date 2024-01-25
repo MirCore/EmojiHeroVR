@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Manager;
 using Systems;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
+using Utilities;
 
 public class WebcamPreview : MonoBehaviour
 {
@@ -14,6 +13,8 @@ public class WebcamPreview : MonoBehaviour
     private readonly List<MeshRenderer> _emojis = new();
 
     [SerializeField] private float EmojiScaleFactor = 7f;
+
+    [SerializeField] private bool EnableBoundingBoxes;
 
     private float _rectWidth;
     private float _rectHeight;
@@ -37,7 +38,8 @@ public class WebcamPreview : MonoBehaviour
         if (!detectedFaces.Any())
             return;
         
-        //DrawBoundingBoxes.Instance.DrawBoundingBox(detectedFaces);
+        if (EnableBoundingBoxes)
+            DrawBoundingBoxes.Instance.DrawBoundingBox(detectedFaces);
         
         detectedFaces = detectedFaces.OrderBy(face => face.RelativeX).ToList();
         PositionEmojis(detectedFaces);
