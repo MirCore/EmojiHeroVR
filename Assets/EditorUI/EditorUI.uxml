@@ -2,7 +2,6 @@
     <Style src="project://database/Assets/EditorUI/EditorUI.uss?fileID=7433441132597879392&amp;guid=3c137b3a88b0e6a47ac3e24e36d730f0&amp;type=3#EditorUI" />
     <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="ScrollView" style="padding-left: 5px;">
         <ui:VisualElement name="VisualElement" style="flex-grow: 1; padding-top: 0;">
-            <ui:Label tabindex="-1" text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold;" />
             <ui:ProgressBar value="0" title="Anger" name="Anger" high-value="1" />
             <ui:ProgressBar value="0" title="Disgust" name="Disgust" high-value="1" />
             <ui:ProgressBar value="0" title="Fear" name="Fear" high-value="1" />
@@ -29,12 +28,6 @@
                     <ui:Label tabindex="-1" text="Snapshot FPS:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title" />
                     <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SnapshotFPS" style="min-width: 20px;" />
                 </ui:VisualElement>
-            </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1;">
-            <ui:Label tabindex="-1" text="Webcam" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-bottom: 4px;" />
-            <ui:VisualElement style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;">
-                <ui:VisualElement name="WebcamTexture1" class="webcam" style="background-image: url(&apos;project://database/Assets/Textures/WebcamTexture.renderTexture?fileID=8400000&amp;guid=61408ff309c53d9448e4cb6b4a8f6433&amp;type=2#WebcamTexture&apos;);" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:ScrollView>

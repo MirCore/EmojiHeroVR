@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: 4db0151bf69f23348a7dfdd9dca54b18
+guid: 0b0d702d6ca87744d9dc13c956ceb721
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
   externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ActionArea
+    second: {fileID: 2100000, guid: 0fc20ec01ddfa514085d8218fdffacd0, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -12,23 +17,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Logo
-    second: {fileID: 2100000, guid: 863897b6dbca0ca47b43145b4704bb69, type: 2}
+      name: Lane
+    second: {fileID: 2100000, guid: a842f359adeed7c4db62f8ea3391669a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: LogoSign
-    second: {fileID: 2100000, guid: 863897b6dbca0ca47b43145b4704bb69, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Sign-Frame
-    second: {fileID: 2100000, guid: 713c2407cf7e9f14cb54a7bb5aaabddd, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Sign-Screen
-    second: {fileID: 2100000, guid: 4fe1238e2ca49b949ac9a79044f76326, type: 2}
+      name: Pit
+    second: {fileID: 2100000, guid: 9fc5bf59b15d24749bd69b0ad112834a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

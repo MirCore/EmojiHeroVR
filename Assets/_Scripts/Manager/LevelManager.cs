@@ -65,5 +65,10 @@ namespace Manager
             if(_levelState == IdleState)
                 SwitchState(PreparingState);
         }
+
+        public void StopLevel()
+        {
+            SwitchState(IdleState);
+        }
     }
 }

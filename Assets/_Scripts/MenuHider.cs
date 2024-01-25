@@ -5,19 +5,22 @@ public class MenuHider : MonoBehaviour
 {
     [Header("Hide")]
     [SerializeField] private bool HideOnLevelStarted;
-    [SerializeField] private bool HideOnLevelStopped;
     [SerializeField] private bool HideOnLevelFinished;
+    [SerializeField] private bool HideOnGameStarted;
+    [SerializeField] private bool HideOnGameStopped;
     
     [Header("Show")]
     [SerializeField] private bool ShowOnLevelStarted;
-    [SerializeField] private bool ShowOnLevelStopped;
     [SerializeField] private bool ShowOnLevelFinished;
+    [SerializeField] private bool ShowOnGameStarted;
+    [SerializeField] private bool ShowOnGameStopped;
 
     private GameObject _ui;
     
     private void Awake()
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
+        EventManager.OnGameStarted += GameStartedCallback;
         EventManager.OnGameStopped += GameStoppedCallback;
         EventManager.OnLevelFinished += OnLevelFinishedCallback;
 
@@ -27,6 +30,7 @@ public class MenuHider : MonoBehaviour
     private void OnDestroy()
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
+        EventManager.OnGameStarted -= GameStartedCallback;
         EventManager.OnGameStopped -= GameStoppedCallback;
         EventManager.OnLevelFinished -= OnLevelFinishedCallback;
     }
@@ -39,11 +43,19 @@ public class MenuHider : MonoBehaviour
             ShowMenu();
     }
 
+    private void GameStartedCallback()
+    {
+        if (HideOnGameStarted)
+            HideMenu();
+        if (ShowOnGameStarted)
+            ShowMenu();
+    }
+
     private void GameStoppedCallback()
     {
-        if (HideOnLevelStopped)
+        if (HideOnGameStopped)
             HideMenu();
-        if (ShowOnLevelStopped)
+        if (ShowOnGameStopped)
             ShowMenu();
     }
 

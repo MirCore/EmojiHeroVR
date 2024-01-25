@@ -1,34 +1,9 @@
 fileFormatVersion: 2
-guid: 4db0151bf69f23348a7dfdd9dca54b18
+guid: 9a916c5fe437d774c886a5323692cfe5
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Arcade
-    second: {fileID: 2100000, guid: 713c2407cf7e9f14cb54a7bb5aaabddd, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Logo
-    second: {fileID: 2100000, guid: 863897b6dbca0ca47b43145b4704bb69, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: LogoSign
-    second: {fileID: 2100000, guid: 863897b6dbca0ca47b43145b4704bb69, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Sign-Frame
-    second: {fileID: 2100000, guid: 713c2407cf7e9f14cb54a7bb5aaabddd, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Sign-Screen
-    second: {fileID: 2100000, guid: 4fe1238e2ca49b949ac9a79044f76326, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

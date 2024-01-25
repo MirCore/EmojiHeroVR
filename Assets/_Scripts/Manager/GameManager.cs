@@ -63,10 +63,12 @@ namespace Manager
                 case UIType.StartLevel:
                     LevelManager.Instance.StartLevel();
                     break;
+                case UIType.ContinueEndScreen:
+                    LevelManager.Instance.StopLevel();
+                    break;
                 case UIType.StartStopLevel:
                 case UIType.StopLevel:
                 case UIType.PauseLevel:
-                case UIType.ContinueEndScreen:
                 case UIType.Default:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
