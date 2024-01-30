@@ -7,6 +7,7 @@ using Enums;
 using Scriptables;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 namespace Manager
@@ -16,11 +17,14 @@ namespace Manager
     /// </summary>
     public class UIManager : MonoBehaviour
     {
-        [Header("UI GameObjects")]
-        [SerializeField] private TMP_Dropdown LevelDropdown;
+        [Header("MainMenu")]
+        [SerializeField] private GameObject TogglePrefab;
+        [SerializeField] private ToggleGroup LevelToggleGroup;
+        [SerializeField] private TMP_Text LevelInfo;
         [SerializeField] private TMP_Dropdown WebcamDropdown;
 
         private List<ScriptableLevel> _levels;
+        private ScriptableLevel _selectedLevel;
         
 
         [Header("Score UI")]
@@ -81,17 +85,16 @@ namespace Manager
         
         private void CreateLevelDropdown()
         {
-            // Clear any existing options
-            LevelDropdown.options.Clear();
-            
             _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
     
             foreach (ScriptableLevel level in _levels)
             {
-                LevelDropdown.options.Add(new TMP_Dropdown.OptionData(level.name));
+                GameObject toggleObject = Instantiate(TogglePrefab, LevelToggleGroup.transform);
+                Toggle toggle = toggleObject.GetComponent<Toggle>();
+                toggle.onValueChanged.AddListener(delegate {OnLevelSelected(toggle, level); });
+                toggle.group = LevelToggleGroup;
+                toggleObject.GetComponentInChildren<TMP_Text>().text = level.LevelStruct.LevelName;
             }
-            
-            LevelDropdown.RefreshShownValue();
         }
 
         /// <summary>
@@ -213,15 +216,33 @@ namespace Manager
         }
 
         // Methods to handle button presses, triggering corresponding actions in the GameManager.
-        public void OnStartGameButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartGame);
+        public void OnStartGameButtonPressed()
+        {
+            if (_selectedLevel == null)
+                return;
+            GameManager.Instance.StartGame(_selectedLevel);
+        }
+
         public void OnStartLevelButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
         public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
         public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
         public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
 
-        public void OnLevelSelected(TMP_Dropdown change)
+        /*public void OnLevelSelected(TMP_Dropdown change)
         {
             GameManager.Instance.SetNewLevel(_levels[change.value]);
+        }*/
+
+        private void OnLevelSelected(Toggle toggle, ScriptableLevel level)
+        {
+            if (!toggle.isOn)
+                return;
+            _selectedLevel = level;
+            LevelStruct levelStruct = level.LevelStruct;
+            LevelInfo.text = $"{levelStruct.LevelName}\n\n" +
+                             $"Mode: {levelStruct.LevelMode}\n" +
+                             $"Speed: {levelStruct.MovementSpeed}\n" +
+                             $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
         }
         
         public void OnWebcamSelected(TMP_Dropdown change)

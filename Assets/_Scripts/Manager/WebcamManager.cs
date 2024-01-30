@@ -106,5 +106,10 @@ namespace Manager
             // Return the image
             return _texture;
         }
+
+        public static float GetCameraWidth() => _webcam.width;
+        public static float GetCameraHeight() => _webcam.height;
+
+        public static float GetCameraRatio() => (float)_webcam.width / _webcam.height;
     }
 }

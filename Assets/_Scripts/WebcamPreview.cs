@@ -22,11 +22,12 @@ public class WebcamPreview : MonoBehaviour
 
     private readonly int _sprite = Shader.PropertyToID("_Sprite");
 
-    private void Start()
+    private void OnEnable()
     {
         Rect rect = WebcamTexture.rectTransform.rect;
-        _rectWidth = rect.width;
         _rectHeight = rect.height;
+        _rectWidth = _rectHeight * WebcamManager.GetCameraRatio();
+        WebcamTexture.rectTransform.sizeDelta = new Vector2(_rectWidth, _rectHeight);
         _emojiScaleFactor = EmojiScaleFactor * _rectWidth;
     }
 

@@ -85,10 +85,7 @@ namespace Manager
             _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(1, 0, 2f));
         }
 
-        /// <summary>
-        /// Sets a new level for the game and the EditorUI.
-        /// </summary>
-        /// <param name="level">The new level to set.</param>
+        
         public void SetNewLevel(ScriptableLevel level)
         {
             ScriptableLevel = level;
@@ -102,6 +99,16 @@ namespace Manager
             if (_timescaleCoroutine != null)
                 StopCoroutine(_timescaleCoroutine);
             _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(0, 1, 1f));
+        }
+        
+        /// <summary>
+        /// Sets a new level and starts the game.
+        /// </summary>
+        /// <param name="level">The new level to set.</param>
+        public void StartGame(ScriptableLevel level)
+        {
+            ScriptableLevel = level;
+            LevelManager.Instance.PrepareLevel();
         }
     }
 }
