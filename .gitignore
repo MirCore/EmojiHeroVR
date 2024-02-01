@@ -82,3 +82,7 @@ crashlytics-build.properties
 
 # OVR Files
 /[Aa]ssets/[Oo]culus/*
+
+# Blender Files
+*.blend1
+*.blend1.meta
