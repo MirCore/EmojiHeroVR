@@ -41,38 +41,12 @@ namespace Manager
         private void Update()
         {
             // Start Level with space bar
-            if (Input.GetButtonDown("Jump"))
-                OnButtonPressed(UIType.StartStopLevel);
+            //if (Input.GetButtonDown("Jump"))
+            //    OnButtonPressed(UIType.StartStopLevel);
             
             // Stop game with escape
             //else if (Input.GetButtonDown("Cancel"))
             //    EditorApplication.ExitPlaymode();
-        }
-
-        /// <summary>
-        /// Handles button presses related to general UI interactions.
-        /// </summary>
-        /// <param name="uiType">Type of UI action.</param>
-        public void OnButtonPressed(UIType uiType)
-        { 
-            switch (uiType)
-            {
-                case UIType.StartGame:
-                    LevelManager.Instance.PrepareLevel();
-                    break;
-                case UIType.StartLevel:
-                    LevelManager.Instance.StartLevel();
-                    break;
-                case UIType.ContinueEndScreen:
-                    LevelManager.Instance.StopLevel();
-                    break;
-                case UIType.StartStopLevel:
-                case UIType.StopLevel:
-                case UIType.PauseLevel:
-                case UIType.Default:
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(uiType), uiType, null);
-            }
         }
 
         /// <summary>
@@ -84,13 +58,6 @@ namespace Manager
                 StopCoroutine(_timescaleCoroutine);
             _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(1, 0, 2f));
         }
-
-        
-        public void SetNewLevel(ScriptableLevel level)
-        {
-            ScriptableLevel = level;
-        }
-
 
         public static int GetMaxScore() => LevelManager.Instance.PlayingState.MaxScore;
 
@@ -109,6 +76,15 @@ namespace Manager
         {
             ScriptableLevel = level;
             LevelManager.Instance.PrepareLevel();
+        }
+
+        public void OnFrontButtonPressed()
+        {
+            if (!LevelIsPlaying)
+                LevelManager.Instance.StartLevel();
+            else
+                LevelManager.Instance.StopLevel();
+            // TODO: Pause Level
         }
     }
 }

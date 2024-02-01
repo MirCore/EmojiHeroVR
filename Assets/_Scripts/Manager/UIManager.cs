@@ -223,15 +223,7 @@ namespace Manager
             GameManager.Instance.StartGame(_selectedLevel);
         }
 
-        public void OnStartLevelButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StartLevel);
-        public void OnPauseButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.PauseLevel);
-        public void OnStopButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.StopLevel);
-        public void OnEndScreenButtonPressed() => GameManager.Instance.OnButtonPressed(UIType.ContinueEndScreen);
-
-        /*public void OnLevelSelected(TMP_Dropdown change)
-        {
-            GameManager.Instance.SetNewLevel(_levels[change.value]);
-        }*/
+        public void OnFrontButtonPressed() => GameManager.Instance.OnFrontButtonPressed();
 
         private void OnLevelSelected(Toggle toggle, ScriptableLevel level)
         {
