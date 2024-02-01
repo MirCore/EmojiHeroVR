@@ -96,7 +96,10 @@ namespace States.Level
             
             LevelProgress.FinishedEmoteCount++;
             if (LevelManager.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
-                LevelManager.Instance.SwitchState(LevelManager.Instance.FinishedState);
+            {
+                EventManager.InvokeLevelFinished();
+                LevelManager.Instance.SwitchState(LevelManager.Instance.IdleState);
+            }
         }
 
         /// <summary>

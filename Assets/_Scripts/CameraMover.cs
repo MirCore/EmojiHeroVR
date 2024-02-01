@@ -11,33 +11,32 @@ public class CameraMover : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.OnMenuOpened += MenuOpenedCallback;
         EventManager.OnGameStarted += GameStartedCallback;
         EventManager.OnGameStopped += GameStoppedCallback;
+        EventManager.OnLevelFinished += LevelFinishedCallback;
 
-        MenuOpenedCallback();
+        MoveToScreen();
     }
 
     private void OnDestroy()
     {
-        EventManager.OnMenuOpened -= MenuOpenedCallback;
         EventManager.OnGameStarted -= GameStartedCallback;
         EventManager.OnGameStopped -= GameStoppedCallback;
+        EventManager.OnLevelFinished -= LevelFinishedCallback;
     }
 
-    private void GameStartedCallback()
+    private void GameStartedCallback() => MoveToMachine();
+    private void GameStoppedCallback() => MoveToScreen();
+    private void LevelFinishedCallback() => MoveToScreen();
+
+    private void MoveToMachine()
     {
         StartCoroutine(MoveToPosition(transform.position, ArcadePosition.position, MoveDuration));
         StartCoroutine(TurnToPosition(transform.forward, ArcadePosition.forward, MoveDuration));
     }
 
-    private void MenuOpenedCallback()
-    {
-        StartCoroutine(MoveToPosition(transform.position, MainUIPosition.position, MoveDuration));
-        StartCoroutine(TurnToPosition(transform.forward, MainUIPosition.forward, MoveDuration));
-    }
 
-    private void GameStoppedCallback()
+    private void MoveToScreen()
     {
         StartCoroutine(MoveToPosition(transform.position, MainUIPosition.position, MoveDuration));
         StartCoroutine(TurnToPosition(transform.forward, MainUIPosition.forward, MoveDuration));

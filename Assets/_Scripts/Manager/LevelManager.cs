@@ -12,7 +12,6 @@ namespace Manager
         internal readonly LevelIdleState IdleState = new();
         internal readonly LevelPreparingState PreparingState = new();
         internal readonly LevelPlayingState PlayingState = new();
-        internal readonly LevelFinishedState FinishedState = new();
         public bool LevelIsPlaying => _levelState == PlayingState;
 
 

@@ -7,11 +7,6 @@ namespace Manager
 {
     public class EventManager : MonoBehaviour
     {
-        /// <summary>Triggered when the Main UI is opened.</summary>
-        public static event Action OnMenuOpened;
-        /// <summary>Invokes the OnMenuOpened event.</summary>
-        public static void InvokeMenuOpened() => OnMenuOpened?.Invoke();
-        
         /// <summary>Triggered when an emote is spawned.</summary>
         public static event Action<Emoji> OnEmoteSpawned;
         /// <summary>Invokes the OnEmoteSpawned event.</summary>
@@ -89,6 +84,10 @@ namespace Manager
         /// <summary>Triggered when the level finishes.</summary>
         public static event Action OnLevelFinished;
         /// <summary>Invokes the OnLevelFinished event.</summary>
-        public static void InvokeLevelFinished() => OnLevelFinished?.Invoke();
+        public static void InvokeLevelFinished()
+        {
+            Debug.Log("Event: Level Finished");
+            OnLevelFinished?.Invoke();
+        }
     }
 }

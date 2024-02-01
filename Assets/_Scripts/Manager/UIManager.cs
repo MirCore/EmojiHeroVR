@@ -26,14 +26,12 @@ namespace Manager
         private List<ScriptableLevel> _levels;
         private ScriptableLevel _selectedLevel;
         
-
+        
         [Header("Score UI")]
         [SerializeField] private List<TMP_Text> LevelNameField;
         [SerializeField] private TMP_Text ProgressField;
         [SerializeField] private List<TMP_Text> ResultField;
         [SerializeField] private List<TMP_Text> ScoreField;
-        [SerializeField] private TMP_Text DetailedEmojiScoreField;
-        [SerializeField] private TMP_Text DetailedTimeScoreField;
         
         // Holds the data for the current level.
         private LevelStruct _level;
@@ -160,8 +158,6 @@ namespace Manager
                 t.text = $"{levelProgress.LevelScore}{maxScoreText}";
             }
 
-            DetailedEmojiScoreField.text = $"Matched Emojis: {levelProgress.FulfilledEmoteCount}";
-            DetailedTimeScoreField.text = $"Time Bonus: {Math.Round((float)(levelProgress.LevelScore - levelProgress.FulfilledEmoteCount * GameManager.BaseScoreForCompletion) / GameManager.ScoreMultiplier / 10, 1)}";
         }
 
         /// <summary>
