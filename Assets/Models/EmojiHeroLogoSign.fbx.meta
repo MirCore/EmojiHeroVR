@@ -17,6 +17,31 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Logo-Emoji
+    second: {fileID: 2100000, guid: ecc8571bdc041ba438fc600ff0ec9e8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Logo-Eyes
+    second: {fileID: 2100000, guid: 58bbf38f68125dd42959b13f1eacd5a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Logo-Red
+    second: {fileID: 2100000, guid: aae2a5d59de92ac44bf7a188eba623d1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Logo-White
+    second: {fileID: 2100000, guid: 7411ff2eace97a94aa7da91de0ddd6e3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Logo-Yellow
+    second: {fileID: 2100000, guid: a97d857c62c2e4a45ad0c51caea4d02d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: LogoSign
     second: {fileID: 2100000, guid: 863897b6dbca0ca47b43145b4704bb69, type: 2}
   materials:
@@ -31,8 +56,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
