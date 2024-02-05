@@ -21,12 +21,16 @@ namespace Manager
 
         
         /// <summary>Triggered when an emotion is detected.</summary>
-        public static event Action<EEmote> OnEmotionDetected;
+        public static event Action<DetectedFace> OnEmotionDetected;
         /// <summary>Invokes the OnEmotionDetected event.</summary>
-        /// <param name="emote">The detected emotion.</param>
-        public static void InvokeEmotionDetected(EEmote emote) => OnEmotionDetected?.Invoke(emote);
+        /// <param name="face"></param>
+        public static void InvokeEmotionDetected(DetectedFace face)
+        {
+            OnEmotionDetected?.Invoke(face);
+            //Debug.Log("Event: Emotion Detected " + face.Emote + " at pos " + face.Positon);
+        }
 
-        
+
         /// <summary>Triggered when an emote was correctly reenacted, along with a score indicating the probability.</summary>
         public static event Action<Emoji, TimeSpan> OnEmoteFulfilled;
         /// <summary>Invokes the OnEmoteFulfilled event.</summary>

@@ -44,10 +44,13 @@ namespace States.Emojis
                 EventManager.InvokeEmoteExitedWebcamArea(emojiManager.Emoji);
         }
 
-        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
+        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, DetectedFace face)
         {
             // If the detected emotion matches the Emoji's emotion, switch to FulfilledState.
-            if (emote == emojiManager.Emoji.Emote)
+            if (face.Emote != emojiManager.Emoji.Emote)
+                return;
+            
+            if (GameManager.Instance.PlayerCount == 1 || face.Positon == emojiManager._player)
                 emojiManager.SwitchState(emojiManager.FulfilledState);
         }
 

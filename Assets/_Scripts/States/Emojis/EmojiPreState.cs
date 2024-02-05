@@ -92,7 +92,7 @@ namespace States.Emojis
         /// <summary>
         /// Emotion detected event handler. Not used in this state.
         /// </summary>
-        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
+        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, DetectedFace face)
         {
             // Implementation not required for this state.
         }

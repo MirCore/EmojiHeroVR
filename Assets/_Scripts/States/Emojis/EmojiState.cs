@@ -40,8 +40,8 @@ namespace States.Emojis
         /// Invoked when an emotion is detected by the FER.
         /// </summary>
         /// <param name="emojiManager">The emoji manager instance.</param>
-        /// <param name="emote">The detected emotion.</param>
-        public abstract void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote);
+        /// <param name="face">The detected face.</param>
+        public abstract void OnEmotionDetectedCallback(EmojiManager emojiManager, DetectedFace face);
 
         public abstract void Despawn(EmojiManager emojiManager);
     }

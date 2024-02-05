@@ -79,9 +79,19 @@ public class EmoteSpawner : MonoBehaviour
     {
         while (_spawnActive)
         {
-            Transform position = SpawnPositions[Random.Range(0, SpawnPositions.Count)];
-            
-            ActivatePooledEmote(position);
+            switch (GameManager.Instance.PlayerCount)
+            {
+                case 1:
+                    Transform position = SpawnPositions[Random.Range(0, SpawnPositions.Count)];
+                    ActivatePooledEmote(position);
+                    break;
+                case 2:
+                    ActivatePooledEmote(SpawnPositions[0], 0);
+                    ActivatePooledEmote(SpawnPositions[^1], 1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             CheckLevelEndConditions();
 
             yield return new WaitForSeconds(GameManager.Instance.Level.SpawnInterval);
@@ -105,11 +115,12 @@ public class EmoteSpawner : MonoBehaviour
     /// Activate an emote from the object pool and set its position.
     /// </summary>
     /// <param name="position">The position to spawn the emote at.</param>
-    private static void ActivatePooledEmote(Transform position)
+    private static void ActivatePooledEmote(Transform position, int player = -1)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
         EmojiManager emojiManager = _objectPool.GetPooledObject();
         emojiManager.SetPosition(position);
+        emojiManager.SetPlayer(player);
         emojiManager.gameObject.SetActive(true);
     }
 

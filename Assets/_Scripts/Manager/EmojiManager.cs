@@ -49,6 +49,7 @@ namespace Manager
         private DateTime _spawnTime;
 
         internal Emoji Emoji;
+        internal int _player;
 
 
         private void Awake()
@@ -99,7 +100,7 @@ namespace Manager
         }
 
         // Callback for FER response event. emote is the emotion with the highest probability.
-        private void OnEmotionDetectedCallback(EEmote emote) => _emojiState.OnEmotionDetectedCallback(this, emote);
+        private void OnEmotionDetectedCallback(DetectedFace face) => _emojiState.OnEmotionDetectedCallback(this, face);
 
         // Callback for level stopped event.
         // ReSharper disable Unity.PerformanceAnalysis
@@ -160,6 +161,11 @@ namespace Manager
             transform.position = position.position;
             // Calculate movement based on Action Area direction and movement speed
             _movementSpeed = position.forward * GameManager.Instance.Level.MovementSpeed;
+        }
+
+        public void SetPlayer(int player)
+        {
+            _player = player;
         }
     }
 }

@@ -2,68 +2,44 @@
 using System.Linq;
 using Enums;
 using Manager;
+using Unity.Mathematics;
 using UnityEngine;
 using Utilities;
 
 public static class FerService
 {
-    public static EEmote GetEmotion(Color32[] image, float scoreThreshold, float sizeThreshold)
+    public static IEnumerable<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount)
     {
-#if UNITY_EDITOR
-        // Log a new FER request.
-        EditorUIFerStats.Instance.LogNewFerCall();
-#endif
-        
-        // Convert the captured image to base64 format.
-        Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
-        
-        // Send the image for FER processing.
-        IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
-        
-        // Get face (width > sizeThreshold) with highest score
-        DetectedFace face = detectedFaces.FirstOrDefault(face => face.Width > sizeThreshold);
+        DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
 
-        if (face == null)
+        List<DetectedFace> filteredResults = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
+        DetectedFace[] filteredFaces = FilterFaces(filteredResults, faceCount);
+        
+        Probabilities probabilities = new();
+        
+        foreach (DetectedFace face in filteredFaces)
         {
-#if UNITY_EDITOR
-            // Update the UI with the FER results.
-            EditorUIFerStats.Instance.LogFerResult();
-#endif
-            return EEmote.None;
+            if (face == null)
+                continue;
+            Texture2D tempTexture = CreateTempTexture(texture2D, face);
+            probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+            face.Emote = GetEmoteWithHighestProbability(probabilities);
         }
         
-        Texture2D tempTexture = CreateTempTexture(texture2D, face);
-        Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
-        
-#if UNITY_EDITOR
-        // Update the UI with the FER results.
-        EditorUIFerStats.Instance.LogFerResult(probabilities);
-#endif
-        
-        return GetEmoteWithHighestProbability(probabilities);
+        LogFerResult(probabilities); // debug
+
+        return filteredFaces;
     }
 
     public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold, int facesLimit = -1)
     {
-#if UNITY_EDITOR
-        // Log a new FER request.
-        EditorUIFerStats.Instance.LogNewFerCall();
-#endif
-        
-        // Convert the captured image to base64 format.
-        Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
-
-        // Send the image for FER processing.
-        IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
+        DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
 
         List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
 
         if (filteredFaces.Count <= 0)
         {
-#if UNITY_EDITOR
-            // Update the UI with the FER results.
-            EditorUIFerStats.Instance.LogFerResult();
-#endif
+            LogFerResult(); // debug
             return filteredFaces;
         }        
         foreach (DetectedFace face in filteredFaces)
@@ -73,24 +49,59 @@ public static class FerService
             face.Emote = GetEmoteWithHighestProbability(probabilities);
         }
         
+        LogFerResult(EmotionRecognition.Instance.DetectEmotion(CreateTempTexture(texture2D, filteredFaces.FirstOrDefault()))); // debug
+
+        return filteredFaces;
+    }
+
+    private static void DetectFaces(Color32[] image, float scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D)
+    {
 #if UNITY_EDITOR
-        // Update the UI with the FER results.
-        EditorUIFerStats.Instance.LogFerResult(EmotionRecognition.Instance.DetectEmotion(CreateTempTexture(texture2D, filteredFaces.FirstOrDefault())));
+        // Log a new FER request.
+        EditorUIFerStats.Instance.LogNewFerCall();
 #endif
+        
+        // Convert the captured image to base64 format.
+        texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
+
+        // Send the image for FER processing.
+        detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
+    }
+
+    private static DetectedFace[] FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
+    {
+        DetectedFace[] filteredFaces = new DetectedFace[faceCount];
+
+        if (faceCount == 1)
+        {
+            filteredFaces[0] = detectedFaces.FirstOrDefault();
+            return filteredFaces;
+        }
+
+        foreach (DetectedFace face in detectedFaces)
+        {
+            int id = faceCount - 1 - (int)math.floor(faceCount * (face.RelativeX + face.RelativeWidth / 2));
+
+            if (filteredFaces[id] != null && filteredFaces[id].Score > face.Score)
+                continue;
+            
+            filteredFaces[id] = face;
+            face.Positon = id;
+        }
 
         return filteredFaces;
     }
 
     private static List<DetectedFace> FilterResults(IEnumerable<DetectedFace> detectedFaces, float sizeThreshold)
     {
-        List<DetectedFace> filteredFaces = new();
+        List<DetectedFace> filteredResults = new();
 
-        foreach (DetectedFace face in detectedFaces.Where(face => face.Width > sizeThreshold).Where(face => !filteredFaces.Any(otherFace => AreFacesOverlapping(face, otherFace))))
+        foreach (DetectedFace face in detectedFaces.Where(face => face.Width > sizeThreshold).Where(face => !filteredResults.Any(otherFace => AreFacesOverlapping(face, otherFace))))
         {
-            filteredFaces.Add(face);
+            filteredResults.Add(face);
         }
 
-        return filteredFaces;
+        return filteredResults;
     }
 
     private static bool AreFacesOverlapping(DetectedFace face1, DetectedFace face2)
@@ -137,12 +148,28 @@ public static class FerService
         // Return the emotion with the highest probability.
         return result.OrderByDescending(kv => kv.Value).First().Key;
     }
+
+    private static void LogFerResult()
+    {
+#if UNITY_EDITOR
+        // Update the UI with the FER results.
+        EditorUIFerStats.Instance.LogFerResult();
+#endif
+    }
+
+    private static void LogFerResult(Probabilities probabilities)
+    {
+#if UNITY_EDITOR
+        // Update the UI with the FER results.
+        EditorUIFerStats.Instance.LogFerResult(probabilities);
+#endif
+    }
 }
 
     
 public class DetectedFace
 {
-    public float Score;
+    public float Score = 0;
 
     public float RelativeX;
     public float RelativeY;
@@ -155,4 +182,5 @@ public class DetectedFace
     public int Height;
     
     public EEmote Emote;
+    public int Positon;
 }

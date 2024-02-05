@@ -94,7 +94,7 @@ namespace States.Level
             if (!LevelProgress.RemoveEmoteFromActionArea(emoji))
                 Debug.LogWarning($"Attempted to remove an emote that wasn't in the action area: {emoji}");
             
-            LevelProgress.FinishedEmoteCount++;
+            LevelProgress.FinishedEmotes++;
             if (LevelManager.CheckLevelEndConditions(LevelProgress.FinishedEmoteCount))
             {
                 EventManager.InvokeLevelFinished();

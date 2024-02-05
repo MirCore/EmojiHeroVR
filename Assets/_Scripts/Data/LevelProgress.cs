@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Manager;
 using Utilities;
 
 namespace Data
@@ -8,15 +9,17 @@ namespace Data
     {
         /// <summary>Gets the count of fulfilled emotes.</summary>
         public int FulfilledEmoteCount { get; internal set; }
-        
+
         /// <summary>Gets the count of finished emotes.</summary>
-        public int FinishedEmoteCount { get; internal set; }
+        internal int FinishedEmotes;
+
+        public int FinishedEmoteCount => FinishedEmotes / GameManager.Instance.PlayerCount;
 
         /// <summary>List of spawned emotes.</summary>
         internal readonly List<Emoji> SpawnedEmotes = new();
 
         /// <summary>Gets the count of spawned emotes.</summary>
-        public int SpawnedEmotesCount => SpawnedEmotes.Count;
+        public int SpawnedEmotesCount => SpawnedEmotes.Count / GameManager.Instance.PlayerCount;
         
         /// <summary>Gets the current level score.</summary>
         public int LevelScore { get; internal set; }

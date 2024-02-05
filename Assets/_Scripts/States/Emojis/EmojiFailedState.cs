@@ -48,7 +48,7 @@ namespace States.Emojis
             Debug.Log("NotImplementedException");
         }
 
-        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, EEmote emote)
+        public override void OnEmotionDetectedCallback(EmojiManager emojiManager, DetectedFace face)
         {
             // Implementation not required for this state.
         }

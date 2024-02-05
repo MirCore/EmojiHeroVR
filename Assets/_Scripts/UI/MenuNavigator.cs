@@ -45,7 +45,7 @@ namespace UI
         {
             MainMenu.SetActive(false);
             SinglePlayerMenu.SetActive(false);
-            //MultiPlayerMenu.SetActive(false);
+            MultiPlayerMenu.SetActive(false);
             WebcamPreviewMenu.SetActive(false);
             SettingsMenu.SetActive(false);
             EndscreenMenu.SetActive(false);

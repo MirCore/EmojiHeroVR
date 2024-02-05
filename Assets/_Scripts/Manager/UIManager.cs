@@ -19,8 +19,10 @@ namespace Manager
     {
         [Header("MainMenu")]
         [SerializeField] private GameObject TogglePrefab;
-        [SerializeField] private ToggleGroup LevelToggleGroup;
-        [SerializeField] private TMP_Text LevelInfo;
+        [SerializeField] private ToggleGroup SinglePlayerLevelToggleGroup;
+        [SerializeField] private TMP_Text SinglePlayerLevelInfo;
+        [SerializeField] private ToggleGroup MultiPlayerLevelToggleGroup;
+        [SerializeField] private TMP_Text MultiPlayerLevelInfo;
         [SerializeField] private TMP_Dropdown WebcamDropdown;
 
         private List<ScriptableLevel> _levels;
@@ -51,7 +53,8 @@ namespace Manager
             // Initialize the UI state.
             GameStoppedCallback();
 
-            CreateLevelDropdown();
+            CreateSinglePlayerLevelList();
+            CreateMultiPlayerLevelList();
             CreateWebcamDropdown();
         }
 
@@ -81,16 +84,30 @@ namespace Manager
             WebcamDropdown.RefreshShownValue();
         }
         
-        private void CreateLevelDropdown()
+        private void CreateSinglePlayerLevelList()
         {
             _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
     
             foreach (ScriptableLevel level in _levels)
             {
-                GameObject toggleObject = Instantiate(TogglePrefab, LevelToggleGroup.transform);
+                GameObject toggleObject = Instantiate(TogglePrefab, SinglePlayerLevelToggleGroup.transform);
                 Toggle toggle = toggleObject.GetComponent<Toggle>();
                 toggle.onValueChanged.AddListener(delegate {OnLevelSelected(toggle, level); });
-                toggle.group = LevelToggleGroup;
+                toggle.group = SinglePlayerLevelToggleGroup;
+                toggleObject.GetComponentInChildren<TMP_Text>().text = level.LevelStruct.LevelName;
+            }
+        }
+        
+        private void CreateMultiPlayerLevelList()
+        {
+            _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
+    
+            foreach (ScriptableLevel level in _levels)
+            {
+                GameObject toggleObject = Instantiate(TogglePrefab, MultiPlayerLevelToggleGroup.transform);
+                Toggle toggle = toggleObject.GetComponent<Toggle>();
+                toggle.onValueChanged.AddListener(delegate {OnLevelSelected(toggle, level); });
+                toggle.group = MultiPlayerLevelToggleGroup;
                 toggleObject.GetComponentInChildren<TMP_Text>().text = level.LevelStruct.LevelName;
             }
         }
@@ -216,6 +233,16 @@ namespace Manager
         {
             if (_selectedLevel == null)
                 return;
+            GameManager.Instance.PlayerCount = 1;
+            GameManager.Instance.StartGame(_selectedLevel);
+        }
+
+        // Methods to handle button presses, triggering corresponding actions in the GameManager.
+        public void OnStartMultiplayerGameButtonPressed()
+        {
+            if (_selectedLevel == null)
+                return;
+            GameManager.Instance.PlayerCount = 2;
             GameManager.Instance.StartGame(_selectedLevel);
         }
 
@@ -227,10 +254,12 @@ namespace Manager
                 return;
             _selectedLevel = level;
             LevelStruct levelStruct = level.LevelStruct;
-            LevelInfo.text = $"{levelStruct.LevelName}\n\n" +
-                             $"Mode: {levelStruct.LevelMode}\n" +
-                             $"Speed: {levelStruct.MovementSpeed}\n" +
-                             $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
+            string text = $"{levelStruct.LevelName}\n\n" +
+                          $"Mode: {levelStruct.LevelMode}\n" +
+                          $"Speed: {levelStruct.MovementSpeed}\n" +
+                          $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
+            SinglePlayerLevelInfo.text = text;
+            MultiPlayerLevelInfo.text = text;
         }
         
         public void OnWebcamSelected(TMP_Dropdown change)

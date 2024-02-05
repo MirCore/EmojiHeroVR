@@ -22,7 +22,9 @@ namespace Manager
         // Properties for accessing game data
         public LevelStruct Level => ScriptableLevel.LevelStruct;
         public static LevelProgress LevelProgress => LevelManager.Instance.PlayingState.LevelProgress;
-        public bool LevelIsPlaying => LevelManager.Instance.LevelIsPlaying;
+        public static bool LevelIsPlaying => LevelManager.Instance.LevelIsPlaying;
+        
+        [SerializeField] public int PlayerCount = 1;
 
         private Coroutine _timescaleCoroutine;
 
