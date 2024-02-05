@@ -9335,7 +9335,7 @@ Transform:
   m_GameObject: {fileID: 1693693982}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7485415, y: 2.236549e-18, z: 1.1913681e-17, w: 0.66308796}
-  m_LocalPosition: {x: -0, y: 0.86, z: 0.58}
+  m_LocalPosition: {x: -0, y: 0.8471, z: 0.5767}
   m_LocalScale: {x: 97.99, y: 100.000046, z: 100.000046}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9375,8 +9375,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderRampDuration: 1
-  LowGradientPosition: -0.3
-  HighGradientPosition: 0
+  LowGradientPosition: 0
+  HighGradientPosition: 0.0005
   TimePressureColorRampDuration: 1
   ResetColorRampDuration: 0.2
   TimePressureColor: {r: 1, g: 0.23529412, b: 0, a: 0.19607843}
@@ -10125,7 +10125,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1828656978}
   - component: {fileID: 1828656979}
-  - component: {fileID: 1828656980}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -10160,19 +10159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2dc4b2bd294d508ea2a3c7684e85b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1828656980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828656977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 346605eda575a594eb55228b33b60871, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LaneMaterial: {fileID: 2100000, guid: a842f359adeed7c4db62f8ea3391669a, type: 2}
 --- !u!1 &1829499136
 GameObject:
   m_ObjectHideFlags: 0

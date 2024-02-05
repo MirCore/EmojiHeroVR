@@ -41,10 +41,10 @@ Material:
     - _HueOffset: 0
     - _Max: 1
     - _Min: 0
-    - _Origin: -0.33
+    - _Origin: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Spread: 0.4
+    - _Spread: 0.001
     m_Colors:
     - _BottomColor: {r: 1, g: 0.4, b: 0, a: 0.19607843}
     - _TopColor: {r: 1, g: 0.40000004, b: 0, a: 0}
