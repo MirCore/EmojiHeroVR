@@ -238,6 +238,14 @@ namespace Manager
         }
 
         // Methods to handle button presses, triggering corresponding actions in the GameManager.
+        public void OnRestartGameButtonPressed()
+        {
+            if (_selectedLevel == null)
+                return;
+            GameManager.Instance.StartGame(_selectedLevel);
+        }
+
+        // Methods to handle button presses, triggering corresponding actions in the GameManager.
         public void OnStartMultiplayerGameButtonPressed()
         {
             if (_selectedLevel == null)

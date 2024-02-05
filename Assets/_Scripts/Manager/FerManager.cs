@@ -1,19 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
+using UI;
 using UnityEngine;
 
 namespace Manager
 {
     public class FerManager : MonoBehaviour
     {
-        public FerManager(int i)
-        {
-            _i = i;
-        }
-
-        private int _i;
-
+        [SerializeField] private WebcamVisualization _webcamVisualization;
         private void OnEnable()
         {
             EventManager.OnLevelStarted += LevelStartedCallback;
@@ -35,7 +31,7 @@ namespace Manager
             if (!GameManager.LevelIsPlaying)
                 return;
             Color32[] image = WebcamManager.TakeSnapshot();
-            IEnumerable<DetectedFace> emotions = FerService.GetEmotions(image, 0.3f, 0.1f, GameManager.Instance.PlayerCount);
+            List<DetectedFace> emotions = FerService.GetEmotions(image, 0.3f, 0.1f, GameManager.Instance.PlayerCount);
 
             foreach (DetectedFace face in emotions)
             {
@@ -44,6 +40,8 @@ namespace Manager
                 if (face.Emote != EEmote.None)
                     EventManager.InvokeEmotionDetected(face);
             }
+
+            _webcamVisualization.PositionEmojis(emotions);
 
             StartCoroutine(DetectEmotionNextFrame());
         }

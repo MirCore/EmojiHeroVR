@@ -39,7 +39,7 @@ namespace States.Emojis
 
         public override void OnTriggerEnter(Collider collider, EmojiManager emojiManager)
         {
-            Debug.Log("NotImplementedException");
+            // Implementation not required for this state.
         }
 
         /// <summary>

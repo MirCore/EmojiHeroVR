@@ -26,6 +26,11 @@ namespace UI
 
         private void OnEnable()
         {
+            CalculateDimensions();
+        }
+
+        private void CalculateDimensions()
+        {
             Rect rect = WebcamTexture.rectTransform.rect;
             _rectHeight = rect.height;
             _rectWidth = _rectHeight * WebcamManager.GetCameraRatio();

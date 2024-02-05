@@ -8,12 +8,12 @@ using Utilities;
 
 public static class FerService
 {
-    public static IEnumerable<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount)
+    public static List<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount)
     {
         DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
 
         List<DetectedFace> filteredResults = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
-        DetectedFace[] filteredFaces = FilterFaces(filteredResults, faceCount);
+        List<DetectedFace> filteredFaces = FilterFaces(filteredResults, faceCount);
         
         Probabilities probabilities = new();
         
@@ -68,14 +68,14 @@ public static class FerService
         detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
     }
 
-    private static DetectedFace[] FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
+    private static List<DetectedFace> FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
     {
         DetectedFace[] filteredFaces = new DetectedFace[faceCount];
 
         if (faceCount == 1)
         {
             filteredFaces[0] = detectedFaces.FirstOrDefault();
-            return filteredFaces;
+            return filteredFaces.ToList();
         }
 
         foreach (DetectedFace face in detectedFaces)
@@ -89,7 +89,7 @@ public static class FerService
             face.Positon = id;
         }
 
-        return filteredFaces;
+        return filteredFaces.ToList();
     }
 
     private static List<DetectedFace> FilterResults(IEnumerable<DetectedFace> detectedFaces, float sizeThreshold)

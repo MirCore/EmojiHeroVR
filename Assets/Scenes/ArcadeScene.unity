@@ -2444,9 +2444,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HideOnLevelStarted: 0
-  HideOnLevelFinished: 0
-  HideOnGameStarted: 0
-  HideOnGameStopped: 0
+  HideOnLevelFinished: 1
+  HideOnGameStarted: 1
+  HideOnGameStopped: 1
   ShowOnLevelStarted: 1
   ShowOnLevelFinished: 0
   ShowOnGameStarted: 0
@@ -6915,6 +6915,7 @@ GameObject:
   - component: {fileID: 1252438398}
   - component: {fileID: 1252438400}
   - component: {fileID: 1252438399}
+  - component: {fileID: 1252438401}
   m_Layer: 5
   m_Name: Webcam Texture
   m_TagString: Untagged
@@ -6936,10 +6937,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1812432282}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1700, y: 670}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1252438399
 MonoBehaviour:
@@ -6954,7 +6955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.44313726, g: 0.7294118, b: 0.72156864, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6976,6 +6977,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1252438397}
   m_CullTransparentMesh: 1
+--- !u!114 &1252438401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252438397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 3
+  m_AspectRatio: 2
 --- !u!224 &1256843726 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3579407722884489759, guid: 41b7e6d7de4185a4783d7ad25e018645, type: 3}
@@ -7407,6 +7422,96 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1324673783}
+  m_CullTransparentMesh: 1
+--- !u!1 &1339300931
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1339300932}
+  - component: {fileID: 1339300935}
+  - component: {fileID: 1339300934}
+  - component: {fileID: 1339300933}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1339300932
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339300931}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1812432282}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1339300933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339300931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 3
+  m_AspectRatio: 2
+--- !u!114 &1339300934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339300931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 29cc3b003dd9293459cb449b04ed7b71, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 5
+--- !u!222 &1339300935
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339300931}
   m_CullTransparentMesh: 1
 --- !u!224 &1340006079 stripped
 RectTransform:
@@ -10047,7 +10152,7 @@ GameObject:
   - component: {fileID: 1812432282}
   - component: {fileID: 1812432285}
   - component: {fileID: 1812432284}
-  - component: {fileID: 1812432283}
+  - component: {fileID: 1812432286}
   m_Layer: 5
   m_Name: Webcam Panel
   m_TagString: Untagged
@@ -10062,35 +10167,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812432281}
-  m_LocalRotation: {x: -0.008726465, y: -0, z: -0, w: 0.999962}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1.3312335}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1252438398}
+  - {fileID: 1339300932}
   m_Father: {fileID: 5895588894226143294}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 150}
+  m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &1812432283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1812432281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83a32c402cb947a482caf51565b4658e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WebcamTexture: {fileID: 1252438399}
-  Emoji: {fileID: 8999809347762319056, guid: 4647cba95929be64e8782d1f7ed6a9e0, type: 3}
-  EmojiScaleFactor: 10
-  EnableBoundingBoxes: 0
 --- !u!114 &1812432284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10129,6 +10219,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812432281}
   m_CullTransparentMesh: 1
+--- !u!114 &1812432286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812432281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bff00d52389f4e97ba0e4b7d5ee888e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WebcamTexture: {fileID: 1252438399}
+  WebcamOverlay: {fileID: 1339300934}
+  Emoji: {fileID: 9194498035840728150, guid: ac1c699d5f519fc429a85c81851d0598, type: 3}
+  EmojiScaleFactor: 2
 --- !u!1 &1828656977
 GameObject:
   m_ObjectHideFlags: 0
@@ -10928,7 +11034,7 @@ PrefabInstance:
       objectReference: {fileID: 2643839193540373916}
     - target: {fileID: 5856986422762032919, guid: 5790c369a263b7f4cbd1d4ef9f1f5fbf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnStartGameButtonPressed
+      value: OnRestartGameButtonPressed
       objectReference: {fileID: 0}
     - target: {fileID: 5856986422762032919, guid: 5790c369a263b7f4cbd1d4ef9f1f5fbf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -11590,6 +11696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 224257b3e62298e4cadfdd3b08f51167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _webcamVisualization: {fileID: 1812432286}
 --- !u!1 &2019269979
 GameObject:
   m_ObjectHideFlags: 0

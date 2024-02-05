@@ -25,6 +25,8 @@ public class MenuHider : MonoBehaviour
         EventManager.OnLevelFinished += OnLevelFinishedCallback;
 
         _ui = transform.GetChild(0).gameObject;
+        
+        HideMenu();
     }
 
     private void OnDestroy()
