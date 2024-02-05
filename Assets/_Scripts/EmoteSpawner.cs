@@ -12,8 +12,10 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EmoteSpawner : MonoBehaviour
 {
-    [SerializeField] private List<Transform> SpawnPositions; // The GameObject indicating the spawn position
+    private readonly List<SpawnPoint> _spawnPoints = new(); // The GameObject indicating the spawn position
+    [SerializeField] private Transform SpawnPosition; // The GameObject indicating the spawn position
     [SerializeField] private Transform TrainingSpawnPosition; // The GameObject indicating the spawn position
+    [SerializeField] private Material LaneMaterial;
 
     private bool _spawnActive; // Flag to control whether emotes should be spawned.
 
@@ -23,6 +25,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         EventManager.OnLevelStarted += OnLevelStartedCallback;
         EventManager.OnLevelFinished += OnLevelFinishedCallback;
+        EventManager.OnGameStarted += OnGameStartedCallback;
         EventManager.OnGameStopped += OnGameStoppedCallback;
         EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
         EventManager.OnEmoteFailed += OnEmoteFailedCallback;
@@ -32,6 +35,7 @@ public class EmoteSpawner : MonoBehaviour
     {
         EventManager.OnLevelStarted -= OnLevelStartedCallback;
         EventManager.OnLevelFinished -= OnLevelFinishedCallback;
+        EventManager.OnGameStarted -= OnGameStartedCallback;
         EventManager.OnGameStopped -= OnGameStoppedCallback;
         EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
         EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
@@ -40,6 +44,26 @@ public class EmoteSpawner : MonoBehaviour
     private void Start()
     {
         _objectPool = GetComponent<ObjectPool>();
+    }
+
+    /// <summary>
+    /// Set the Lanes when the game starts
+    /// </summary>
+    private void OnGameStartedCallback()
+    {
+        _spawnPoints.Clear();
+        int lanes = GameManager.Instance.PlayerCount == 1 ? 4 : GameManager.Instance.PlayerCount;
+        
+        Vector3 position = SpawnPosition.position;
+        for (int i = 0; i < lanes; i ++)
+        {
+            float totalWidth = position.x * 2;
+            float laneWidth = totalWidth / lanes;
+            float positionX = laneWidth / 2 + laneWidth * i - totalWidth / 2;
+            _spawnPoints.Add(new SpawnPoint(new Vector3(positionX, position.y, position.z), SpawnPosition.forward));
+        }
+        
+        LaneMaterial.mainTextureScale = new Vector2(lanes, 1);
     }
 
     /// <summary>
@@ -82,12 +106,12 @@ public class EmoteSpawner : MonoBehaviour
             switch (GameManager.Instance.PlayerCount)
             {
                 case 1:
-                    Transform position = SpawnPositions[Random.Range(0, SpawnPositions.Count)];
+                    SpawnPoint position = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
                     ActivatePooledEmote(position);
                     break;
                 case 2:
-                    ActivatePooledEmote(SpawnPositions[0], 0);
-                    ActivatePooledEmote(SpawnPositions[^1], 1);
+                    ActivatePooledEmote(_spawnPoints[0], 0);
+                    ActivatePooledEmote(_spawnPoints[^1], 1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -107,7 +131,7 @@ public class EmoteSpawner : MonoBehaviour
         yield return new WaitForSeconds(waitBeforeSpawn);
         if (!_spawnActive) 
             yield break;
-        ActivatePooledEmote(TrainingSpawnPosition);
+        ActivatePooledEmote(new SpawnPoint(TrainingSpawnPosition.position, TrainingSpawnPosition.forward));
         CheckLevelEndConditions();
     }
     
@@ -115,7 +139,7 @@ public class EmoteSpawner : MonoBehaviour
     /// Activate an emote from the object pool and set its position.
     /// </summary>
     /// <param name="position">The position to spawn the emote at.</param>
-    private static void ActivatePooledEmote(Transform position, int player = -1)
+    private static void ActivatePooledEmote(SpawnPoint position, int player = -1)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
         EmojiManager emojiManager = _objectPool.GetPooledObject();
@@ -149,4 +173,17 @@ public class EmoteSpawner : MonoBehaviour
     /// </summary>
     private void StopSpawning() => _spawnActive = false;
 
+}
+
+[System.Serializable] // Make it visible in the inspector and serializable.
+public struct SpawnPoint
+{
+    public Vector3 Position;
+    public Vector3 Forward;
+
+    public SpawnPoint(Vector3 position, Vector3 forward)
+    {
+        Position = position;
+        Forward = forward;
+    }
 }

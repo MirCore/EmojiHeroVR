@@ -44,6 +44,8 @@ namespace UI
             
             for (int i = 0; i < detectedFaces.Count; i++)
             {
+                if (detectedFaces[i] == null)
+                    continue;
                 if (_emojis.Count <= i)
                     SpawnEmoji();
                 

@@ -155,12 +155,12 @@ namespace Manager
             gameObject.SetActive(false);
         }
 
-        public void SetPosition(Transform position)
+        public void SetPosition(SpawnPoint spawnPoint)
         {
             transform.rotation = Quaternion.identity;
-            transform.position = position.position;
+            transform.position = spawnPoint.Position;
             // Calculate movement based on Action Area direction and movement speed
-            _movementSpeed = position.forward * GameManager.Instance.Level.MovementSpeed;
+            _movementSpeed = spawnPoint.Forward * GameManager.Instance.Level.MovementSpeed;
         }
 
         public void SetPlayer(int player)
