@@ -9,7 +9,8 @@ namespace UI
     public class WebcamVisualization : MonoBehaviour
     {
         [SerializeField] private RawImage WebcamTexture;
-        [SerializeField] private Image WebcamOverlay;
+        [SerializeField] private GameObject WebcamOverlay;
+        [SerializeField] private List<GameObject> WebcamOverlays = new();
         [SerializeField] private GameObject Emoji;
         private readonly List<RectTransform> _emojis = new();
 
@@ -25,7 +26,19 @@ namespace UI
         private void OnEnable()
         {
             WebcamTexture.GetComponent<AspectRatioFitter>().aspectRatio = WebcamManager.GetCameraRatio();
-            WebcamOverlay.GetComponent<AspectRatioFitter>().aspectRatio = WebcamManager.GetCameraRatio();
+            
+            while (GameManager.Instance.PlayerCount > WebcamOverlays.Count)
+            {
+                WebcamOverlays.Add(Instantiate(WebcamOverlay, WebcamTexture.transform));
+            }
+
+            while (GameManager.Instance.PlayerCount < WebcamOverlays.Count)
+            {
+                GameObject overlay = WebcamOverlays.LastOrDefault();
+                WebcamOverlays.Remove(overlay);
+                Destroy(overlay);
+            }
+                
             CalculateDimensions();
         }
 
@@ -44,10 +57,13 @@ namespace UI
             
             for (int i = 0; i < detectedFaces.Count; i++)
             {
-                if (detectedFaces[i] == null)
-                    continue;
                 if (_emojis.Count <= i)
                     SpawnEmoji();
+                if (detectedFaces[i] == null)
+                {
+                    _emojis[i].gameObject.SetActive(false);
+                    continue;
+                }
                 
                 RectTransform emoji = _emojis[i];
                 float scale = _emojiScaleFactor * detectedFaces[i].RelativeWidth;
@@ -67,7 +83,7 @@ namespace UI
 
         private void SpawnEmoji()
         {
-            GameObject emoji = Instantiate(Emoji, WebcamTexture.transform);
+            GameObject emoji = Instantiate(Emoji, transform);
             _emojis.Add(emoji.GetComponentInChildren<RectTransform>());
         }
     }
