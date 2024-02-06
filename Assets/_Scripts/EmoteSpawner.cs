@@ -87,7 +87,7 @@ public class EmoteSpawner : MonoBehaviour
     /// <summary>
     /// Spawn a new emote in Training mode when the previous one is fulfilled.
     /// </summary>
-    private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time) => SpawnTrainingEmote();
+    private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time, int playerId) => SpawnTrainingEmote();
 
     private void SpawnTrainingEmote()
     {
@@ -107,7 +107,7 @@ public class EmoteSpawner : MonoBehaviour
             {
                 case 1:
                     SpawnPoint position = _spawnPoints[Random.Range(0, _spawnPoints.Count)];
-                    ActivatePooledEmote(position);
+                    ActivatePooledEmote(position, 0);
                     break;
                 case 2:
                     ActivatePooledEmote(_spawnPoints[0], 0);
@@ -131,15 +131,16 @@ public class EmoteSpawner : MonoBehaviour
         yield return new WaitForSeconds(waitBeforeSpawn);
         if (!_spawnActive) 
             yield break;
-        ActivatePooledEmote(new SpawnPoint(TrainingSpawnPosition.position, TrainingSpawnPosition.forward));
+        ActivatePooledEmote(new SpawnPoint(TrainingSpawnPosition.position, TrainingSpawnPosition.forward), 0);
         CheckLevelEndConditions();
     }
-    
+
     /// <summary>
     /// Activate an emote from the object pool and set its position.
     /// </summary>
     /// <param name="position">The position to spawn the emote at.</param>
-    private static void ActivatePooledEmote(SpawnPoint position, int player = -1)
+    /// <param name="player"></param>
+    private static void ActivatePooledEmote(SpawnPoint position, int player)
     {
         // Retrieve an emote object from the pool, set its position, and activate it.
         EmojiManager emojiManager = _objectPool.GetPooledObject();

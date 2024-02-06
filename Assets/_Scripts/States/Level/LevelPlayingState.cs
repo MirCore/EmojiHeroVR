@@ -108,10 +108,11 @@ namespace States.Level
         /// </summary>
         /// <param name="emoji">The emote that was fulfilled.</param>
         /// <param name="time">The base score associated with the emote.</param>
-        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time)
+        /// <param name="playerId"></param>
+        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time, int playerId)
         {
-            LevelProgress.FulfilledEmoteCount++;
-            LevelProgress.LevelScore += GameManager.BaseScoreForCompletion + (int)((2 - (float)time.Milliseconds / 1000) * GameManager.ScoreMultiplier) * 10;
+            int score = GameManager.BaseScoreForCompletion + (int)((2 - (float)time.Milliseconds / 1000) * GameManager.ScoreMultiplier);
+            LevelProgress.OnEmoteFulfilled(score * 10, playerId);
         }
 
         /// <summary>

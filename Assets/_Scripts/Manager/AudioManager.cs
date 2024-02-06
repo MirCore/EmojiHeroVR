@@ -125,7 +125,7 @@ namespace Manager
         /// <summary>
         /// Callback for when an emote is successfully fulfilled, plays the success sound.
         /// </summary>
-        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time)
+        private void OnEmoteFulfilledCallback(Emoji emoji, TimeSpan time, int playerId)
         {
             // Play success sound
             PlaySoundEffect(SuccessSound);

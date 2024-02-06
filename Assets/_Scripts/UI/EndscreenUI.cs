@@ -32,10 +32,10 @@ namespace UI
             int maxScore = GameManager.GetMaxScore();
         
             string maxScoreText = maxScore > 0 ? $" / {maxScore}" : "";
-            TotalScore.text = $"{levelProgress.LevelScore}{maxScoreText}";
+            TotalScore.text = $"{levelProgress.GetScore(0)}{maxScoreText}"; // TODO: MultiPlayer
         
-            MatchedEmojis.text = $"Matched Emojis: {levelProgress.FulfilledEmoteCount}";
-            TimeBonus.text = $"Time Bonus: {Math.Round((float)(levelProgress.LevelScore - levelProgress.FulfilledEmoteCount * GameManager.BaseScoreForCompletion) / GameManager.ScoreMultiplier / 10, 1)}";
+            MatchedEmojis.text = $"Matched Emojis: {levelProgress.GetMatchedEmotes(0)}";
+            TimeBonus.text = $"Time Bonus: {Math.Round((float)(levelProgress.GetScore(0) - levelProgress.GetMatchedEmotes(0) * GameManager.BaseScoreForCompletion) / GameManager.ScoreMultiplier / 10, 1)}";
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Manager
         private DateTime _spawnTime;
 
         internal Emoji Emoji;
-        internal int _player;
+        internal int PlayerId;
 
 
         private void Awake()
@@ -165,7 +165,7 @@ namespace Manager
 
         public void SetPlayer(int player)
         {
-            _player = player;
+            PlayerId = player;
         }
     }
 }

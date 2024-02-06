@@ -32,11 +32,13 @@ namespace Manager
 
 
         /// <summary>Triggered when an emote was correctly reenacted, along with a score indicating the probability.</summary>
-        public static event Action<Emoji, TimeSpan> OnEmoteFulfilled;
+        public static event Action<Emoji, TimeSpan, int> OnEmoteFulfilled;
+
         /// <summary>Invokes the OnEmoteFulfilled event.</summary>
         /// <param name="emoji">The fulfilled emote.</param>
         /// <param name="time">The score indicating the probability of the emote.</param>
-        public static void InvokeEmoteFulfilled(Emoji emoji, TimeSpan time) => OnEmoteFulfilled?.Invoke(emoji, time);
+        /// <param name="playerId"></param>
+        public static void InvokeEmoteFulfilled(Emoji emoji, TimeSpan time, int playerId) => OnEmoteFulfilled?.Invoke(emoji, time, playerId);
 
         
         /// <summary>Triggered when an emote exits the ActionArea.</summary>
