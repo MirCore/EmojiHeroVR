@@ -13,18 +13,22 @@ namespace UI
         
         // Time of the last FER request
         private DateTime _postTime;
+        private DateTime _snapshotTime;
 
         private void OnEnable()
         {
+            ResetDebugData();
+            
             EventManager.OnEmotionDetected += EmotionDetectedCallback;
             EventManager.OnFerCall += FerCallCallback;
         }
-        
+
         private void OnDestroy()
         {
             EventManager.OnEmotionDetected -= EmotionDetectedCallback;
             EventManager.OnFerCall -= FerCallCallback;
         }
+
 
         private void FerCallCallback()
         {
@@ -42,7 +46,6 @@ namespace UI
         private void LogFerResult(Probabilities probabilities)
         {
             DebugData.Probabilities = probabilities;
-            DebugData.PendingFer--;
         }
         
         /// <summary>
@@ -50,13 +53,19 @@ namespace UI
         /// </summary>
         private void LogNewFerCall()
         {
-            TimeSpan postTime = DateTime.Now - _postTime;  // Calculate time since last POST request
-            if (postTime.TotalSeconds < 1)  // If less than one second has passed since the last POST request
-                DebugData.CurrentFerFPS = Math.Round(1 / postTime.TotalSeconds, 1); // Update posts per second
+            TimeSpan time = DateTime.Now - _postTime;  // Calculate time since last POST request
+            if (time.TotalSeconds < 1)  // If less than one second has passed since the last POST request
+                DebugData.CurrentFerFPS = Math.Round(1 / time.TotalSeconds, 1); // Update posts per second
             _postTime = DateTime.Now;  // Update last POST request time
         
-            DebugData.PendingFer++;  // Increment active POST request counter
             DebugData.TotalFer++;  // Increment total POST request counter
+        }
+
+        private void ResetDebugData()
+        {
+            DebugData.Probabilities = new Probabilities();
+            DebugData.TotalFer = 0;
+            DebugData.CurrentFerFPS = 0;
         }
     }
 }

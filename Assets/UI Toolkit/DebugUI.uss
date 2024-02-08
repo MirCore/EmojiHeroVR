@@ -1,0 +1,4 @@
+.text {
+    color: rgb(0, 255, 34);
+    -unity-font-style: normal;
+}

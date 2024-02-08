@@ -5385,7 +5385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3db078c4bf3f741a193a18f5542d38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIDocument: {fileID: 1055438200}
   DebugData: {fileID: 11400000, guid: 70184b5107bc25b43a4f0d5147177457, type: 2}
 --- !u!1001 &1087190301
 PrefabInstance:

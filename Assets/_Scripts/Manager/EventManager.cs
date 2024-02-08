@@ -67,6 +67,10 @@ namespace Manager
         /// <param name="emoji">The emote that exited the WebcamArea.</param>
         public static void InvokeEmoteExitedWebcamArea(Emoji emoji) => OnEmoteExitedWebcamArea?.Invoke(emoji);
         
+        
+        //--  Debug Data  --//
+        
+        
         /// <summary>Triggered when a FER call is triggered.</summary>
         public static event Action OnFerCall;
         /// <summary>Invokes the OnFerCall event.</summary>
