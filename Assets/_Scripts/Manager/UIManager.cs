@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scriptables;
@@ -26,7 +25,12 @@ namespace Manager
         [Header("InGameUI")]
         [SerializeField] private GameObject InGameScoreUIPrefab;
         [SerializeField] private GameObject InGameScoreUI;
-        private readonly List<ScoreUI> _inGameScoreUIs = new();
+        private readonly List<InGameScoreUI> _inGameScoreUIs = new();
+
+        [Header("InGameUI")]
+        [SerializeField] private GameObject EndscreenUIPrefab;
+        [SerializeField] private GameObject EndscreenUI;
+        private readonly List<EndscreenUI> _endscreenUIs = new();
 
         private List<ScriptableLevel> _levels;
         private ScriptableLevel _selectedLevel;
@@ -50,15 +54,41 @@ namespace Manager
 
         private void LevelStartedCallback()
         {
+            InitiateInGameUI();
+            InitiateEndscreenUI();
+        }
+
+        private void InitiateEndscreenUI()
+        {
             int playerCount = GameManager.Instance.PlayerCount;
 
             
-            // Adjust the number of ScoreUI instances to match the current player count
+            // Adjust the number of EndscreenUI instances to match the current player count
+            for (int i = _endscreenUIs.Count; i < playerCount; i++)
+            {
+                EndscreenUI newEndscreenUI = Instantiate(EndscreenUIPrefab, EndscreenUI.transform).GetComponent<EndscreenUI>();
+                newEndscreenUI.SetPlayerId(i);
+                _endscreenUIs.Add(newEndscreenUI);
+            }
+
+            // Activate or deactivate EndscreenUIs based on current player count.
+            for (int i = 0; i < _endscreenUIs.Count; i++)
+            {
+                _endscreenUIs[i].gameObject.SetActive(i < playerCount);
+            }
+        }
+
+        private void InitiateInGameUI()
+        {
+            int playerCount = GameManager.Instance.PlayerCount;
+
+            
+            // Adjust the number of InGameScoreUI instances to match the current player count
             for (int i = _inGameScoreUIs.Count; i < playerCount; i++)
             {
-                ScoreUI newScoreUI = Instantiate(InGameScoreUIPrefab, InGameScoreUI.transform).GetComponent<ScoreUI>();
-                newScoreUI.SetPlayerId(i);
-                _inGameScoreUIs.Add(newScoreUI);
+                InGameScoreUI newInGameScoreUI = Instantiate(InGameScoreUIPrefab, InGameScoreUI.transform).GetComponent<InGameScoreUI>();
+                newInGameScoreUI.SetPlayerId(i);
+                _inGameScoreUIs.Add(newInGameScoreUI);
             }
 
             // Activate or deactivate ScoreUIs based on current player count.

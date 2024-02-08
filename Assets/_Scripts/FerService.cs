@@ -2,6 +2,7 @@
 using System.Linq;
 using Enums;
 using Manager;
+using UI;
 using Unity.Mathematics;
 using UnityEngine;
 using Utilities;
@@ -12,44 +13,18 @@ public static class FerService
     {
         DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
 
-        List<DetectedFace> filteredResults = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
+        IEnumerable<DetectedFace> filteredResults = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
         List<DetectedFace> filteredFaces = FilterFaces(filteredResults, faceCount);
-        
-        Probabilities probabilities = new();
-        
+
         foreach (DetectedFace face in filteredFaces)
         {
             if (face == null)
                 continue;
             Texture2D tempTexture = CreateTempTexture(texture2D, face);
-            probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
-            face.Emote = GetEmoteWithHighestProbability(probabilities);
-        }
-        
-        LogFerResult(probabilities); // debug
-
-        return filteredFaces;
-    }
-
-    public static List<DetectedFace> AnalyzeImage(Color32[] image, float scoreThreshold, float sizeThreshold, int facesLimit = -1)
-    {
-        DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
-
-        List<DetectedFace> filteredFaces = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
-
-        if (filteredFaces.Count <= 0)
-        {
-            LogFerResult(); // debug
-            return filteredFaces;
-        }        
-        foreach (DetectedFace face in filteredFaces)
-        {
-            Texture2D tempTexture = CreateTempTexture(texture2D, face);
             Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+            face.Probabilities = probabilities;
             face.Emote = GetEmoteWithHighestProbability(probabilities);
         }
-        
-        LogFerResult(EmotionRecognition.Instance.DetectEmotion(CreateTempTexture(texture2D, filteredFaces.FirstOrDefault()))); // debug
 
         return filteredFaces;
     }
@@ -70,13 +45,15 @@ public static class FerService
 
     private static List<DetectedFace> FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
     {
-        DetectedFace[] filteredFaces = new DetectedFace[faceCount];
-
-        if (faceCount == 1)
+        switch (faceCount)
         {
-            filteredFaces[0] = detectedFaces.FirstOrDefault();
-            return filteredFaces.ToList();
+            case -1:
+                return detectedFaces.ToList();
+            case 1:
+                return detectedFaces.Take(1).ToList();
         }
+        
+        DetectedFace[] filteredFaces = new DetectedFace[faceCount];
 
         foreach (DetectedFace face in detectedFaces)
         {
@@ -86,13 +63,13 @@ public static class FerService
                 continue;
             
             filteredFaces[id] = face;
-            face.Positon = id;
+            face.PlayerId = id;
         }
 
         return filteredFaces.ToList();
     }
 
-    private static List<DetectedFace> FilterResults(IEnumerable<DetectedFace> detectedFaces, float sizeThreshold)
+    private static IEnumerable<DetectedFace> FilterResults(IEnumerable<DetectedFace> detectedFaces, float sizeThreshold)
     {
         List<DetectedFace> filteredResults = new();
 
@@ -148,22 +125,6 @@ public static class FerService
         // Return the emotion with the highest probability.
         return result.OrderByDescending(kv => kv.Value).First().Key;
     }
-
-    private static void LogFerResult()
-    {
-#if UNITY_EDITOR
-        // Update the UI with the FER results.
-        EditorUIFerStats.Instance.LogFerResult();
-#endif
-    }
-
-    private static void LogFerResult(Probabilities probabilities)
-    {
-#if UNITY_EDITOR
-        // Update the UI with the FER results.
-        EditorUIFerStats.Instance.LogFerResult(probabilities);
-#endif
-    }
 }
 
     
@@ -182,5 +143,6 @@ public class DetectedFace
     public int Height;
     
     public EEmote Emote;
-    public int Positon;
+    public Probabilities Probabilities;
+    public int PlayerId;
 }

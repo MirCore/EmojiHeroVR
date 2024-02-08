@@ -50,7 +50,7 @@ namespace States.Emojis
             if (face.Emote != emojiManager.Emoji.Emote)
                 return;
             
-            if (GameManager.Instance.PlayerCount == 1 || face.Positon == emojiManager.PlayerId)
+            if (GameManager.Instance.PlayerCount == 1 || face.PlayerId == emojiManager.PlayerId)
                 emojiManager.SwitchState(emojiManager.FulfilledState);
         }
 

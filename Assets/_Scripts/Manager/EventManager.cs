@@ -1,5 +1,4 @@
 using System;
-using Enums;
 using UnityEngine;
 using Utilities;
 
@@ -27,7 +26,7 @@ namespace Manager
         public static void InvokeEmotionDetected(DetectedFace face)
         {
             OnEmotionDetected?.Invoke(face);
-            //Debug.Log("Event: Emotion Detected " + face.Emote + " at pos " + face.Positon);
+            //Debug.Log("Event: Emotion Detected " + face.Emote + " at pos " + face.PlayerId);
         }
 
 

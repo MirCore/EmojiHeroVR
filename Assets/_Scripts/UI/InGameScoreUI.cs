@@ -10,7 +10,7 @@ using Utilities;
 
 namespace UI
 {
-    public class ScoreUI : MonoBehaviour
+    public class InGameScoreUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text EmojiCount;
         [SerializeField] private TMP_Text Score;

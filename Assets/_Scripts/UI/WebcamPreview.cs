@@ -41,7 +41,7 @@ namespace UI
         private void Update()
         {
             Color32[] image = WebcamManager.TakeSnapshot();
-            List<DetectedFace> detectedFaces = FerService.AnalyzeImage(image, 0.3f, 0.1f);
+            List<DetectedFace> detectedFaces = FerService.GetEmotions(image, 0.3f, 0.1f, -1);
         
             if (!detectedFaces.Any())
                 return;
