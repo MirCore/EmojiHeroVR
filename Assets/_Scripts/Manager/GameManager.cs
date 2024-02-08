@@ -1,8 +1,7 @@
-using System;
 using Data;
-using Enums;
 using Scriptables;
 using Systems;
+using UI;
 using UnityEngine;
 using Utilities;
 
@@ -49,6 +48,10 @@ namespace Manager
             // Stop game with escape
             //else if (Input.GetButtonDown("Cancel"))
             //    EditorApplication.ExitPlaymode();
+            
+            // Open the DebugUI
+            if (Input.GetButtonDown("Debug"))
+                DebugUI.Instance.ToggleUI();
         }
 
         /// <summary>

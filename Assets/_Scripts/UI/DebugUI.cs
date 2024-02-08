@@ -2,6 +2,7 @@ using System;
 using Manager;
 using Scriptables;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Utilities;
 
 namespace UI
@@ -14,9 +15,13 @@ namespace UI
         // Time of the last FER request
         private DateTime _postTime;
         private DateTime _snapshotTime;
+        
+        private UIDocument _uiDocument;
 
         private void OnEnable()
         {
+            _uiDocument = GetComponent<UIDocument>();
+            
             ResetDebugData();
             
             EventManager.OnEmotionDetected += EmotionDetectedCallback;
@@ -66,6 +71,11 @@ namespace UI
             DebugData.Probabilities = new Probabilities();
             DebugData.TotalFer = 0;
             DebugData.CurrentFerFPS = 0;
+        }
+
+        public void ToggleUI()
+        {
+            _uiDocument.enabled = !_uiDocument.enabled;
         }
     }
 }

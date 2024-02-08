@@ -5,7 +5,7 @@ namespace UI
 {
     public class MenuHider : MonoBehaviour
     {
-        [Header("Hide")]
+        [Header("ToggleUI")]
         [SerializeField] private bool HideOnLevelStarted;
         [SerializeField] private bool HideOnLevelFinished;
         [SerializeField] private bool HideOnGameStarted;
