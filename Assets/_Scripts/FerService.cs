@@ -11,7 +11,13 @@ public static class FerService
 {
     public static List<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount)
     {
-        DetectFaces(image, scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D);
+        EventManager.InvokeFerCall();
+        
+        // Convert the captured image to base64 format.
+        Texture2D texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
+
+        // Send the image for FER processing.
+        IEnumerable<DetectedFace> detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
 
         IEnumerable<DetectedFace> filteredResults = FilterResults(detectedFaces, sizeThreshold * texture2D.width);
         List<DetectedFace> filteredFaces = FilterFaces(filteredResults, faceCount);
@@ -28,21 +34,7 @@ public static class FerService
 
         return filteredFaces;
     }
-
-    private static void DetectFaces(Color32[] image, float scoreThreshold, out IEnumerable<DetectedFace> detectedFaces, out Texture2D texture2D)
-    {
-#if UNITY_EDITOR
-        // Log a new FER request.
-        EditorUIFerStats.Instance.LogNewFerCall();
-#endif
-        
-        // Convert the captured image to base64 format.
-        texture2D = WebcamManager.ConvertColor32ToTexture2D(image);
-
-        // Send the image for FER processing.
-        detectedFaces = FaceDetection.Instance.DetectFaces(texture2D, scoreThreshold);
-    }
-
+    
     private static List<DetectedFace> FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
     {
         switch (faceCount)
