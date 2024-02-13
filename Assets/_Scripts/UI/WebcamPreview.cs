@@ -14,7 +14,7 @@ namespace UI
         [SerializeField] private GameObject Emoji;
         private readonly List<MeshRenderer> _emojis = new();
 
-        [SerializeField] private float EmojiScaleFactor = 7f;
+        [SerializeField] private float EmojiScaleFactor = 10f;
 
         [SerializeField] private bool EnableBoundingBoxes;
 
@@ -23,6 +23,8 @@ namespace UI
         private float _emojiScaleFactor;
 
         private readonly int _sprite = Shader.PropertyToID("_Sprite");
+        [SerializeField] private float ScoreThreshold = 0.3f;
+        [SerializeField] private float SizeThreshold = 0.1f;
 
         private void OnEnable()
         {
@@ -41,7 +43,7 @@ namespace UI
         private void Update()
         {
             Color32[] image = WebcamManager.TakeSnapshot();
-            List<DetectedFace> detectedFaces = FerService.GetEmotions(image, 0.3f, 0.1f, -1);
+            List<DetectedFace> detectedFaces = FerService.GetEmotions(image, ScoreThreshold, SizeThreshold, -1);
         
             if (!detectedFaces.Any())
                 return;
