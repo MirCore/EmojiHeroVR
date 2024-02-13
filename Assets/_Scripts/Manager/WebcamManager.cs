@@ -31,8 +31,6 @@ namespace Manager
         private void Start()
         {
             SetupWebcam(WebCamTexture.devices.First());
-            
-            _texture = new Texture2D(_webcam.width, _webcam.height);
         }
 
         private void OnDestroy()
@@ -64,6 +62,8 @@ namespace Manager
                 _webcam = new WebCamTexture(device.name, RequestedCameraWidth, RequestedCameraHeight);
                 _webcam.Play();
                 _webcamIsPlaying = true;
+                
+                _texture = new Texture2D(_webcam.width, _webcam.height);
             }
             catch (Exception e)
             {
