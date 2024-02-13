@@ -23175,6 +23175,8 @@ MonoBehaviour:
   MultiPlayerLevelToggleGroup: {fileID: 971052204}
   MultiPlayerLevelInfo: {fileID: 1831570839}
   WebcamDropdown: {fileID: 9290914}
+  MusicSlider: {fileID: 318810591}
+  EffectsSlider: {fileID: 1256843727}
   InGameScoreUIPrefab: {fileID: 9130053664827968435, guid: 1ed2aedeec928234b9da51593193fe47, type: 3}
   InGameScoreUI: {fileID: 1527418235505252907}
   EndscreenUIPrefab: {fileID: 6385333165777379717, guid: 7496aed5f00c62840a1290d3389ced8c, type: 3}
@@ -23216,7 +23218,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 026891e9d0119c949bb90c57f6b08f47, type: 3}
   m_Resource: {fileID: 8300000, guid: 026891e9d0119c949bb90c57f6b08f47, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -24260,7 +24262,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -24362,6 +24364,7 @@ MonoBehaviour:
   SuccessSound: {fileID: 8300000, guid: 28e6e4e5f18efc84cb8d75c76f8606a6, type: 3}
   LevelStartSound: {fileID: 8300000, guid: ded92363fa5850545b516a9d468d041c, type: 3}
   LevelStoppedSound: {fileID: 8300000, guid: ed3992a02cd409e4d907a9582ebc63be, type: 3}
+  UIClick: {fileID: 8300000, guid: cb3287518fdbcbb44b5e74dc609c19f4, type: 3}
   MusicClips:
   - {fileID: 8300000, guid: 026891e9d0119c949bb90c57f6b08f47, type: 3}
   - {fileID: 8300000, guid: 72a8e2e8b90e31c4280a6ed0da894744, type: 3}
@@ -24377,7 +24380,7 @@ GameObject:
   - component: {fileID: 8835405620477375893}
   - component: {fileID: 6789293080834746437}
   m_Layer: 0
-  m_Name: Audio Source
+  m_Name: Effects Audio Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

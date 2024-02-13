@@ -30,7 +30,15 @@ namespace UI
         private void Start()
         {
             HideMenus();
-            SwitchMenu(MainMenu);
+            LoadMainMenu();
+        }
+
+        private void LoadMainMenu()
+        {
+            HideMenus();
+            _lastMenu = MainMenu;
+            _currentMenu = MainMenu;
+            MainMenu.SetActive(true);
         }
 
         private void SwitchMenu(GameObject menu)
@@ -39,6 +47,8 @@ namespace UI
             _lastMenu = _currentMenu;
             menu.SetActive(true);
             _currentMenu = menu;
+
+            EventManager.InvokeUIClicked();
         }
 
         private void HideMenus()

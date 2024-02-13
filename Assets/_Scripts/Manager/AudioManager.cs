@@ -19,23 +19,48 @@ namespace Manager
         [SerializeField] private AudioClip SuccessSound; // Sound to play on emote success
         [SerializeField] private AudioClip LevelStartSound; // Sound to play when level starts
         [SerializeField] private AudioClip LevelStoppedSound; // Sound to play when level stops
+        [SerializeField] private AudioClip UIClick; // Sound to play when level stops
         [SerializeField] private List<AudioClip> MusicClips; // List of music clips to play when playing a level
         
         private int _lastMusicClip; // Index of last played music clip
-        private float _musicVolume;
-        private float _soundVolume;
         private bool _levelPlaying;
+        private float _musicVolume;
+        private float _effectsVolume;
+
+        public float EffectsVolume
+        {
+            get => _effectsVolume;
+            set
+            {
+                _effectsVolume = value;
+                EffectAudioSource.volume = value;
+            }
+        }
+
+        public float MusicVolume
+        {
+            get => _musicVolume;
+            set
+            {
+                _musicVolume = value;
+                MusicAudioSource.volume = value;
+            }
+        }
+
         [SerializeField] private bool PlayMusicClips; // Whether music should be played
+        private DateTime _timeSinceLastEffectPlay;
 
         private void OnEnable()
         {
-            _musicVolume = MusicAudioSource.volume;
+            MusicVolume = MusicAudioSource.volume;
+            EffectsVolume = EffectAudioSource.volume;
             
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
+            EventManager.OnUIClicked += UIClickedCallback;
         }
 
         private void OnDestroy()
@@ -45,6 +70,12 @@ namespace Manager
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
+            EventManager.OnUIClicked -= UIClickedCallback;
+        }
+
+        private void UIClickedCallback()
+        {
+            PlaySoundWithCooldown(UIClick);
         }
 
         /// <summary>
@@ -97,7 +128,7 @@ namespace Manager
             }
 
             // Set the volume to full.
-            MusicAudioSource.volume = _musicVolume;
+            MusicAudioSource.volume = MusicVolume;
             // Reset the playback position of the audio source to the beginning of the clip.
             MusicAudioSource.time = 0;
             // Play the selected music clip with a delay to allow the level start sound to be heard first.
@@ -152,6 +183,17 @@ namespace Manager
             if (sound != null)
                 EffectAudioSource.PlayOneShot(sound);
         }
+
+        private void PlaySoundWithCooldown(AudioClip sound)
+        {
+            if ((DateTime.Now - _timeSinceLastEffectPlay).TotalSeconds < 0.1)
+                return;
+            if (Time.timeSinceLevelLoad < 1)
+                return;
+
+            _timeSinceLastEffectPlay = DateTime.Now;
+            PlaySoundEffect(sound);
+        }
         
         /// <summary>
         /// Coroutine to smoothly fade out the music volume.
@@ -159,28 +201,16 @@ namespace Manager
         /// <param name="duration">The duration over which to fade out the music.</param>
         private IEnumerator FadeOutMusicCoroutine(float duration)
         {
-            _musicVolume = MusicAudioSource.volume;
+            MusicVolume = MusicAudioSource.volume;
 
             for (float t = 0; t < duration; t += Time.unscaledDeltaTime)
             {
-                MusicAudioSource.volume = Mathf.Lerp(_musicVolume, 0, t / duration);
+                MusicAudioSource.volume = Mathf.Lerp(MusicVolume, 0, t / duration);
                 yield return null;
             }
 
             MusicAudioSource.volume = 0; // Ensure the volume is set to 0
             MusicAudioSource.Stop(); // Stop the music after fading out
-        }
-
-        public void SetMusicVolume(float volume)
-        {
-            _musicVolume = volume;
-            MusicAudioSource.volume = _musicVolume;
-        }
-
-        public void SetEffectVolume(float volume)
-        {
-            _soundVolume = volume;
-            EffectAudioSource.volume = volume;
         }
     }
 }

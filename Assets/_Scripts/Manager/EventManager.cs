@@ -68,6 +68,12 @@ namespace Manager
         public static void InvokeEmoteExitedWebcamArea(Emoji emoji) => OnEmoteExitedWebcamArea?.Invoke(emoji);
         
         
+        /// <summary>Triggered when an UI Button is pressed.</summary>
+        public static event Action OnUIClicked;
+        /// <summary>Invokes the OnUIClicked event.</summary>
+        public static void InvokeUIClicked() => OnUIClicked?.Invoke();
+        
+        
         //--  Debug Data  --//
         
         

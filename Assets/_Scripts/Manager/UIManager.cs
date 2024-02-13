@@ -14,20 +14,24 @@ namespace Manager
     /// </summary>
     public class UIManager : MonoBehaviour
     {
-        [Header("MainMenu")]
+        [Header("Main Menu")]
         [SerializeField] private GameObject TogglePrefab;
         [SerializeField] private ToggleGroup SinglePlayerLevelToggleGroup;
         [SerializeField] private TMP_Text SinglePlayerLevelInfo;
         [SerializeField] private ToggleGroup MultiPlayerLevelToggleGroup;
         [SerializeField] private TMP_Text MultiPlayerLevelInfo;
+        
+        [Header("Settings Menu")]
         [SerializeField] private TMP_Dropdown WebcamDropdown;
+        [SerializeField] private Slider MusicSlider;
+        [SerializeField] private Slider EffectsSlider;
 
-        [Header("InGameUI")]
+        [Header("InGame UI")]
         [SerializeField] private GameObject InGameScoreUIPrefab;
         [SerializeField] private GameObject InGameScoreUI;
         private readonly List<InGameScoreUI> _inGameScoreUIs = new();
 
-        [Header("InGameUI")]
+        [Header("Endscreen UI")]
         [SerializeField] private GameObject EndscreenUIPrefab;
         [SerializeField] private GameObject EndscreenUI;
         private readonly List<EndscreenUI> _endscreenUIs = new();
@@ -45,11 +49,18 @@ namespace Manager
             CreateSinglePlayerLevelList();
             CreateMultiPlayerLevelList();
             CreateWebcamDropdown();
+            SetInitialSettingValues();
         }
 
         private void OnDestroy()
         {
             EventManager.OnLevelStarted -= LevelStartedCallback;
+        }
+
+        private void SetInitialSettingValues()
+        {
+            MusicSlider.value = AudioManager.Instance.MusicVolume;
+            EffectsSlider.value = AudioManager.Instance.EffectsVolume;
         }
 
         private void LevelStartedCallback()
@@ -171,6 +182,8 @@ namespace Manager
                 return;
             GameManager.Instance.PlayerCount = playerCount;
             GameManager.Instance.StartGame(_selectedLevel);
+            
+            EventManager.InvokeUIClicked();
         }
 
         public void OnFrontButtonPressed() => GameManager.Instance.OnFrontButtonPressed();
@@ -187,21 +200,29 @@ namespace Manager
                           $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
             SinglePlayerLevelInfo.text = text;
             MultiPlayerLevelInfo.text = text;
+            
+            EventManager.InvokeUIClicked();
         }
         
         public void OnWebcamSelected(TMP_Dropdown change)
         {
             WebcamManager.SetupWebcam(WebCamTexture.devices[change.value]);
+            
+            EventManager.InvokeUIClicked();
         }
 
         public void OnMusicVolumeChanged(Slider slider)
         {
-            AudioManager.Instance.SetMusicVolume(slider.value);
+            AudioManager.Instance.MusicVolume = slider.value;
+            
+            EventManager.InvokeUIClicked();
         }
 
         public void OnEffectVolumeChanged(Slider slider)
         {
-            AudioManager.Instance.SetEffectVolume(slider.value);
+            AudioManager.Instance.EffectsVolume = slider.value;
+            
+            EventManager.InvokeUIClicked();
         }
     }
 }
