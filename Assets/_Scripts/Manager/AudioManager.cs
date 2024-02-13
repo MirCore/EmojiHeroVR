@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Enums;
 using UnityEngine;
 using Utilities;
 using Random = UnityEngine.Random;
@@ -12,7 +11,7 @@ namespace Manager
     /// <summary>
     /// Manages audio feedback for game events, playing specific sounds for level start, level stop, emote success, and emote failure.
     /// </summary>
-    public class AudioManager : MonoBehaviour
+    public class AudioManager : Singleton<AudioManager>
     {
         [SerializeField] private AudioSource MusicAudioSource; // Background music audio source
         [SerializeField] private AudioSource EffectAudioSource; // Sound effects audio source
@@ -24,6 +23,7 @@ namespace Manager
         
         private int _lastMusicClip; // Index of last played music clip
         private float _musicVolume;
+        private float _soundVolume;
         private bool _levelPlaying;
         [SerializeField] private bool PlayMusicClips; // Whether music should be played
 
@@ -169,6 +169,18 @@ namespace Manager
 
             MusicAudioSource.volume = 0; // Ensure the volume is set to 0
             MusicAudioSource.Stop(); // Stop the music after fading out
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            _musicVolume = volume;
+            MusicAudioSource.volume = _musicVolume;
+        }
+
+        public void SetEffectVolume(float volume)
+        {
+            _soundVolume = volume;
+            EffectAudioSource.volume = volume;
         }
     }
 }

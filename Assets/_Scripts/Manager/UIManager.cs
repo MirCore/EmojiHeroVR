@@ -193,5 +193,15 @@ namespace Manager
         {
             WebcamManager.SetupWebcam(WebCamTexture.devices[change.value]);
         }
+
+        public void OnMusicVolumeChanged(Slider slider)
+        {
+            AudioManager.Instance.SetMusicVolume(slider.value);
+        }
+
+        public void OnEffectVolumeChanged(Slider slider)
+        {
+            AudioManager.Instance.SetEffectVolume(slider.value);
+        }
     }
 }
