@@ -49,10 +49,6 @@ namespace Manager
                 // Check if the current webcam is already set up.
                 if (_webcam != null)
                 {
-                    // If the current webcam is already correctly set up, no further action is needed.
-                    if (_webcam.name == device.name)
-                        return; 
-
                     // If there's an existing webcam and it's different from the desired one, stop it.
                     _webcam.Stop();
                     _webcam = null; // Clear the existing webcam reference.
@@ -96,7 +92,10 @@ namespace Manager
         public static Texture2D ConvertColor32ToTexture2D(Color32[] snapshot)
         {
             Profiler.BeginSample("ConvertColor32ToTexture2D");
-            
+
+            if (_texture.width != _webcam.width)
+                _texture = new Texture2D(_webcam.width, _webcam.height);
+
             // Convert pixels to a texture
             _texture.SetPixels32(snapshot);
             _texture.Apply();
