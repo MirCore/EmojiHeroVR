@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/ArcadeScene.unity
     guid: d8c16ab9845b9ea44b090a8bcd3726c7
   m_configObjects:
-    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 2ddf50c6362dd9549850151cd84876e8, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 8b1614e1b32e727408dde25bf725fb55, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 16dd630214f38ff4e9b37e612745261b, type: 2}
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 6b2412134b8f0f24ab8e6f0fdae5ff1b, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 281d2d10807344745a84f9b4510ef861, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 43a8428545e83f44487bf13aff7b5fea, type: 2}
   m_UseUCBPForAssetBundles: 0

@@ -55,7 +55,7 @@ namespace Manager
         }
 
         /// <summary>
-        /// Stops the game's time scale, effectively pausing in-game action.
+        /// Stops the game's timescale, effectively pausing in-game action.
         /// </summary>
         public void StopTimeScale()
         {
