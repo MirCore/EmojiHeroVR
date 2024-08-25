@@ -142,7 +142,7 @@ namespace Manager
                 RigidBody.isKinematic = false;
                 
                 // Apply a random sidewards velocity to create a tumbling effect as the emoji fades out.
-                RigidBody.velocity = - _movementSpeed + transform.right * Random.Range(-0.05f, 0.05f);
+                RigidBody.linearVelocity = - _movementSpeed + transform.right * Random.Range(-0.05f, 0.05f);
                 
                 yield return StartCoroutine(MathHelper.SmoothStepMaterial(0, 1, 6f, EmojiRenderer.material, DissolveAmount));
             }
