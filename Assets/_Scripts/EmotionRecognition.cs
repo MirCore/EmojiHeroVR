@@ -7,24 +7,20 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 {
     [SerializeField] private ModelAsset OnnxModel;
 
-    private IWorker _engine;
+    private Worker _engine;
 
     private static readonly BackendType BackendType = BackendType.GPUCompute;
 
     private const int ImageWidth = 260;
 
-    private TensorFloat _inputTensor;
-
-    private Ops _ops;
+    private Tensor _inputTensor;
 
 
     private void Start()
     {
         Model model = ModelLoader.Load(OnnxModel);
 
-        _engine = WorkerFactory.CreateWorker(BackendType, model);
-
-        _ops = WorkerFactory.CreateOps(BackendType, null);
+        _engine = new Worker(model, BackendType);
     }
 
     private Probabilities ExecuteModel(Texture drawableTexture)
@@ -33,21 +29,20 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 
         _inputTensor = TextureConverter.ToTensor(drawableTexture, ImageWidth, ImageWidth, 3);
 
-        _engine.Execute(_inputTensor);
+        _engine.Schedule(_inputTensor);
         
-        TensorFloat result = _engine.PeekOutput() as TensorFloat;
+        Tensor<float> resultOutput = _engine.PeekOutput() as Tensor<float>;
 
-        TensorFloat probabilities = _ops.Softmax(result);
-        probabilities.MakeReadable();
+        var result = resultOutput.ReadbackAndClone();
         
         // Assuming that the model outputs one set of probabilities for one image
         // and that the output tensor shape is [1, number_of_emotions]
-        int numEmotions = probabilities.shape[1]; 
+        int numEmotions = result.shape[1]; 
 
         Probabilities ferProbabilities = new();
         for (int i = 0; i < numEmotions; i++)
         {
-            float probability = probabilities[0, i]; // Access the probability for each emotion
+            float probability = result[0, i]; // Access the probability for each emotion
 
             // Assign the probability to the corresponding field in the Probabilities struct
             switch (i)
@@ -84,7 +79,6 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
     {
         _inputTensor?.Dispose();
         _engine?.Dispose();
-        _ops?.Dispose();
     }
 
     public Probabilities DetectEmotion(Texture2D face)

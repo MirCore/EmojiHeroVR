@@ -9,22 +9,18 @@ public class FaceDetection : Singleton<FaceDetection>
 {
     [SerializeField] private ModelAsset OnnxModel;
 
-    private IWorker _engine;
+    private Worker _engine;
 
     private static readonly BackendType BackendType = BackendType.GPUCompute;
 
 
-    private TensorFloat _inputTensor;
-
-    private Ops _ops;
+    private Tensor<float> _inputTensor;
 
     private void Start()
     {
         Model model = ModelLoader.Load(OnnxModel);
 
-        _engine = WorkerFactory.CreateWorker(BackendType, model);
-
-        _ops = WorkerFactory.CreateOps(BackendType, null);
+        _engine = new Worker(model, BackendType);
     }
     
     private IEnumerable<DetectedFace> ExecuteModel(Texture2D texture, float scoreThreshold)
@@ -33,13 +29,14 @@ public class FaceDetection : Singleton<FaceDetection>
 
         _inputTensor = TextureConverter.ToTensor(texture, 640, 480, 3);
 
-        _engine.Execute(_inputTensor);
+        _engine.Schedule(_inputTensor);
         
         // model has multiple output, so to know which output to get we need to specify which one we are referring to
-        TensorFloat scores = _engine.PeekOutput("scores") as TensorFloat;
-        TensorFloat boxes = _engine.PeekOutput("boxes") as TensorFloat;
-        scores.MakeReadable();
-        boxes.MakeReadable();
+        Tensor<float> scoresOutput = _engine.PeekOutput("scores") as Tensor<float>;
+        Tensor<float> boxesOutput = _engine.PeekOutput("boxes") as Tensor<float>;
+
+        var scores = scoresOutput.ReadbackAndClone();
+        var boxes = boxesOutput.ReadbackAndClone();
         
         int numDetections = boxes.shape[1]; // Assuming second dimension of the model is the number of detections
         
@@ -115,6 +112,5 @@ public class FaceDetection : Singleton<FaceDetection>
     {
         _inputTensor?.Dispose();
         _engine?.Dispose();
-        _ops?.Dispose();
     }
 }

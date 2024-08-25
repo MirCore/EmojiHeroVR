@@ -25,6 +25,11 @@ public static class FerService
         {
             if (face == null)
                 continue;
+            if (face.Width == 0 || face.Height == 0)
+            {
+                Debug.Log("Width/Height == 0");
+                continue;
+            }
             Texture2D tempTexture = CreateTempTexture(texture2D, face);
             Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
             face.Probabilities = probabilities;
