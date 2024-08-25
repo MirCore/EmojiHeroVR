@@ -35,8 +35,8 @@ public class FaceDetection : Singleton<FaceDetection>
         Tensor<float> scoresOutput = _engine.PeekOutput("scores") as Tensor<float>;
         Tensor<float> boxesOutput = _engine.PeekOutput("boxes") as Tensor<float>;
 
-        var scores = scoresOutput.ReadbackAndClone();
-        var boxes = boxesOutput.ReadbackAndClone();
+        Tensor<float> scores = scoresOutput.ReadbackAndClone();
+        Tensor<float> boxes = boxesOutput.ReadbackAndClone();
         
         int numDetections = boxes.shape[1]; // Assuming second dimension of the model is the number of detections
         

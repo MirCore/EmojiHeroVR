@@ -22160,7 +22160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9342032a7d05ea43a1f4f714df886d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnnxModel: {fileID: 5022602860645237092, guid: 650cb2f51a37aeb4cab237009a5564f0, type: 3}
+  OnnxModel: {fileID: 5022602860645237092, guid: cf8e799b73a42c94081e6fb379c90c8e, type: 3}
+  ImageWidth: 224
+  TensorLayout: 1
+  Emotions: 01000000050000000600000007000000040000000300000002000000
 --- !u!114 &1963774589
 MonoBehaviour:
   m_ObjectHideFlags: 0

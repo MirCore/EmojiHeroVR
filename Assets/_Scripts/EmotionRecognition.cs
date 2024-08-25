@@ -1,3 +1,4 @@
+using Enums;
 using Unity.Sentis;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -11,9 +12,13 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 
     private static readonly BackendType BackendType = BackendType.GPUCompute;
 
-    private const int ImageWidth = 260;
+    [SerializeField] private int ImageWidth = 260;
+    
+    [SerializeField] private TensorLayout TensorLayout = TensorLayout.NCHW;
+    
+    [SerializeField] private EEmote[] Emotions = {EEmote.Anger, EEmote.Disgust, EEmote.Fear, EEmote.Happiness, EEmote.Neutral, EEmote.Sadness, EEmote.Surprise};
 
-    private Tensor _inputTensor;
+    private Tensor<float> _inputTensor;
 
 
     private void Start()
@@ -27,13 +32,13 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
     {
         _inputTensor?.Dispose();
 
-        _inputTensor = TextureConverter.ToTensor(drawableTexture, ImageWidth, ImageWidth, 3);
-
+        _inputTensor = TextureConverter.ToTensor(drawableTexture, new TextureTransform().SetDimensions(ImageWidth, ImageWidth, 3).SetTensorLayout(TensorLayout));
+        
         _engine.Schedule(_inputTensor);
         
         Tensor<float> resultOutput = _engine.PeekOutput() as Tensor<float>;
 
-        var result = resultOutput.ReadbackAndClone();
+        Tensor<float> result = resultOutput.ReadbackAndClone();
         
         // Assuming that the model outputs one set of probabilities for one image
         // and that the output tensor shape is [1, number_of_emotions]
@@ -44,28 +49,30 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         {
             float probability = result[0, i]; // Access the probability for each emotion
 
+            EEmote emotion = Emotions[i];
+            
             // Assign the probability to the corresponding field in the Probabilities struct
-            switch (i)
+            switch (emotion)
             {
-                case 0:
+                case EEmote.Anger:
                     ferProbabilities.anger = probability;
                     break;
-                case 1:
+                case EEmote.Disgust:
                     ferProbabilities.disgust = probability;
                     break;
-                case 2:
+                case EEmote.Fear:
                     ferProbabilities.fear = probability;
                     break;
-                case 3:
+                case EEmote.Happiness:
                     ferProbabilities.happiness = probability;
                     break;
-                case 4:
+                case EEmote.Neutral:
                     ferProbabilities.neutral = probability;
                     break;
-                case 5:
+                case EEmote.Sadness:
                     ferProbabilities.sadness = probability;
                     break;
-                case 6:
+                case EEmote.Surprise:
                     ferProbabilities.surprise = probability;
                     break;
             }
