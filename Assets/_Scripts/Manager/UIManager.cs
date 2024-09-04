@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Scriptables;
@@ -18,6 +19,7 @@ namespace Manager
         [SerializeField] private GameObject TogglePrefab;
         [SerializeField] private ToggleGroup SinglePlayerLevelToggleGroup;
         [SerializeField] private TMP_Text SinglePlayerLevelInfo;
+        [SerializeField] private TMP_Text SinglePlayerHighScoreInfo;
         [SerializeField] private ToggleGroup MultiPlayerLevelToggleGroup;
         [SerializeField] private TMP_Text MultiPlayerLevelInfo;
         
@@ -194,16 +196,33 @@ namespace Manager
                 return;
             _selectedLevel = level;
             LevelStruct levelStruct = level.LevelStruct;
-            string text = $"{levelStruct.LevelName}\n\n" +
+            string text = //$"{levelStruct.LevelName}\n\n" +
                           $"Mode: {levelStruct.LevelMode}\n" +
                           $"Speed: {levelStruct.MovementSpeed}\n" +
                           $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
             SinglePlayerLevelInfo.text = text;
             MultiPlayerLevelInfo.text = text;
+
+            CreateHighScoreUI(level);
             
             EventManager.InvokeUIClicked();
         }
-        
+
+        private void CreateHighScoreUI(ScriptableLevel level)
+        {
+            List<HighScore> highScores = level.GetHighScores();
+            
+            string text = "High scores:\n";
+            //       0000-00-00 00:00:00:   0000 (0/0)
+            text += "Player               Score  Emojis\n";
+            for (int i = 0; i < Math.Min(highScores.Count, 10); i++)
+            {
+                text += $"\n{highScores[i].UserID}: {highScores[i].LevelScore} ({highScores[i].MatchedEmojis}\\{highScores[i].TotalEmotes})";
+            }
+            
+            SinglePlayerHighScoreInfo.text = text;
+        }
+
         public void OnWebcamSelected(TMP_Dropdown change)
         {
             WebcamManager.SetupWebcam(WebCamTexture.devices[change.value]);

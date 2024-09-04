@@ -78,4 +78,19 @@ namespace Utilities
 
         public int Texture;
     }
+
+    [Serializable]
+    public struct HighScore
+    {
+        /// <summary>Gets the count of fulfilled emotes.</summary>
+        public int MatchedEmojis { get; internal set; }
+
+        /// <summary>Gets the count of spawned emotes.</summary>
+        public int TotalEmotes { get; internal set; }
+        
+        /// <summary>Gets the current level score.</summary>
+        public int LevelScore { get; internal set; }
+
+        public string UserID { get; internal set; }
+    }
 }

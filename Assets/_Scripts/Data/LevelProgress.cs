@@ -41,16 +41,22 @@ namespace Data
             _players[playerId].Score += score;
         }
 
-        /// <summary>Gets the current level score.</summary>
+        /// <summary> Returns the current level score. </summary>
         public int GetScore(int playerId)
         {
             return _players[playerId].Score;
         }
 
-        /// <summary>Gets the count of fulfilled emotes.</summary>
+        /// <summary>Returns the count of fulfilled emotes.</summary>
         public int GetMatchedEmotes(int playerId)
         {
             return _players[playerId].MatchedEmotes;
+        }
+
+        /// <summary>Returns the count of spawned emotes. Relevant for endless levels.</summary>
+        public int GetSpawnedEmotes()
+        {
+            return SpawnedEmotes.Count;
         }
     }
 
