@@ -10,9 +10,9 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 
     private Worker _engine;
 
-    private static readonly BackendType BackendType = BackendType.GPUCompute;
-
     [SerializeField] private int ImageWidth = 260;
+    
+    [SerializeField] private Texture Image;
     
     [SerializeField] private TensorLayout TensorLayout = TensorLayout.NCHW;
     
@@ -25,14 +25,18 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
     {
         Model model = ModelLoader.Load(OnnxModel);
 
-        _engine = new Worker(model, BackendType);
+        _engine = new Worker(model, BackendType.GPUCompute);
     }
 
     private Probabilities ExecuteModel(Texture drawableTexture)
     {
         _inputTensor?.Dispose();
 
-        _inputTensor = TextureConverter.ToTensor(drawableTexture, new TextureTransform().SetDimensions(ImageWidth, ImageWidth, 3).SetTensorLayout(TensorLayout));
+        if (Image)
+            drawableTexture = Image;
+
+        TextureTransform textureTransform = new TextureTransform().SetDimensions(ImageWidth, ImageWidth, 3).SetTensorLayout(TensorLayout);
+        _inputTensor = TextureConverter.ToTensor(drawableTexture, textureTransform);
         
         _engine.Schedule(_inputTensor);
         
@@ -42,7 +46,9 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         
         // Assuming that the model outputs one set of probabilities for one image
         // and that the output tensor shape is [1, number_of_emotions]
-        int numEmotions = result.shape[1]; 
+        int numEmotions = result.shape.length;
+
+        //Debug.Log(result[0, 0] + " " + result[0, 1] + " " + result[0, 2] + " " + result[0, 3] + " " + result[0, 4] + " " + result[0, 5] + " " + result[0, 6]);
 
         Probabilities ferProbabilities = new();
         for (int i = 0; i < numEmotions; i++)
@@ -77,6 +83,8 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
                     break;
             }
         }
+        
+        resultOutput.Dispose(); // Dispose after you're done with it.
 
         return ferProbabilities;
     }

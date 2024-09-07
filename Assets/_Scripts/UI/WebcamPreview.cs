@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using Manager;
 using Systems;
 using UnityEngine;
@@ -51,6 +52,14 @@ namespace UI
             if (EnableBoundingBoxes)
                 DrawBoundingBoxes.Instance.DrawBoundingBox(detectedFaces);
         
+            foreach (DetectedFace face in detectedFaces)
+            {
+                if (face == null)
+                    continue;
+                if (face.Emote != EEmote.None)
+                    EventManager.InvokeEmotionDetected(face);
+            }
+            
             detectedFaces = detectedFaces.OrderBy(face => face.RelativeX).ToList();
             PositionEmojis(detectedFaces);
         }

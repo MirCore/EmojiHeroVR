@@ -3,13 +3,41 @@
     <ui:VisualElement style="flex-grow: 1; position: absolute; right: 0; bottom: 0; width: 174px; background-color: rgba(0, 0, 0, 0.6);">
         <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="ScrollView" style="padding-left: 5px;">
             <ui:VisualElement name="VisualElement" style="flex-grow: 1; padding-top: 0;">
-                <ui:ProgressBar value="0" title="Anger" name="Anger" high-value="1" />
-                <ui:ProgressBar value="0" title="Disgust" name="Disgust" high-value="1" />
-                <ui:ProgressBar value="0" title="Fear" name="Fear" high-value="1" />
-                <ui:ProgressBar value="0" title="Happiness" name="Happiness" high-value="1" />
-                <ui:ProgressBar value="0" title="Neutral" name="Neutral" high-value="1" />
-                <ui:ProgressBar value="0" title="Sadness" name="Sadness" high-value="1" />
-                <ui:ProgressBar value="0" title="Surprise" name="Surprise" high-value="1" />
+                <ui:ProgressBar value="0" title="Anger" name="Anger" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" data-source-path="Probabilities.anger" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Disgust" name="Disgust" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.disgust" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Fear" name="Fear" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.fear" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Happiness" name="Happiness" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.fear" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Neutral" name="Neutral" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.neutral" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Sadness" name="Sadness" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.sadness" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
+                <ui:ProgressBar value="0" title="Surprise" name="Surprise" high-value="1">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="Probabilities.surprise" data-source="project://database/Assets/Resources/DebugData/DebugData.asset?fileID=11400000&amp;guid=70184b5107bc25b43a4f0d5147177457&amp;type=2#DebugData" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:ProgressBar>
                 <ui:VisualElement style="flex-grow: 1; flex-direction: row; margin-top: 5px;">
                     <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
                         <ui:Label tabindex="-1" text="Total FER calls:" parse-escape-sequences="true" display-tooltip-when-elided="true" class="title text" style="flex-shrink: 1;" />

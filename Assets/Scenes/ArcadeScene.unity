@@ -3456,7 +3456,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -22978,6 +22978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnnxModel: {fileID: 5022602860645237092, guid: 71738058f5238c744a8fd37c04862455, type: 3}
   ImageWidth: 260
+  Image: {fileID: 0}
   TensorLayout: 0
   Emotions: 02000000030000000400000005000000010000000600000007000000
 --- !u!114 &1963774589

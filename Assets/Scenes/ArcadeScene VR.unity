@@ -11301,7 +11301,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055438198}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
@@ -22176,8 +22176,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9342032a7d05ea43a1f4f714df886d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnnxModel: {fileID: 5022602860645237092, guid: cf8e799b73a42c94081e6fb379c90c8e, type: 3}
+  OnnxModel: {fileID: 5022602860645237092, guid: ce811d14cd6181c4e8d0b2d6685edf1b, type: 3}
   ImageWidth: 224
+  Image: {fileID: 0}
   TensorLayout: 1
   Emotions: 01000000050000000600000007000000040000000300000002000000
 --- !u!114 &1963774589
@@ -23186,6 +23187,7 @@ MonoBehaviour:
   TogglePrefab: {fileID: 5601283969493895203, guid: 6f0e2b626883a5f4d864e281cd658ebe, type: 3}
   SinglePlayerLevelToggleGroup: {fileID: 957857200}
   SinglePlayerLevelInfo: {fileID: 1888026529}
+  SinglePlayerHighScoreInfo: {fileID: 0}
   MultiPlayerLevelToggleGroup: {fileID: 971052204}
   MultiPlayerLevelInfo: {fileID: 1831570839}
   WebcamDropdown: {fileID: 9290914}
