@@ -22302,6 +22302,7 @@ MonoBehaviour:
   Image: {fileID: 0}
   TensorLayout: 0
   Emotions: 02000000030000000400000005000000010000000600000007000000
+  TextureMode: 1
 --- !u!114 &1963774589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23162,6 +23163,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4490807213707866016, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462185204076723368, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462185204076723368, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462185204076723368, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

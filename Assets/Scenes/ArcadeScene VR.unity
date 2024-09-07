@@ -22198,7 +22198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0634a0635fa0574fa8bbd37216b8ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnnxModel: {fileID: 5022602860645237092, guid: 69c6ece80db368a40ad6be2c062d2507, type: 3}
+  OnnxModel: {fileID: 5022602860645237092, guid: f9d5944a4cdff584ea76360501d70189, type: 3}
 --- !u!114 &1963774588
 MonoBehaviour:
   m_ObjectHideFlags: 0

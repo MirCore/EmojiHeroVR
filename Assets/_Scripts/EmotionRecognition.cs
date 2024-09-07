@@ -1,4 +1,6 @@
 using Enums;
+using NUnit.Framework.Internal;
+using Unity.Collections;
 using Unity.Sentis;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -8,7 +10,7 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
 {
     [SerializeField] private ModelAsset OnnxModel;
 
-    private Worker _engine;
+    private Worker _worker;
 
     [SerializeField] private int ImageWidth = 260;
     
@@ -16,33 +18,69 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
     
     [SerializeField] private TensorLayout TensorLayout = TensorLayout.NCHW;
     
+    [SerializeField] private ETextureMode TextureMode = ETextureMode.ZeroToOne;
+    
     [SerializeField] private EEmote[] Emotions = {EEmote.Anger, EEmote.Disgust, EEmote.Fear, EEmote.Happiness, EEmote.Neutral, EEmote.Sadness, EEmote.Surprise};
-
-    private Tensor<float> _inputTensor;
-
+    
 
     private void Start()
     {
+        LoadAndConvertModel();
+    }
+
+    private void LoadAndConvertModel()
+    {
+        // Load the source model.
         Model model = ModelLoader.Load(OnnxModel);
 
-        _engine = new Worker(model, BackendType.GPUCompute);
+        if (TextureMode == ETextureMode.ZeroToOne)
+        {
+            // Create worker to run the model.
+            _worker = new Worker(model, BackendType.GPUCompute);
+        }
+        else
+        {
+            FunctionalGraph graph = new ();
+            
+            // Get the input functional tensor from the graph with input data type and shape matching that of the original model input.
+            FunctionalTensor sRGB = graph.AddInput(model, 0);
+
+            // Apply f(x) = x^(1/2.2) element-wise to transform from RGB to sRGB.
+            //FunctionalTensor sRGB = Functional.Pow(rgb, Functional.Constant(1 / 2.2f));
+
+            FunctionalTensor texture = TextureMode switch
+            {
+                // Apply f(x) = x * 255 element-wise to transform values from the range [0, 1] to the range [0, 255].
+                ETextureMode.ZeroTo255 => sRGB * 255,
+                // Apply f(x) = x * 2 - 1 element-wise to transform values from the range [0, 1] to the range [-1, 1].
+                ETextureMode.MinusOneToOne => sRGB * 2 - 1,
+                _ => null
+            };
+
+            // Apply the forward method of the source model to the transformed functional input and return the output.
+            FunctionalTensor[] outputs = Functional.Forward(model, texture);
+            
+            // Compile the graph to return the final model.
+            Model modifiedModel = graph.Compile(outputs);
+
+            // Create worker to run the model.
+            _worker = new Worker(modifiedModel, BackendType.GPUCompute);
+        }
     }
 
     private Probabilities ExecuteModel(Texture drawableTexture)
     {
-        _inputTensor?.Dispose();
-
         if (Image)
             drawableTexture = Image;
 
         TextureTransform textureTransform = new TextureTransform().SetDimensions(ImageWidth, ImageWidth, 3).SetTensorLayout(TensorLayout);
-        _inputTensor = TextureConverter.ToTensor(drawableTexture, textureTransform);
-        
-        _engine.Schedule(_inputTensor);
-        
-        Tensor<float> resultOutput = _engine.PeekOutput() as Tensor<float>;
+        using Tensor<float> inputTensor = TextureConverter.ToTensor(drawableTexture, textureTransform);
 
-        Tensor<float> result = resultOutput.ReadbackAndClone();
+        _worker.Schedule(inputTensor);
+        
+        Tensor<float> output = _worker.PeekOutput() as Tensor<float>;
+
+        Tensor<float> result = output!.ReadbackAndClone();
         
         // Assuming that the model outputs one set of probabilities for one image
         // and that the output tensor shape is [1, number_of_emotions]
@@ -84,7 +122,7 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
             }
         }
         
-        resultOutput.Dispose(); // Dispose after you're done with it.
+        result.Dispose(); // Dispose after you're done with it.
 
         return ferProbabilities;
     }
@@ -92,8 +130,7 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
     // Clean up all our resources at the end of the session so we don't leave anything on the GPU or in memory:
     private void OnDestroy()
     {
-        _inputTensor?.Dispose();
-        _engine?.Dispose();
+        _worker?.Dispose();
     }
 
     public Probabilities DetectEmotion(Texture2D face)
@@ -106,4 +143,11 @@ public class EmotionRecognition : Singleton<EmotionRecognition>
         
         return result;
     }
+}
+
+internal enum ETextureMode
+{
+    ZeroToOne,      // 0 to 1
+    MinusOneToOne,  // -1 to 1
+    ZeroTo255       // 0 to 255
 }
