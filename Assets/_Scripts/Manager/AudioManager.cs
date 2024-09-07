@@ -18,6 +18,7 @@ namespace Manager
         [SerializeField] private AudioClip FailSound; // Sound to play on emote fail
         [SerializeField] private AudioClip SuccessSound; // Sound to play on emote success
         [SerializeField] private AudioClip LevelStartSound; // Sound to play when level starts
+        [SerializeField] private AudioClip LevelFinishedSound; // Sound to play when level finishes
         [SerializeField] private AudioClip LevelStoppedSound; // Sound to play when level stops
         [SerializeField] private AudioClip UIClick; // Sound to play when level stops
         [SerializeField] private List<AudioClip> MusicClips; // List of music clips to play when playing a level
@@ -58,6 +59,7 @@ namespace Manager
             // Subscribe to game event notifications
             EventManager.OnLevelStarted += OnLevelStartedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled += OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed += OnEmoteFailedCallback;
             EventManager.OnUIClicked += UIClickedCallback;
@@ -68,6 +70,7 @@ namespace Manager
             // Unsubscribe from game event notifications
             EventManager.OnLevelStarted -= OnLevelStartedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
             EventManager.OnEmoteFulfilled -= OnEmoteFulfilledCallback;
             EventManager.OnEmoteFailed -= OnEmoteFailedCallback;
             EventManager.OnUIClicked -= UIClickedCallback;
@@ -146,6 +149,18 @@ namespace Manager
                 return;
             _levelPlaying = false;
             
+            // Stop the music when the level stops
+            StartCoroutine(FadeOutMusicCoroutine(1f));
+
+            // Play level stopped sound
+            PlaySoundEffect(LevelFinishedSound);
+        }
+
+        /// <summary>
+        /// Callback for when the level is aborted, plays the aborted sound and stops level music.
+        /// </summary>
+        private void OnLevelStoppedCallback()
+        {
             // Stop the music when the level stops
             StartCoroutine(FadeOutMusicCoroutine(1f));
 

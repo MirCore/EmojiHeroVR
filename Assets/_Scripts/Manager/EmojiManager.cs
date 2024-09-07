@@ -71,12 +71,14 @@ namespace Manager
             
             EventManager.OnEmotionDetected += OnEmotionDetectedCallback;
             EventManager.OnLevelFinished += OnLevelFinishedCallback;
+            EventManager.OnLevelStopped += OnLevelStoppedCallback;
         }
 
         private void OnDisable()
         {
             EventManager.OnEmotionDetected -= OnEmotionDetectedCallback;
             EventManager.OnLevelFinished -= OnLevelFinishedCallback;
+            EventManager.OnLevelStopped -= OnLevelStoppedCallback;
         }
 
         private void Update()
@@ -105,6 +107,11 @@ namespace Manager
         // Callback for level stopped event.
         // ReSharper disable Unity.PerformanceAnalysis
         private void OnLevelFinishedCallback()
+        {
+            _emojiState.Despawn(this);
+        }
+
+        private void OnLevelStoppedCallback()
         {
             _emojiState.Despawn(this);
         }

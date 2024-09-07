@@ -101,6 +101,11 @@ namespace Manager
         /// <summary>Invokes the OnLevelStarted event.</summary>
         public static void InvokeLevelStarted() => OnLevelStarted?.Invoke();
         
+        /// <summary>Triggered when the level was aborted.</summary>
+        public static event Action OnLevelStopped;
+        /// <summary>Invokes the OnLevelStopped event.</summary>
+        public static void InvokeLevelStopped() => OnLevelStopped?.Invoke();
+        
         /// <summary>Triggered when the level finishes.</summary>
         public static event Action OnLevelFinished;
         /// <summary>Invokes the OnLevelFinished event.</summary>

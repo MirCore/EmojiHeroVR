@@ -68,6 +68,7 @@ namespace Manager
 
         public void StopLevel()
         {
+            EventManager.InvokeLevelStopped();
             SwitchState(IdleState);
         }
     }
