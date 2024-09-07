@@ -22,7 +22,7 @@ namespace UI
         private void LoadEndscreenUI()
         {
             LevelProgress levelProgress = GameManager.LevelProgress;
-            int maxScore = GameManager.GetMaxScore();
+            int maxScore = GameManager.Instance.GetMaxScore();
         
             string maxScoreText = maxScore > 0 ? $" / {maxScore}" : "";
             TotalScore.text = $"{levelProgress.GetScore(_playerId)}{maxScoreText}";

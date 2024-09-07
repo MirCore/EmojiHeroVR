@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using Scriptables;
 using TMPro;
 using UI;
@@ -198,8 +199,15 @@ namespace Manager
             LevelStruct levelStruct = level.LevelStruct;
             string text = //$"{levelStruct.LevelName}\n\n" +
                           $"Mode: {levelStruct.LevelMode}\n" +
-                          $"Speed: {levelStruct.MovementSpeed}\n" +
-                          $"Length: {levelStruct.Count / levelStruct.SpawnInterval}";
+                          $"Speed: {levelStruct.MovementSpeed * 10}\n";
+            
+            text += levelStruct.LevelMode switch
+            {
+                ELevelMode.Training => $"Length: \u221e",
+                ELevelMode.Endless => $"Length: \u221e",
+                ELevelMode.Predefined => $"Length: {levelStruct.EmoteArray.Length / levelStruct.SpawnInterval}",
+                _ => $"Length: {levelStruct.Count / levelStruct.SpawnInterval}",
+            };
             SinglePlayerLevelInfo.text = text;
             MultiPlayerLevelInfo.text = text;
 

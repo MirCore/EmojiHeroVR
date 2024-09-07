@@ -45,6 +45,7 @@ namespace Manager
                         return true;
                     break;
                 case ELevelMode.Training: // TODO: implement training end conditions
+                case ELevelMode.Endless: // TODO: implement training end conditions
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

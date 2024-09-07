@@ -74,9 +74,10 @@ namespace UI
 
             Progress.text = level.LevelMode switch
             {
-                ELevelMode.Training => "",
+                ELevelMode.Training => $"{levelProgress.FinishedEmoteCount}",
+                ELevelMode.Endless => $"{levelProgress.FinishedEmoteCount}",
                 ELevelMode.Predefined => $"{Math.Round((float)levelProgress.FinishedEmoteCount / level.EmoteArray.Length * 100)}%",
-                _ => $"{Math.Round((float)levelProgress.FinishedEmoteCount / level.Count * 100)}%"
+                _ => $"{Math.Round((float)levelProgress.FinishedEmoteCount / level.Count * 100)}%",
             };
 
             _coroutine = null;

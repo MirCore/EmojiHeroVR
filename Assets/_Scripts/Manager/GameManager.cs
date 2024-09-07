@@ -64,7 +64,7 @@ namespace Manager
             _timescaleCoroutine = StartCoroutine(MathHelper.SmoothStepTimeScale(1, 0, 2f));
         }
 
-        public static int GetMaxScore() => LevelManager.Instance.PlayingState.MaxScore;
+        public int GetMaxScore() => LevelManager.Instance.PlayingState.MaxScore;
 
         public void RestartTimeScale()
         {

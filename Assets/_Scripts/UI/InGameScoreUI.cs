@@ -63,7 +63,7 @@ namespace UI
             yield return new WaitForEndOfFrame();
 
             LevelStruct level = GameManager.Instance.Level;
-            int maxScore = GameManager.GetMaxScore();
+            int maxScore = GameManager.Instance.GetMaxScore();
 
             LevelProgress levelProgress = GameManager.LevelProgress;
 
@@ -72,6 +72,7 @@ namespace UI
             EmojiCount.text = level.LevelMode switch
             {
                 ELevelMode.Training => $"{matchedEmotes} / {GameManager.LevelProgress.SpawnedEmotesCount}",
+                ELevelMode.Endless => $"{matchedEmotes} / {GameManager.LevelProgress.SpawnedEmotesCount}",
                 ELevelMode.Predefined => $"{matchedEmotes} / {level.EmoteArray.Length} ({Math.Round((float)matchedEmotes / level.EmoteArray.Length * 100, 1)}%)",
                 _ => $"{matchedEmotes} / {level.Count} ({Math.Round((float)matchedEmotes / level.EmoteArray.Length * 100, 1)}%)"
             };

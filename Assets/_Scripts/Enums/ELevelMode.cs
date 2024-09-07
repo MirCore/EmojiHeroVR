@@ -4,6 +4,7 @@
     {
         Count,
         Training,
-        Predefined
+        Predefined,
+        Endless
     }
 }

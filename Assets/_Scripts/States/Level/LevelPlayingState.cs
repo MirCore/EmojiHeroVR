@@ -71,12 +71,13 @@ namespace States.Level
                     emojiCount = GameManager.Instance.Level.Count;
                     break;
                 case ELevelMode.Training:
+                case ELevelMode.Endless:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            MaxScore =  emojiCount * (GameManager.BaseScoreForCompletion + (2 * GameManager.ScoreMultiplier) * 10);
+            MaxScore =  emojiCount * ((GameManager.BaseScoreForCompletion + (2 * GameManager.ScoreMultiplier)) * 10);
         }
         
         /// <summary>
