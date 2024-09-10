@@ -5,39 +5,28 @@ EmojiHeroVR combines virtual reality with affective computing to improve emotion
 This project develops an emotion recognition system tailored to work around the visual limitations of VR headsets, which obscure the upper face.
 Applied within an accessible VR game, EmojiHeroVR aims to advance the field of implicit emotion recognition and contribute to an area with significant room for research and development.
 
-This project optionally works with the Oculus OVR (Meta XR Core SDK) Plugin, through which the project supports facial expression tracking with the Meta Quest Pro provided by the OVR plugin. The Plugin must be installed if facial expression tracking is desired (see [Requirements](#requirements)).
-
 ## Getting Started
 
 Set up EmojiHeroVR by following these steps:
 
 1. Clone or download the project.
    
-2. Open the project in Unity. The minimum tested version is 2022.3.1f1
+2. Open the project in Unity 6. The minimum tested version is 6000.0.16f1
 
-3. Load the `Arcade Scene` scene.
-
-4. Access the *EmojiHero Editor Window* via `Window > EmojiHero Editor Window` in Unity.
-   - **Primary Webcam**: Select your primary webcam for capturing facial expressions.
-   - **Secondary Webcam** [Optional]: This is only utilized in [logging](#logging) to capture additional visual data.
-   - **REST API Basepath**: Set this to the basepath of the [FER-Microservice](#requirements) for communication between the application and the facial expression recognition server, e.g., `http://localhost:8000/`.
+3. Load the `Arcade Scene` or  `Arcade Scene VR` scene.
   
 5. Further settings can be found through the Inspector in the MANAGERS GameObjects.
 
 ## Logging
 
-The application logs webcam images, face expressions (with OVR), and FER probabilities to the directory `/EmojiHeroVR/SavedImages/[UserID]/`. Logging is executed after each level to minimize system impact.
+Logging is not currently available in the Senits version. See the [v1.0-study-setup release](https://github.com/MirCore/EmojiHeroVR/releases/tag/v1.0-study-setup) for logging capabilities.
 
-The logging structure is as follows:
-- FER probabilities and metadata: `[User ID]/logdata.csv`
-- Images and face expression data: `[User ID]/[Level Name]/[Emotion]/[timestamp].png` or `[timestamp].json`
+## ONNX Models
 
-## Requirements
-
-- [FER-Microservice](https://github.com/affective-reality-group/facial-expression-recognition-microservice): This microservice provides an HTTP API for Facial Expression Recognition and is essential for the project's functionality.
-
-- (Optional) [Meta XR Core SDK](https://assetstore.unity.com/packages/tools/integration/meta-xr-core-sdk-269169): Required for FaceExpression tracking with the Quest Pro.
-  
+- The project utilizes the *Ultra-lightweight face detection model* (version *version-RFB-640*) for face detection: [Ultra-Light-Fast-Generic-Face-Detector](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB)
+- For emotion recognition without HMDs the *HSEmotion library* (version *enet_b2_7.pt*) is used: [HSEmotion (High-Speed face Emotion recognition) library](https://github.com/av-savchenko/face-emotion-recognition/tree/main)
+- The HMD FER is based on the *EmojiHeroVR Database*: [Emoji-Hero-VR-Database](https://github.com/thorbenortmann/emoji-hero-vr-database)
+ 
 ## Credits
 
 All emojis designed by [OpenMoji](https://openmoji.org/) – the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#)
