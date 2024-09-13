@@ -32,6 +32,7 @@ public static class FerService
             face.Emote = GetEmoteWithHighestProbability(probabilities);
         }
 
+        // Use the center section of the texture if no face was detected. When useFallbackSection is true.
         if (!filteredFaces.Any() && useFallbackSection)
         {
             DetectedFace face = CreateFallbackFace(texture2D);
@@ -45,6 +46,11 @@ public static class FerService
         return filteredFaces;
     }
 
+    /// <summary>
+    /// Creates a DetectedFace in the centre of the texture. The dimensions are a square cutout with a size of 60% of the smaller side.
+    /// </summary>
+    /// <param name="texture2D"></param>
+    /// <returns></returns>
     private static DetectedFace CreateFallbackFace(Texture2D texture2D)
     {
         int dimension = texture2D.width < texture2D.height ? texture2D.width : texture2D.height;

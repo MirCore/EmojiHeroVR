@@ -136,6 +136,7 @@ namespace Manager
         private void CreateSinglePlayerLevelList()
         {
             _levels =  Resources.LoadAll<ScriptableLevel>("Levels").ToList();
+            bool first = true;
     
             foreach (ScriptableLevel level in _levels)
             {
@@ -144,6 +145,12 @@ namespace Manager
                 toggle.onValueChanged.AddListener(delegate {OnLevelSelected(toggle, level); });
                 toggle.group = SinglePlayerLevelToggleGroup;
                 toggleObject.GetComponentInChildren<TMP_Text>().text = level.LevelStruct.LevelName;
+                if (first)
+                {
+                    toggle.gameObject.AddComponent<ToggleSelect>();
+                    OnLevelSelected(toggle, level);
+                    first = false;
+                }
             }
         }
         
