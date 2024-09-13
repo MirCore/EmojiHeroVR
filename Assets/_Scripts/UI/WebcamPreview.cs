@@ -27,6 +27,9 @@ namespace UI
         [SerializeField] private float ScoreThreshold = 0.3f;
         [SerializeField] private float SizeThreshold = 0.1f;
 
+        [Tooltip("Whether to use a default section of the image for FER if no face was detected")]
+        [SerializeField] private bool UseFallbackSection;
+        
         private void OnEnable()
         {
             CalculateDimensions();
@@ -44,7 +47,7 @@ namespace UI
         private void Update()
         {
             Color32[] image = WebcamManager.TakeSnapshot();
-            List<DetectedFace> detectedFaces = FerService.GetEmotions(image, ScoreThreshold, SizeThreshold, -1);
+            List<DetectedFace> detectedFaces = FerService.GetEmotions(image, ScoreThreshold, SizeThreshold, -1, UseFallbackSection);
         
             if (!detectedFaces.Any())
                 return;

@@ -11,6 +11,8 @@ namespace Manager
         [SerializeField] private WebcamVisualization WebcamVisualization;
         [SerializeField] private float SizeThreshold = 0.1f;
         [SerializeField] private float ScoreThreshold = 0.3f;
+        [Tooltip("Whether to use a default section of the image for FER if no face was detected")]
+        [SerializeField] private bool UseFallbackSection;
 
         private void OnEnable()
         {
@@ -33,7 +35,7 @@ namespace Manager
             if (!GameManager.LevelIsPlaying)
                 return;
             Color32[] image = WebcamManager.TakeSnapshot();
-            List<DetectedFace> emotions = FerService.GetEmotions(image, ScoreThreshold, SizeThreshold, GameManager.Instance.PlayerCount);
+            List<DetectedFace> emotions = FerService.GetEmotions(image, ScoreThreshold, SizeThreshold, GameManager.Instance.PlayerCount, UseFallbackSection);
 
             foreach (DetectedFace face in emotions)
             {

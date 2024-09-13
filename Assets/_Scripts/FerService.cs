@@ -9,7 +9,7 @@ using Utilities;
 
 public static class FerService
 {
-    public static List<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount)
+    public static List<DetectedFace> GetEmotions(Color32[] image, float scoreThreshold, float sizeThreshold, int faceCount, bool useFallbackSection = false)
     {
         EventManager.InvokeFerCall();
         
@@ -32,9 +32,40 @@ public static class FerService
             face.Emote = GetEmoteWithHighestProbability(probabilities);
         }
 
+        if (!filteredFaces.Any() && useFallbackSection)
+        {
+            DetectedFace face = CreateFallbackFace(texture2D);
+            Texture2D tempTexture = CreateTempTexture(texture2D, face);
+            Probabilities probabilities = EmotionRecognition.Instance.DetectEmotion(tempTexture);
+            face.Probabilities = probabilities;
+            face.Emote = GetEmoteWithHighestProbability(probabilities);
+            filteredFaces.Add(face);
+        }
+        
         return filteredFaces;
     }
-    
+
+    private static DetectedFace CreateFallbackFace(Texture2D texture2D)
+    {
+        int dimension = texture2D.width < texture2D.height ? texture2D.width : texture2D.height;
+        dimension = Mathf.FloorToInt(dimension * 0.6f);
+        float relativeWidth = dimension / (float)texture2D.width;
+        float relativeHeight = dimension / (float)texture2D.height;
+            
+        DetectedFace face = new()
+        {
+            RelativeX = 0.5f - relativeWidth / 2,
+            RelativeY = 0.5f - relativeHeight / 2,
+            RelativeWidth = relativeWidth,
+            RelativeHeight = relativeHeight,
+            X = Mathf.FloorToInt(0.5f - relativeWidth / 2) * texture2D.width,
+            Y = Mathf.FloorToInt(0.5f - relativeHeight / 2) * texture2D.height,
+            Width = dimension,
+            Height = dimension,
+        };
+        return face;
+    }
+
     private static List<DetectedFace> FilterFaces(IEnumerable<DetectedFace> detectedFaces, int faceCount)
     {
         switch (faceCount)
