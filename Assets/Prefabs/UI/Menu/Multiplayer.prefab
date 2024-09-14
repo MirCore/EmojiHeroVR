@@ -1018,7 +1018,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3012571894207026745, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_text
-      value: Start
+      value: Ready
       objectReference: {fileID: 0}
     - target: {fileID: 3012571894207026745, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_fontColor.b

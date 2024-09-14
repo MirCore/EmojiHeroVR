@@ -23,9 +23,11 @@ namespace Manager
         public static LevelProgress LevelProgress => LevelManager.Instance.PlayingState.LevelProgress;
         public static bool LevelIsPlaying => LevelManager.Instance.LevelIsPlaying;
         
-        [SerializeField] public int PlayerCount = 1;
+        internal int PlayerCount = 1;
 
         private Coroutine _timescaleCoroutine;
+
+        [SerializeField] private bool SkipFrontUIButton;
 
         // Scoring
         internal const int BaseScoreForCompletion = 50;
@@ -81,6 +83,9 @@ namespace Manager
         {
             ScriptableLevel = level;
             LevelManager.Instance.PrepareLevel();
+            
+            if (SkipFrontUIButton && !LevelIsPlaying)
+                LevelManager.Instance.StartLevel();
         }
 
         public void OnFrontButtonPressed()
