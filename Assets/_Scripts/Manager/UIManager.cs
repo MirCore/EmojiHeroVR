@@ -16,6 +16,8 @@ namespace Manager
     /// </summary>
     public class UIManager : MonoBehaviour
     {
+        private MenuNavigator MenuNavigator;
+        
         [Header("Main Menu")]
         [SerializeField] private GameObject TogglePrefab;
         [SerializeField] private ToggleGroup SinglePlayerLevelToggleGroup;
@@ -53,6 +55,8 @@ namespace Manager
             CreateMultiPlayerLevelList();
             CreateWebcamDropdown();
             SetInitialSettingValues();
+
+            MenuNavigator = GetComponent<MenuNavigator>();
         }
 
         private void OnDestroy()
@@ -169,31 +173,37 @@ namespace Manager
         }
 
         // Methods to handle button presses, triggering corresponding actions in the GameManager.
+        public void OnPreStartGameButtonPressed(int playerCount)
+        {
+            SetPlayerCount(playerCount);
+            MenuNavigator.OnPreviewWebcamButtonPressed();
+        }
+
+        // Methods to handle button presses, triggering corresponding actions in the GameManager.
         public void OnStartGameButtonPressed()
         {
-            StartGame(1);
+            StartGame();
+            EventManager.InvokeUIClicked();
         }
 
         // Methods to handle button presses, triggering corresponding actions in the GameManager.
         public void OnRestartGameButtonPressed()
         {
-            StartGame(GameManager.Instance.PlayerCount);
+            SetPlayerCount(GameManager.Instance.PlayerCount);
+            StartGame();
+            EventManager.InvokeUIClicked();
         }
 
-        // Methods to handle button presses, triggering corresponding actions in the GameManager.
-        public void OnStartMultiplayerGameButtonPressed()
+        private static void SetPlayerCount(int playerCount)
         {
-            StartGame(2);
+            GameManager.Instance.PlayerCount = playerCount;
         }
 
-        private void StartGame(int playerCount)
+        private void StartGame()
         {
             if (_selectedLevel == null)
                 return;
-            GameManager.Instance.PlayerCount = playerCount;
             GameManager.Instance.StartGame(_selectedLevel);
-            
-            EventManager.InvokeUIClicked();
         }
 
         public void OnFrontButtonPressed() => GameManager.Instance.OnFrontButtonPressed();

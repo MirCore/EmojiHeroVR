@@ -540,7 +540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -919,7 +919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -935,7 +935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnStartGameButtonPressed
+      value: OnPreStartGameButtonPressed
       objectReference: {fileID: 0}
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -944,6 +944,10 @@ PrefabInstance:
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: Manager.UIManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9084710192791675776, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -974,7 +978,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1773777350171769330}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5133fa173c1fa314586e124e5a30daa5, type: 3}
   m_Name: 
@@ -1088,6 +1092,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4490807213707866016, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4764574242516394793, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
+      propertyPath: m_Navigation.m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5462185204076723368, guid: f31d0017d552cb447903a219e3b316fb, type: 3}
@@ -1252,6 +1260,10 @@ PrefabInstance:
     - target: {fileID: 536536746709982095, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_Name
       value: Preview Webcam
+      objectReference: {fileID: 0}
+    - target: {fileID: 536536746709982095, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 536536746709982095, guid: f5c8e2aba8de6134e89c311757edf7e2, type: 3}
       propertyPath: m_StaticEditorFlags

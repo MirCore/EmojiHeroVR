@@ -127,5 +127,10 @@ namespace Utilities
                 _fillPixels[i] = fillColor;
             }
         }
+
+        public void DisableBoundingBox()
+        {
+            RawImage.color = new Color(1, 1, 1, 0);
+        }
     }
 }

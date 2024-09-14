@@ -40,6 +40,8 @@ namespace UI
             Rect rect = WebcamTexture.rectTransform.rect;
             _rectHeight = rect.height;
             _rectWidth = _rectHeight * WebcamManager.GetCameraRatio();
+            if (_rectWidth == 0)
+                return;
             WebcamTexture.rectTransform.sizeDelta = new Vector2(_rectWidth, _rectHeight);
             _emojiScaleFactor = EmojiScaleFactor * _rectWidth;
         }
@@ -51,9 +53,11 @@ namespace UI
         
             if (!detectedFaces.Any())
                 return;
-        
+
             if (EnableBoundingBoxes)
                 DrawBoundingBoxes.Instance.DrawBoundingBox(detectedFaces);
+            else
+                DrawBoundingBoxes.Instance.DisableBoundingBox();
         
             foreach (DetectedFace face in detectedFaces)
             {
@@ -64,6 +68,8 @@ namespace UI
             }
             
             detectedFaces = detectedFaces.OrderBy(face => face.RelativeX).ToList();
+            if (!Emoji)
+                return;
             PositionEmojis(detectedFaces);
         }
 

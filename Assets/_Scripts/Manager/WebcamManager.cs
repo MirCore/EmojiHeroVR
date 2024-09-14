@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using UI;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -109,6 +110,11 @@ namespace Manager
         public static float GetCameraWidth() => _webcam.width;
         public static float GetCameraHeight() => _webcam.height;
 
-        public static float GetCameraRatio() => (float)_webcam.width / _webcam.height;
+        public static float GetCameraRatio()
+        {
+            if (!_webcam)
+                return 0;
+            return (float)_webcam.width / _webcam.height;
+        }
     }
 }
