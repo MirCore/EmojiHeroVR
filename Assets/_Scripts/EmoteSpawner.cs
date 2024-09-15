@@ -111,7 +111,7 @@ public class EmoteSpawner : MonoBehaviour
                     break;
                 case 2:
                     ActivatePooledEmote(_spawnPoints[0], 0);
-                    ActivatePooledEmote(_spawnPoints[^1], 1);
+                    ActivatePooledEmote(_spawnPoints[1], 1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

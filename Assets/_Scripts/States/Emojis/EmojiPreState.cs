@@ -46,22 +46,26 @@ namespace States.Emojis
             LevelStruct level = GameManager.Instance.Level;
             LevelProgress levelProgress = GameManager.LevelProgress;
 
+            // Use the time since startup at the beginning of the frame as a seed so both Emojis get the same emotion.
+            if (GameManager.Instance.PlayerCount != 1) 
+                Random.InitState((int)(Time.time)); // Set the seed for random generation
+
             int emoteIndex = level.EmoteArray.Length > 0
                 // Get the next emotion from the predefined list, based on already spawned emojis.
                 ? level.EmoteArray[levelProgress.SpawnedEmotesCount % level.EmoteArray.Length]
                 // get random Emote if no predefined list exists. -2 to compensate default enum.
                 : Random.Range(0, Enum.GetValues(typeof(EEmote)).Length - 2);
 
+            // If a custom Emote list is set, use it. Otherwise, use the EEmote enum. + 1 to compensate default enum.
             EEmote emote = level.Emotes.Any()
                 ? level.Emotes[emoteIndex % level.Emotes.Count]
                 : (EEmote)(emoteIndex + 1);
             
             emojiManager.Emoji = new Emoji
             {
-                // If a custom Emote list is set, use it. Otherwise, use the EEmote enum. + 1 to compensate default enum.
                 Emote = emote,
                 EmoteID = levelProgress.SpawnedEmotesCount,
-                Texture = levelProgress.SpawnedEmotes.Count(e => e.Emote == emote)
+                Texture = levelProgress.SpawnedEmotes.Count(e => e.Emote == emote) / GameManager.Instance.PlayerCount
             };
         }
 
@@ -109,8 +113,6 @@ namespace States.Emojis
         private static void SetEmojiTextures(EmojiManager emojiManager)
         {
             // Get the texture for the current Emoji's emotion.
-            //Texture texture = ResourceSystem.EmojiTextures[emojiManager.Emoji.Emote];
-            
             List<Texture> textures = ResourceSystem.EmojiScriptables[emojiManager.Emoji.Emote].Textures;
 
             Texture texture = textures[emojiManager.Emoji.Texture % textures.Count];
