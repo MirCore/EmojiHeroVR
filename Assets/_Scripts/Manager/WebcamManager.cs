@@ -31,7 +31,8 @@ namespace Manager
 
         private void Start()
         {
-            SetupWebcam(WebCamTexture.devices.First());
+            if (WebCamTexture.devices.Length != 0)
+                SetupWebcam(WebCamTexture.devices.First());
         }
 
         private void OnDestroy()
@@ -58,7 +59,9 @@ namespace Manager
                 // Set up the new webcam.
                 _webcam = new WebCamTexture(device.name, RequestedCameraWidth, RequestedCameraHeight);
                 _webcam.Play();
-                _webcamIsPlaying = true;
+                
+                if (_webcam.isPlaying)
+                    _webcamIsPlaying = true;
                 
                 _texture = new Texture2D(_webcam.width, _webcam.height);
             }
@@ -116,5 +119,7 @@ namespace Manager
                 return 0;
             return (float)_webcam.width / _webcam.height;
         }
+
+        public static bool IsCameraAvailable() => _webcamIsPlaying;
     }
 }
