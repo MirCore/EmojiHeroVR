@@ -1,3 +1,4 @@
+using System.Collections;
 using Data;
 using Scriptables;
 using Systems;
@@ -17,6 +18,8 @@ namespace Manager
         
         // Current selected/playing level
         [SerializeField] private ScriptableLevel ScriptableLevel;
+        
+        [SerializeField] private CameraMover CameraMover;
 
         // Properties for accessing game data
         public LevelStruct Level => ScriptableLevel.LevelStruct;
@@ -83,9 +86,21 @@ namespace Manager
         {
             ScriptableLevel = level;
             LevelManager.Instance.PrepareLevel();
+
+            if (!SkipFrontUIButton || LevelIsPlaying) 
+                return;
             
-            if (SkipFrontUIButton && !LevelIsPlaying)
+            if (CameraMover == null)
                 LevelManager.Instance.StartLevel();
+            else
+                StartCoroutine(STartGameWhenReady());
+        }
+
+        private IEnumerator STartGameWhenReady()
+        {
+            while (!CameraMover.ReadyToPlay)
+                yield return null;
+            LevelManager.Instance.StartLevel();
         }
 
         public void OnFrontButtonPressed()

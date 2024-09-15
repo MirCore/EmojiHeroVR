@@ -16801,7 +16801,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <UseGermanEmoteNames>k__BackingField: 0
   ScriptableLevel: {fileID: 11400000, guid: ca3e5b584983ea942a35b2e93308bd0c, type: 2}
-  SkipFrontUIButton: 0
+  CameraMover: {fileID: 1654544242}
+  SkipFrontUIButton: 1
 --- !u!82 &6789293080834746437
 AudioSource:
   m_ObjectHideFlags: 0

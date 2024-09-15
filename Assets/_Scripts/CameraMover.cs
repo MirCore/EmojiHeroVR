@@ -8,6 +8,7 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private Transform ArcadePosition;
 
     [SerializeField] private float MoveDuration = 2;
+    public bool ReadyToPlay { get; private set; }
 
     private void OnEnable()
     {
@@ -31,8 +32,21 @@ public class CameraMover : MonoBehaviour
 
     private void MoveToMachine()
     {
-        StartCoroutine(MoveToPosition(transform.position, ArcadePosition.position, MoveDuration));
-        StartCoroutine(TurnToPosition(transform.forward, ArcadePosition.forward, MoveDuration));
+        StartCoroutine(MoveToArcadeAndSetReady());
+    }
+
+    private IEnumerator MoveToArcadeAndSetReady()
+    {
+        // Start position and rotation coroutines
+        IEnumerator moveCoroutine = MoveToPosition(transform.position, ArcadePosition.position, MoveDuration);
+        IEnumerator turnCoroutine = TurnToPosition(transform.forward, ArcadePosition.forward, MoveDuration);
+
+        // Run both coroutines in parallel and wait for both to finish
+        StartCoroutine(moveCoroutine);
+        yield return StartCoroutine(turnCoroutine);
+
+        // Set ReadyToPlay to true after movement and rotation are complete
+        ReadyToPlay = true;
     }
 
 
