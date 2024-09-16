@@ -1059,6 +1059,39 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8df8e0bf3dc2bbd4fac85c241350c4af, type: 3}
+--- !u!114 &272545215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3424705337355089276, guid: 8df8e0bf3dc2bbd4fac85c241350c4af, type: 3}
+  m_PrefabInstance: {fileID: 272545214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &272545216 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7114865226791682497, guid: 8df8e0bf3dc2bbd4fac85c241350c4af, type: 3}
+  m_PrefabInstance: {fileID: 272545214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &272545217 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9043684333136462560, guid: 8df8e0bf3dc2bbd4fac85c241350c4af, type: 3}
+  m_PrefabInstance: {fileID: 272545214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &289251262 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1226607126602248091, guid: 40318e9643024b84499cad4b24373be6, type: 3}
@@ -2186,6 +2219,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0de6f2a75c345b4088081629f0d0304, type: 3}
+--- !u!114 &673223524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7550093091343946890, guid: f0de6f2a75c345b4088081629f0d0304, type: 3}
+  m_PrefabInstance: {fileID: 673223523}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &673223525 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5556904141954647869, guid: f0de6f2a75c345b4088081629f0d0304, type: 3}
+  m_PrefabInstance: {fileID: 673223523}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &714616918
 GameObject:
   m_ObjectHideFlags: 0
@@ -16719,10 +16774,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TogglePrefab: {fileID: 5601283969493895203, guid: 6f0e2b626883a5f4d864e281cd658ebe, type: 3}
   SinglePlayerLevelToggleGroup: {fileID: 1200294601}
-  SinglePlayerLevelInfo: {fileID: 7057132441980412322}
-  SinglePlayerHighScoreInfo: {fileID: 2894094615386102910}
+  SinglePlayerLevelName: {fileID: 7057132441980412322}
+  SinglePlayerLevelInfo: {fileID: 272545217}
+  SinglePlayerHighScoreInfo:
+  - {fileID: 2894094615386102910}
+  - {fileID: 272545216}
+  - {fileID: 272545215}
   MultiPlayerLevelToggleGroup: {fileID: 971052204}
-  MultiPlayerLevelInfo: {fileID: 5567916521613774677}
+  MultiPlayerLevelName: {fileID: 673223525}
+  MultiPlayerLevelInfo: {fileID: 673223524}
   WebcamDropdown: {fileID: 3684851637418071905}
   MusicSlider: {fileID: 3702819323271896117}
   EffectsSlider: {fileID: 3702819322549733446}
@@ -17313,17 +17373,6 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
---- !u!114 &5567916521613774677 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7493035910302411719, guid: f0de6f2a75c345b4088081629f0d0304, type: 3}
-  m_PrefabInstance: {fileID: 673223523}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5747816861655315101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17542,6 +17591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <UseGermanEmoteNames>k__BackingField: 0
   ScriptableLevel: {fileID: 11400000, guid: ca3e5b584983ea942a35b2e93308bd0c, type: 2}
+  CameraMover: {fileID: 0}
   SkipFrontUIButton: 1
 --- !u!82 &6789293080834746437
 AudioSource:

@@ -21,9 +21,11 @@ namespace Manager
         [Header("Main Menu")]
         [SerializeField] private GameObject TogglePrefab;
         [SerializeField] private ToggleGroup SinglePlayerLevelToggleGroup;
+        [SerializeField] private TMP_Text SinglePlayerLevelName;
         [SerializeField] private TMP_Text SinglePlayerLevelInfo;
-        [SerializeField] private TMP_Text SinglePlayerHighScoreInfo;
+        [SerializeField] private List<TMP_Text> SinglePlayerHighScoreInfo;
         [SerializeField] private ToggleGroup MultiPlayerLevelToggleGroup;
+        [SerializeField] private TMP_Text MultiPlayerLevelName;
         [SerializeField] private TMP_Text MultiPlayerLevelInfo;
         
         [Header("Settings Menu")]
@@ -225,7 +227,9 @@ namespace Manager
                 ELevelMode.Predefined => $"Length: {levelStruct.EmoteArray.Length / levelStruct.SpawnInterval}",
                 _ => $"Length: {levelStruct.Count / levelStruct.SpawnInterval}",
             };
+            SinglePlayerLevelName.text = level.name;
             SinglePlayerLevelInfo.text = text;
+            MultiPlayerLevelName.text = level.name;
             MultiPlayerLevelInfo.text = text;
 
             CreateHighScoreUI(level);
@@ -235,17 +239,27 @@ namespace Manager
 
         private void CreateHighScoreUI(ScriptableLevel level)
         {
-            List<HighScore> highScores = level.GetHighScores();
+            if (SinglePlayerHighScoreInfo.Count != 3)
+                return;
             
-            string text = "High scores:\n";
-            //       0000-00-00 00:00:00:   0000 (0/0)
-            text += "Player               Score  Emojis\n";
+            List<HighScore> highScores = level.GetHighScores();
+
+            string[] text = new string[3];
+
+            text[0] = "High scores:\nPlayer";
+            text[1] = "\nScore";
+            text[2] = "\nEmojis";
+            
             for (int i = 0; i < Math.Min(highScores.Count, 10); i++)
             {
-                text += $"\n{highScores[i].UserID}: {highScores[i].LevelScore} ({highScores[i].MatchedEmojis}\\{highScores[i].TotalEmotes})";
+                text[0] += $"\n{highScores[i].UserID}: ";
+                text[1] += $"\n{highScores[i].LevelScore}";
+                text[2] += $"\n({highScores[i].MatchedEmojis}\\{highScores[i].TotalEmotes})";
             }
-            
-            SinglePlayerHighScoreInfo.text = text;
+
+            SinglePlayerHighScoreInfo[0].text = text[0];
+            SinglePlayerHighScoreInfo[1].text = text[1];
+            SinglePlayerHighScoreInfo[2].text = text[2];
         }
 
         public void OnWebcamSelected(TMP_Dropdown change)

@@ -74,9 +74,19 @@ namespace UI
             if (_lastMenu == SinglePlayerMenu)
                 SwitchMenu(SinglePlayerMenu);
             else if (_lastMenu == MultiPlayerMenu)
-                SwitchMenu(MainMenu);
-            else
-                SwitchMenu(MainMenu);
+                SwitchMenu(MultiPlayerMenu);
+            else switch (GameManager.Instance.PlayerCount)
+            {
+                case 1:
+                    SwitchMenu(SinglePlayerMenu);
+                    break;
+                case > 2:
+                    SwitchMenu(MultiPlayerMenu);
+                    break;
+                default:
+                    SwitchMenu(MainMenu);
+                    break;
+            }
         }
         private void LevelFinishedCallback() => SwitchMenu(EndscreenMenu);
 
